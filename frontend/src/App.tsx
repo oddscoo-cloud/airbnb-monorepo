@@ -1,13 +1,12 @@
 import './App.css'
+import Register from './auth/register/register'
 
 function App() {
 
   return (
-    <>
-      <section id="center">
-      
-      </section>
-    </>
+    <section className="App">
+      <Register />
+    </section>
   )
 }
 
