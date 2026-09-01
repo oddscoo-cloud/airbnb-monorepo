@@ -31,13 +31,7 @@ function App() {
       </div>
 
       <SearchForm />
-    </header>
-
-  return (
-    <section className="App">
-      <Register />
-    </section>
-  )
+    </header>)
 }
 
 export default App
