@@ -78,3 +78,7 @@
     display: none;
   }
 }
+.App {
+  display: flex;
+  justify-content: center;
+}

@@ -1,8 +1,11 @@
+
 import { Menu, User } from 'lucide-react'
 import { SearchForm } from './components/SearchForm'
 import './App.css'
+import Register from './auth/register/register'
 
 function App() {
+
   return (
     <header className="site-header">
       <div className="site-header__top">
@@ -29,6 +32,11 @@ function App() {
 
       <SearchForm />
     </header>
+
+  return (
+    <section className="App">
+      <Register />
+    </section>
   )
 }
 

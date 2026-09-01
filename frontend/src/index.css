@@ -1,3 +1,4 @@
+
 :root {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.4;
@@ -22,3 +23,4 @@ body {
 #root {
   min-height: 100svh;
 }
+@import "tailwindcss";
