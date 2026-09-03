@@ -1,0 +1,263 @@
+.category-listings {
+  width: 100%;
+  padding: 24px 40px 40px;
+}
+
+/* Category nav */
+
+.category-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.category-nav__list {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-nav__list::-webkit-scrollbar {
+  display: none;
+}
+
+.category-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: #717171;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.category-nav__item:hover {
+  color: #222222;
+}
+
+.category-nav__item--active {
+  color: #222222;
+  border-bottom-color: #222222;
+}
+
+.category-nav__scroll {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dddddd;
+  border-radius: 50%;
+  background: #fff;
+  color: #222222;
+  cursor: pointer;
+}
+
+.category-nav__filters {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #222222;
+  border-radius: 12px;
+  background: #fff;
+  color: #222222;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.category-nav__toggle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #222222;
+  cursor: pointer;
+}
+
+.category-nav__switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: #b0b0b0;
+  transition: background 0.15s ease;
+}
+
+.category-nav__switch--on {
+  background: #222222;
+}
+
+.category-nav__switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+
+.category-nav__switch--on .category-nav__switch-knob {
+  transform: translateX(16px);
+}
+
+/* Listings grid */
+
+.listings__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px 16px;
+  padding-top: 24px;
+}
+
+.listing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.listing-card__image-wrap {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ebebeb;
+}
+
+.listing-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-card__like {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  color: #fff;
+  cursor: pointer;
+}
+
+.listing-card__like:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.listing-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.listing-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.listing-card__location {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.listing-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #222222;
+}
+
+.listing-card__meta {
+  margin: 0;
+  font-size: 12px;
+  color: #717171;
+}
+
+.listing-card__price {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #222222;
+}
+
+.listing-card__price strong {
+  font-weight: 700;
+}
+
+/* Continue browsing */
+
+.category-listings__continue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.category-listings__continue h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #222222;
+}
+
+.category-listings__more {
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 10px;
+  background: #222222;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.category-listings__more:hover {
+  background: #000000;
+}
+
+@media (max-width: 1100px) {
+  .listings__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .category-listings {
+    padding: 16px;
+  }
+
+  .listings__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 12px;
+  }
+}

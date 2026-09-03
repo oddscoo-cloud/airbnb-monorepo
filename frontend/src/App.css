@@ -78,7 +78,12 @@
     display: none;
   }
 }
+
 .App {
   display: flex;
   justify-content: center;
+}
+
+.page {
+  width: 100%;
 }
