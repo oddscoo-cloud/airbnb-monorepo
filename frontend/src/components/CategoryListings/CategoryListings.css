@@ -1,6 +1,10 @@
+/* Fonts confirmed from Figma: Inknut Antiqua (Medium/SemiBold) for nav, labels, prices, buttons */
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
+
 .category-listings {
   width: 100%;
   padding: 24px 40px 40px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
 }
 
 /* Category nav */
@@ -37,21 +41,23 @@
   padding: 4px 0;
   border: 0;
   background: transparent;
-  color: #717171;
-  font-size: 11px;
+  color: #211e1a;
+  font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
+  font-size: 12px;
   white-space: nowrap;
   cursor: pointer;
   border-bottom: 2px solid transparent;
+  opacity: 0.7;
 }
 
 .category-nav__item:hover {
-  color: #222222;
+  opacity: 1;
 }
 
 .category-nav__item--active {
-  color: #222222;
-  border-bottom-color: #222222;
+  opacity: 1;
+  border-bottom-color: #211e1a;
 }
 
 .category-nav__scroll {
@@ -63,7 +69,7 @@
   border: 1px solid #dddddd;
   border-radius: 50%;
   background: #fff;
-  color: #222222;
+  color: #211e1a;
   cursor: pointer;
 }
 
@@ -73,12 +79,13 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  border: 1px solid #222222;
-  border-radius: 12px;
+  border: 1px solid #6f6558;
+  border-radius: 26px;
   background: #fff;
-  color: #222222;
-  font-size: 13px;
-  font-weight: 600;
+  color: #211e1a;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -87,37 +94,43 @@
   flex-shrink: 0;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
-  color: #222222;
+  padding: 6px 20px;
+  border: 1px solid #6f6558;
+  border-radius: 26px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #211e1a;
   cursor: pointer;
 }
 
 .category-nav__switch {
   position: relative;
-  width: 36px;
-  height: 20px;
-  border-radius: 999px;
-  background: #b0b0b0;
+  width: 42px;
+  height: 23px;
+  border-radius: 26px;
+  background: #6f6558;
   transition: background 0.15s ease;
+  flex-shrink: 0;
 }
 
 .category-nav__switch--on {
-  background: #222222;
+  background: #2c2823;
 }
 
 .category-nav__switch-knob {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: 19px;
+  height: 19px;
+  border-radius: 26px;
   background: #fff;
   transition: transform 0.15s ease;
 }
 
 .category-nav__switch--on .category-nav__switch-knob {
-  transform: translateX(16px);
+  transform: translateX(19px);
 }
 
 /* Listings grid */
@@ -139,7 +152,7 @@
 .listing-card__image-wrap {
   position: relative;
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   background: #ebebeb;
 }
@@ -183,33 +196,40 @@
 }
 
 .listing-card__location {
-  font-size: 13px;
-  font-weight: 600;
-  color: #222222;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #433d35;
 }
 
 .listing-card__rating {
   display: flex;
   align-items: center;
   gap: 4px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
   font-size: 12px;
-  color: #222222;
+  color: #433d35;
 }
 
 .listing-card__meta {
   margin: 0;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
   font-size: 12px;
-  color: #717171;
+  color: #433d35;
 }
 
 .listing-card__price {
   margin: 4px 0 0;
-  font-size: 13px;
-  color: #222222;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #433d35;
 }
 
 .listing-card__price strong {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Continue browsing */
@@ -218,31 +238,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
   padding-top: 40px;
   text-align: center;
 }
 
 .category-listings__continue h2 {
   margin: 0;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 600;
   font-size: 20px;
-  font-weight: 700;
-  color: #222222;
+  color: #6f6558;
 }
 
 .category-listings__more {
-  padding: 12px 24px;
+  padding: 14px 28px;
   border: 0;
-  border-radius: 10px;
-  background: #222222;
+  border-radius: 16px;
+  background: #2c2823;
   color: #fff;
-  font-size: 14px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
 }
 
 .category-listings__more:hover {
-  background: #000000;
+  background: #211e1a;
 }
 
 @media (max-width: 1100px) {
