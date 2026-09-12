@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { X } from 'lucide-react'
 import './SignInModal.css'
+import { useGoogleLogin } from '@react-oauth/google'
 
 interface SignInModalProps {
   onClose: () => void
@@ -8,6 +9,23 @@ interface SignInModalProps {
 }
 
 export function SignInModal({ onClose, onSwitchToRegister }: SignInModalProps) {
+  const googleLogin = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
+    try {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: tokenResponse.access_token }),
+      })
+      if (!res.ok) throw new Error('Auth failed')
+      const { user } = await res.json()
+      onClose()
+    } catch (err) {
+      console.error(err)
+    }
+  },
+  onError: () => console.error('Google login failed'),
+  })
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -75,7 +93,7 @@ export function SignInModal({ onClose, onSwitchToRegister }: SignInModalProps) {
         </p>
 
         <div className="sign-in-modal__social">
-          <button type="button" className="sign-in-modal__social-button">
+          <button type="button" className="sign-in-modal__social-button" onClick={() => googleLogin()}>
             <svg viewBox="0 0 24 24" width="23" height="24" aria-hidden>
               <path
                 fill="#4285F4"
