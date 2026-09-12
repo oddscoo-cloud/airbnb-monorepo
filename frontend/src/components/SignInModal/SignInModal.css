@@ -1,0 +1,163 @@
+/* Same design system as RegisterModal — 'Group 267' in Figma reuses the identical
+   frame structure (Rectangle 36 background, Frame 19/20/25/21/22/23), so these
+   tokens (bg, radius, border, shadow, font) are the ones already confirmed there. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap');
+
+.sign-in-modal__overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.sign-in-modal {
+  position: relative;
+  width: min(528px, 100%);
+  height: min(679px, 100%);
+  overflow-y: auto;
+  padding: 28px 24px 24px;
+  background: #f3f2f0;
+  border: 1px solid #dddddd;
+  border-radius: 13px;
+  box-shadow:
+    0 1px 8px rgba(0, 0, 0, 0.08),
+    0 4px 69px rgba(0, 0, 0, 0.05);
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.sign-in-modal__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #a6a098;
+  border-radius: 50%;
+  background: transparent;
+  color: #211e1a;
+  cursor: pointer;
+}
+
+.sign-in-modal__close:hover {
+  background: #ebe9e6;
+}
+
+.sign-in-modal__title {
+  margin: 0 0 48px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: #211e1a;
+  text-align: center;
+}
+
+.sign-in-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.sign-in-modal__field input {
+  width: 432px;
+  height: 56px;
+  padding: 10px 24px;
+  border: 1px solid #a6a098;
+  border-radius: 64px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  color: #211e1a;
+  outline: none;
+}
+
+.sign-in-modal__field input::placeholder {
+  color: #717171;
+}
+
+.sign-in-modal__field input:focus {
+  border-color: #211e1a;
+}
+
+.sign-in-modal__submit {
+  margin-bottom: 13px;
+  width: 432px;
+  height: 56px;
+  border: 0;
+  border-radius: 64px;
+  background: #2c2823;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sign-in-modal__submit:hover {
+  background: #211e1a;
+}
+
+.sign-in-modal__switch {
+  margin: -4px 0 4px;
+  padding: 0 4px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #717171;
+  text-align: center;
+}
+
+.sign-in-modal__switch button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #211e1a;
+  cursor: pointer;
+}
+
+.sign-in-modal__switch button:hover {
+  text-decoration: underline;
+}
+
+.sign-in-modal__social {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 48px;
+  align-items: center;
+}
+
+.sign-in-modal__social-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 432px;
+  height: 56px;
+  padding: 0 17px;
+  border: 1px solid #a6a098;
+  border-radius: 64px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.sign-in-modal__social-button span {
+  flex: 1;
+  text-align: center;
+  margin-right: 23px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #211e1a;
+}
+
+.sign-in-modal__social-button:hover {
+  background: #f7f7f5;
+}
