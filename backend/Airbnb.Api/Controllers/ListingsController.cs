@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Airbnb.API.Controllers;
 
@@ -17,6 +18,7 @@ public class ListingsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public IActionResult Create()
     {
         return Ok(new { message = "Объявление создано" });

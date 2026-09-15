@@ -69,6 +69,22 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
+.site-header__avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #df7058;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.site-header__avatar--empty {
+  background: #d9d4cb;
+}
+
 .site-header__account-menu {
   position: absolute;
   top: calc(100% + 8px);

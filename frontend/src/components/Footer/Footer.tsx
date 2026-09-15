@@ -62,7 +62,11 @@ const HOSTING_LINKS = [
 
 const COMPANY_LINKS = ['Новини', 'Нові функції', 'Вакансії', 'Інвестори', 'Помешкання від HomeFU']
 
-export function Footer() {
+interface FooterProps {
+  onOpenMap: () => void
+}
+
+export function Footer({ onOpenMap }: FooterProps) {
   const [activeTab, setActiveTab] = useState('popular')
 
   return (
@@ -139,7 +143,15 @@ export function Footer() {
             <span>2022 HomeFU, Inc.</span>
             <a href="#">Конфіденційність</a>
             <a href="#">Умови</a>
-            <a href="#">Мапа сайту</a>
+            <a
+              href="#site-map"
+              onClick={(event) => {
+                event.preventDefault()
+                onOpenMap()
+              }}
+            >
+              Мапа сайту
+            </a>
           </div>
 
           <div className="site-footer__locale">
