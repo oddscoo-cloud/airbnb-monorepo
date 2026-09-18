@@ -1,0 +1,26 @@
+.show-map-button {
+  display: inline-flex;
+  
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 190px;
+  padding: 16px 22px;
+  border: 0;
+  border-radius: 18px;
+  background: #7d7167;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.show-map-button:hover {
+  background: #71695d;
+}
+
+.show-map-button:active {
+  background: #665f56;
+}
