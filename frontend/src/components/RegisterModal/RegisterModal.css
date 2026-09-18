@@ -1,0 +1,191 @@
+/* Font confirmed from Figma: 'Nunito Sans' (Regular / ExtraBold) — this modal
+   uses a different type family from the homepage components (Inknut Antiqua / Inder). */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap');
+
+.register-modal__overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.register-modal {
+  position: relative;
+  width: min(528px, 100%);
+  height: min(776px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px 24px 24px;
+  background: #f3f2f0;
+  border: 1px solid #dddddd;
+  border-radius: 13px;
+  box-shadow:
+    0 1px 8px rgba(0, 0, 0, 0.08),
+    0 4px 69px rgba(0, 0, 0, 0.05);
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.register-modal__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #a6a098;
+  border-radius: 50%;
+  background: transparent;
+  color: #211e1a;
+  cursor: pointer;
+}
+
+.register-modal__close:hover {
+  background: #ebe9e6;
+}
+
+.register-modal__title {
+  margin: 0 0 24px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 800;
+  
+  font-size: 24px;
+  color: #211e1a;
+  text-align: center;
+}
+
+.register-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.register-modal__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+  height: 56px;
+  width: 432px;
+}
+
+.register-modal__field input {
+  width: 100%;
+  height: 56px;
+  padding: 10px 40px 10px 24px;
+  border: 1px solid #a6a098;
+  border-radius: 64px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  color: #211e1a;
+  outline: none;
+}
+
+.register-modal__field input::placeholder {
+  color: #717171;
+}
+
+.register-modal__field input:focus {
+  border-color: #211e1a;
+}
+
+.register-modal__field--counted input {
+  padding-right: 56px;
+}
+
+.register-modal__counter {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 10px;
+  color: #a6a098;
+  pointer-events: none;
+}
+
+.register-modal__hint {
+  margin: -4px 0 0;
+  padding: 0 4px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #717171;
+}
+
+.register-modal__hint a {
+  text-decoration: none;
+  color: #717171;
+}
+
+.register-modal__legal {
+  margin: -4px 0 4px;
+  padding: 0 4px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  
+  font-size: 16px;
+  color: #717171;
+}
+
+.register-modal__legal a {
+  color: #8A8278;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-modal__submit {
+  margin: 49px 0px 0px 0px;
+  height: 56px;
+  width: 432px;
+  border: 0;
+  border-radius: 64px;
+  background: #2c2823;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.register-modal__submit:hover {
+  background: #211e1a;
+}
+
+.register-modal__social {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 48px;
+  align-items: center;
+}
+
+.register-modal__social-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  width: 432px;
+  padding: 0 17px;
+  border: 1px solid #a6a098;
+  border-radius: 64px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.register-modal__social-button span {
+  flex: 1;
+  text-align: center;
+  margin-right: 23px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #211e1a;
+}
+
+.register-modal__social-button:hover {
+  background: #f7f7f5;
+}

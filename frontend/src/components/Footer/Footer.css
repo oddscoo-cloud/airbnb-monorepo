@@ -1,0 +1,218 @@
+/* Fonts confirmed from Figma:
+   - 'Inknut Antiqua' (Medium/SemiBold) for section headings, tabs, footer column headings
+   - 'Inder' (Regular) for destination city names and all link text */
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
+
+
+.destinations {
+  padding: 40px 40px 24px;
+  border-top: 1px solid #ebebeb;
+}
+
+.destinations__title {
+  margin: 0 0 16px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #6f6558;
+}
+
+.destinations__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.destinations__tab {
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: rgba(33, 30, 26, 0.66);
+  cursor: pointer;
+}
+
+.destinations__tab:hover {
+  color: #211e1a;
+}
+
+.destinations__tab--active {
+  color: #211e1a;
+  font-weight: 600;
+  border-bottom-color: #211e1a;
+}
+
+.destinations__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 32px;
+}
+
+.destinations__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+}
+
+.destinations__city {
+  font-family: 'Inder', Arial, sans-serif;
+  font-size: 14px;
+  color: #2c2823;
+}
+
+.destinations__type {
+  /* Subtitle color/size not confirmed via Figma (rate limit) - kept close to the
+     confirmed muted tone used for inactive tabs */
+  font-family: 'Inder', Arial, sans-serif;
+  font-size: 13px;
+  color: rgba(44, 40, 35, 0.6);
+}
+
+.destinations__more {
+  align-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: 'Inder', Arial, sans-serif;
+  color: #2c2823;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Site footer */
+
+.site-footer {
+  padding: 40px;
+  /* Exact footer background not confirmed via Figma (rate limit); kept
+     consistent with the header tone already used in App.css */
+  background: #f7f7f7;
+  border-top: 1px solid #ebebeb;
+}
+
+.site-footer__columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding-bottom: 32px;
+}
+
+.site-footer__column h3 {
+  margin: 0 0 16px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #211e1a;
+}
+
+.site-footer__column ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-footer__column a {
+  font-family: 'Inder', Arial, sans-serif;
+  font-size: 13px;
+  color: #433d35;
+  text-decoration: none;
+}
+
+.site-footer__column a:hover {
+  text-decoration: underline;
+}
+
+.site-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid #dddddd;
+}
+
+.site-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  font-family: 'Inder', Arial, sans-serif;
+  font-size: 13px;
+  color: #433d35;
+}
+
+.site-footer__legal a {
+  color: #433d35;
+  text-decoration: underline;
+}
+
+.site-footer__locale {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-footer__locale-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  font-family: 'Inder', Arial, sans-serif;
+  color: #433d35;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.site-footer__locale-item:hover {
+  text-decoration: underline;
+}
+
+.site-footer__social {
+  display: grid;
+  place-items: center;
+  color: #433d35;
+}
+
+@media (max-width: 900px) {
+  .destinations {
+    padding: 24px 16px;
+  }
+
+  .destinations__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .site-footer {
+    padding: 24px 16px;
+  }
+
+  .site-footer__columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .site-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 500px) {
+  .destinations__grid {
+    grid-template-columns: 1fr;
+  }
+}
