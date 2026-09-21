@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +16,24 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(); 
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<AppDbContext>();
+
+            context.Database.Migrate();
+            
+            UserSeeder.Initialize(context);
+            ListingsSeeder.Initialize(context);
+        }
+        catch (Exception ex)
+        {
+            //когда добавим логгер можно выводить ошибку
+        }
+    }
 }
 
 app.UseHttpsRedirection();
