@@ -27,7 +27,8 @@ if (app.Environment.IsDevelopment())
             context.Database.Migrate();
             
             UserSeeder.Initialize(context);
-            ListingsSeeder.Initialize(context);
+            AmenitiesSeeder.Initialize(context);
+            await ListingsSeeder.Initialize(context);
         }
         catch (Exception ex)
         {
