@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { Menu } from 'lucide-react'
 import { SearchForm } from './components/SearchForm/SearchForm'
-import { CategoryListings } from './components/CategoryListings/CategoryListings'
+import { CategoryListings, type Listing } from './components/CategoryListings/CategoryListings'
 import { Footer } from './components/Footer/Footer'
 import { RegisterModal } from './components/RegisterModal/RegisterModal'
 import { SignInModal } from './components/SignInModal/SignInModal'
 import { LocationMap } from './components/Map/LocationMap'
+import ZhitloPage from './components/Buildingpage/Buildingpage'
+import { BookingRequest } from './components/Bookingrequest/BookingRequest'
+import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
 import './App.css'
 
 function App() {
@@ -15,6 +18,8 @@ function App() {
   const [isLocationMapOpen, setIsLocationMapOpen] = useState(false)
   const [isHeaderDark, setIsHeaderDark] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
+  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment'>('home')
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [accountInitial, setAccountInitial] = useState(() => {
     const savedEmail = sessionStorage.getItem('account_email')
     return savedEmail?.charAt(0).toUpperCase() ?? ''
@@ -24,6 +29,127 @@ function App() {
     const initial = email.trim().charAt(0).toUpperCase()
     sessionStorage.setItem('account_email', email)
     setAccountInitial(initial)
+  }
+
+  function handleOpenListing(listing: Listing) {
+    setSelectedListing(listing)
+    setActivePage('listing')
+  }
+
+  function handleBackHome() {
+    setActivePage('home')
+    setSelectedListing(null)
+  }
+
+  async function handleLogout() {
+    try {
+      const refreshToken = document.cookie
+        .split('; ')
+        .find((cookie) => cookie.startsWith('refresh_token='))
+        ?.split('=')[1]
+
+      if (refreshToken) {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        })
+      }
+    } catch (error) {
+      console.error('Logout failed', error)
+    } finally {
+      sessionStorage.removeItem('account_email')
+      sessionStorage.removeItem('access_token')
+      document.cookie = 'refresh_token=; Max-Age=0; path=/; SameSite=Lax'
+      setAccountInitial('')
+      setIsUserMenuOpen(false)
+    }
+  }
+
+  if (activePage === 'listing' && selectedListing) {
+    return (
+      <div className="App">
+        <ZhitloPage
+          listing={selectedListing}
+          onBack={handleBackHome}
+          onBook={() => setActivePage('booking')}
+          onOpenSignIn={() => {
+            setIsUserMenuOpen(false)
+            setIsSignInModalOpen(true)
+          }}
+          onOpenRegister={() => {
+            setIsUserMenuOpen(false)
+            setIsRegisterModalOpen(true)
+          }}
+        />
+
+        {!isLocationMapOpen && isRegisterModalOpen && (
+          <RegisterModal
+            onClose={() => setIsRegisterModalOpen(false)}
+            onAuthenticated={handleAuthenticated}
+          />
+        )}
+
+        {!isLocationMapOpen && isSignInModalOpen && (
+          <SignInModal
+            onClose={() => setIsSignInModalOpen(false)}
+            onAuthenticated={handleAuthenticated}
+          />
+        )}
+      </div>
+    )
+  }
+
+  if (activePage === 'booking' && selectedListing) {
+    return (
+      <div className="App">
+        <BookingRequest
+          listing={selectedListing}
+          onBack={() => setActivePage('listing')}
+          onContinue={() => setActivePage('payment')}
+        />
+
+        {!isLocationMapOpen && isRegisterModalOpen && (
+          <RegisterModal
+            onClose={() => setIsRegisterModalOpen(false)}
+            onAuthenticated={handleAuthenticated}
+          />
+        )}
+
+        {!isLocationMapOpen && isSignInModalOpen && (
+          <SignInModal
+            onClose={() => setIsSignInModalOpen(false)}
+            onAuthenticated={handleAuthenticated}
+          />
+        )}
+      </div>
+    )
+  }
+
+  if (activePage === 'payment' && selectedListing) {
+    return (
+      <div className="App">
+        <PaymentConfirmation
+          listing={selectedListing}
+          onBack={() => setActivePage('booking')}
+        />
+
+        {!isLocationMapOpen && isRegisterModalOpen && (
+          <RegisterModal
+            onClose={() => setIsRegisterModalOpen(false)}
+            onAuthenticated={handleAuthenticated}
+          />
+        )}
+
+        {!isLocationMapOpen && isSignInModalOpen && (
+          <SignInModal
+            onClose={() => setIsSignInModalOpen(false)}
+            onAuthenticated={handleAuthenticated}
+          />
+        )}
+      </div>
+    )
   }
 
   return (
@@ -71,26 +197,38 @@ function App() {
 
                       {isUserMenuOpen && (
                         <div className="site-header__account-menu" id="user-menu" role="menu">
-                          <button
-                            type="button"
-                            role="menuitem"
-                            onClick={() => {
-                              setIsUserMenuOpen(false)
-                              setIsSignInModalOpen(true)
-                            }}
-                          >
-                            Войти
-                          </button>
-                          <button
-                            type="button"
-                            role="menuitem"
-                            onClick={() => {
-                              setIsUserMenuOpen(false)
-                              setIsRegisterModalOpen(true)
-                            }}
-                          >
-                            Регистрация
-                          </button>
+                          {accountInitial ? (
+                            <button
+                              type="button"
+                              role="menuitem"
+                              onClick={handleLogout}
+                            >
+                              Выйти
+                            </button>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={() => {
+                                  setIsUserMenuOpen(false)
+                                  setIsSignInModalOpen(true)
+                                }}
+                              >
+                                Войти
+                              </button>
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={() => {
+                                  setIsUserMenuOpen(false)
+                                  setIsRegisterModalOpen(true)
+                                }}
+                              >
+                                Регистрация
+                              </button>
+                            </>
+                          )}
                         </div>
                       )}
                     </div>
@@ -113,6 +251,7 @@ function App() {
                 selectedRegion={selectedRegion}
                 onSelectRegion={setSelectedRegion}
                 onClearRegionFilter={() => setSelectedRegion(null)}
+                onOpenListing={handleOpenListing}
               />
               <Footer onOpenMap={() => setIsLocationMapOpen(true)} />
             </main>

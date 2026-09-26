@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronLeft, Info, Star, Mail, Globe, DollarSign } from 'lucide-react'
+import type { Listing } from '../CategoryListings/CategoryListings'
 import './BookingRequest.css'
 
 type PaymentOption = 'full' | 'split'
@@ -8,33 +9,41 @@ const COUNTRY_CODES = [
   { code: 'UA', label: 'Україна (+380)' },
   { code: 'PL', label: 'Польща (+48)' },
   { code: 'US', label: 'США (+1)' },
-  { code: 'DE', label: 'Німеччина (+49)' },
 ]
 
-export function BookingRequest() {
+export function BookingRequest({
+  listing,
+  onBack,
+  onContinue,
+}: {
+  listing: Listing
+  onBack: () => void
+  onContinue: () => void
+}) {
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('full')
   const [country, setCountry] = useState(COUNTRY_CODES[0].code)
   const [phone, setPhone] = useState('')
 
   return (
     <div className="booking">
+      <button type="button" className="booking__back" onClick={onBack} aria-label="Назад">
+        <ChevronLeft size={18} aria-hidden />
+      </button>
+
       <header className="booking__header">
         <span className="booking__logo">HomeFU</span>
       </header>
 
       <div className="booking__layout">
         <main className="booking__main">
-          <a href="#back" className="booking__back">
-            <ChevronLeft size={18} aria-hidden />
-          </a>
           <h1 className="booking__title">Запит на бронювання</h1>
 
           <div className="booking__notice">
+            <Info size={22} aria-hidden className="booking__notice-icon" />
             <div className="booking__notice-text">
               <h2>Це рідкісна знахідка</h2>
-              <p>Помешкання господаря Марія зазвичай заброньовано.</p>
+              <p>Помешкання господаря Марія зазвичай заброньоване.</p>
             </div>
-            <Info size={22} aria-hidden className="booking__notice-icon" />
           </div>
 
           <section className="booking__section">
@@ -70,12 +79,15 @@ export function BookingRequest() {
                   <h3>Оплатити в повному обсязі</h3>
                   <p>Сплатіть усю суму ($335,00) одразу.</p>
                 </div>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={paymentOption === 'full'}
-                  onChange={() => setPaymentOption('full')}
-                />
+                <span className="booking__radio" aria-hidden="true">
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentOption === 'full'}
+                    onChange={() => setPaymentOption('full')}
+                    aria-label="Оплатити в повному обсязі"
+                  />
+                </span>
               </label>
 
               <label
@@ -89,52 +101,61 @@ export function BookingRequest() {
                     Жодних додаткових зборів. <a href="#more">Докладніше</a>
                   </p>
                 </div>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={paymentOption === 'split'}
-                  onChange={() => setPaymentOption('split')}
-                />
+                <span className="booking__radio" aria-hidden="true">
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentOption === 'split'}
+                    onChange={() => setPaymentOption('split')}
+                    aria-label="Оплата двома частинами"
+                  />
+                </span>
               </label>
             </div>
           </section>
 
           <section className="booking__section">
-            <h2 className="booking__section-title">
+            <h2 className="booking__section-title booking__section-title--auth">
               Увійдіть або зареєструйтеся, щоб зробити бронювання
             </h2>
 
-            <div className="booking__phone">
-              <select
-                className="booking__phone-country"
-                value={country}
-                onChange={(event) => setCountry(event.target.value)}
-                aria-label="Код країни"
-              >
-                {COUNTRY_CODES.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="booking__phone-input"
-                type="tel"
-                placeholder="Номер телефону"
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-              />
+            <div className="booking__fieldset">
+              <div className="booking__field">
+                <span className="booking__field-label">Країна/регіон</span>
+                <select
+                  className="booking__field-input"
+                  value={country}
+                  onChange={(event) => setCountry(event.target.value)}
+                  aria-label="Код країни"
+                >
+                  {COUNTRY_CODES.map((item) => (
+                    <option key={item.code} value={item.code}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="booking__field">
+                <input
+                  className="booking__field-input"
+                  type="tel"
+                  placeholder="Номер телефону"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                />
+              </div>
             </div>
 
             <p className="booking__phone-hint">
               Ми зателефонуємо або надішлемо SMS-повідомлення, щоб підтвердити ваш номер.
+              <br />
               Застосовуються стандартні тарифи вашого оператора за повідомлення і передачу
               даних.
               <br />
               <a href="#privacy">Політика конфіденційності</a>
             </p>
 
-            <button type="button" className="booking__continue">
+            <button type="button" className="booking__continue" onClick={onContinue}>
               Продовжити
             </button>
 
@@ -188,7 +209,7 @@ export function BookingRequest() {
             </div>
 
             <button type="button" className="booking__email-button">
-              <Mail size={18} aria-hidden />
+              <Mail size={16} aria-hidden />
               <span>Використати електронну пошту</span>
             </button>
           </section>
@@ -198,19 +219,19 @@ export function BookingRequest() {
           <div className="booking__summary-card">
             <img
               className="booking__summary-image"
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80"
+              src={listing.image}
               alt="Помешкання"
             />
             <div className="booking__summary-body">
               <p className="booking__summary-desc">
-                Помешкання для оренди цілком
+                {listing.location}
                 <br />
-                Студія та спальня з панорамою моря!
+                {listing.category}
                 <br />
-                Архідус!
+                {listing.dates}
               </p>
               <p className="booking__summary-rating">
-                <Star size={13} fill="currentColor" aria-hidden /> 4,95 ·{' '}
+                <Star size={12} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} ·{' '}
                 <a href="#reviews">35 відгуків</a>
               </p>
             </div>
@@ -221,8 +242,8 @@ export function BookingRequest() {
           <h2 className="booking__summary-title">Детальніше про ціну</h2>
 
           <div className="booking__price-row">
-            <span>$63,20 x 5 ночей</span>
-            <span>$315,00</span>
+            <span>${listing.price},00 х 5 ночей</span>
+            <span>${listing.price * 5},00</span>
           </div>
           <div className="booking__price-row">
             <a href="#cleaning-fee">Плата за прибирання</a>
@@ -232,8 +253,8 @@ export function BookingRequest() {
           <div className="booking__divider" />
 
           <div className="booking__price-row booking__price-row--total">
-            <span>Усього (USD)</span>
-            <span>$335,00</span>
+            <span>Усього <a href="#usd">(USD)</a></span>
+            <span>${listing.price * 5 + 20},00</span>
           </div>
         </aside>
       </div>
