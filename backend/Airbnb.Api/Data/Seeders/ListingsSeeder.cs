@@ -11,19 +11,33 @@ public static class ListingsSeeder
         List<Amenity> amenities = await context.Amenities.ToListAsync();
         var testListings = new List<Listing>
         {
-            new Listing { HostId = 1, Title = "Listing1", Description = "Description", PricePerNight = 3.14f, MaxGuests = 3, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[1]}},
-            new Listing { HostId = 1, Title = "Listing2", Description = "Description", PricePerNight = 3.14f, MaxGuests = 4, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[2]}},
-            new Listing { HostId = 1, Title = "Listing3", Description = "Description", PricePerNight = 3.14f, MaxGuests = 5, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[1]}},
-            new Listing { HostId = 1, Title = "Listing4", Description = "Description", PricePerNight = 3.14f, MaxGuests = 6, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[2]}},
-            new Listing { HostId = 1, Title = "Listing5", Description = "Description", PricePerNight = 3.14f, MaxGuests = 7, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[1]}},
+            new Listing { HostId = 1, Title = "Listing1", Description = "Description", PricePerNight = 3.14f, MaxGuests = 3, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 1, Title = "Listing2", Description = "Description", PricePerNight = 3.14f, MaxGuests = 4, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 1, Title = "Listing3", Description = "Description", PricePerNight = 3.14f, MaxGuests = 5, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 1, Title = "Listing4", Description = "Description", PricePerNight = 3.14f, MaxGuests = 6, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 1, Title = "Listing5", Description = "Description", PricePerNight = 3.14f, MaxGuests = 7, Latitude = 13.14f, Longtitude = 13.14f},
 
-            new Listing { HostId = 2, Title = "Listing6", Description = "Description", PricePerNight = 3.14f, MaxGuests = 3, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[2], amenities[1]}},
-            new Listing { HostId = 2, Title = "Listing7", Description = "Description", PricePerNight = 3.14f, MaxGuests = 4, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[1], amenities[1]}},
-            new Listing { HostId = 2, Title = "Listing8", Description = "Description", PricePerNight = 3.14f, MaxGuests = 5, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[2], amenities[1]}},
-            new Listing { HostId = 2, Title = "Listing9", Description = "Description", PricePerNight = 3.14f, MaxGuests = 6, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[1], amenities[1]}},
-            new Listing { HostId = 2, Title = "Listing10", Description = "Description", PricePerNight = 3.14f, MaxGuests = 7, Latitude = 13.14f, Longtitude = 13.14f, Amenities = {amenities[2], amenities[1]}},
+            new Listing { HostId = 2, Title = "Listing6", Description = "Description", PricePerNight = 3.14f, MaxGuests = 3, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 2, Title = "Listing7", Description = "Description", PricePerNight = 3.14f, MaxGuests = 4, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 2, Title = "Listing8", Description = "Description", PricePerNight = 3.14f, MaxGuests = 5, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 2, Title = "Listing9", Description = "Description", PricePerNight = 3.14f, MaxGuests = 6, Latitude = 13.14f, Longtitude = 13.14f},
+            new Listing { HostId = 2, Title = "Listing10", Description = "Description", PricePerNight = 3.14f, MaxGuests = 7, Latitude = 13.14f, Longtitude = 13.14f},
         };
         context.Listings.AddRange(testListings);
         context.SaveChanges();
+
+        testListings[0].Amenities.Add(amenities[1]);
+        testListings[1].Amenities.Add(amenities[2]);
+        testListings[2].Amenities.AddRange(amenities[1],amenities[2]);
+        //testListings[3] without any amenity
+        testListings[4].Amenities.Add(amenities[1]);
+
+        testListings[5].Amenities.Add(amenities[1]);
+        testListings[6].Amenities.Add(amenities[2]);
+        testListings[7].Amenities.AddRange(amenities[1],amenities[2]);
+        //testListings[8] without any amenity
+        testListings[9].Amenities.Add(amenities[2]);
+
+        await context.SaveChangesAsync();
     }
 }
