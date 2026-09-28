@@ -41,6 +41,14 @@ function App() {
     setSelectedListing(null)
   }
 
+  function handleJumpToListingCalendar() {
+    setActivePage('listing')
+    requestAnimationFrame(() => {
+      const calendarSection = document.getElementById('calendar')
+      calendarSection?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
   async function handleLogout() {
     try {
       const refreshToken = document.cookie
@@ -108,6 +116,9 @@ function App() {
           listing={selectedListing}
           onBack={() => setActivePage('listing')}
           onContinue={() => setActivePage('payment')}
+          onAuthenticated={handleAuthenticated}
+          onEditDates={handleJumpToListingCalendar}
+          onEditGuests={handleJumpToListingCalendar}
         />
 
         {!isLocationMapOpen && isRegisterModalOpen && (

@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
+import L from 'leaflet'
+import { renderToStaticMarkup } from 'react-dom/server'
 import {
   Search,
   Menu,
@@ -114,7 +117,15 @@ const MONTHS = [
   { label: 'Грудень 2023', year: 2023, month: 11, disabledThrough: 0 },
 ]
 
+const LISTING_LOCATION: [number, number] = [46.4362, 30.7371]
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
+
+const mapPinIcon = L.divIcon({
+  html: renderToStaticMarkup(<span className="property__map-pin">HFU</span>),
+  className: 'property__map-pin-wrapper',
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
+})
 
 function getMonthGrid(year: number, month: number) {
   const first = new Date(year, month, 1)
@@ -247,6 +258,18 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
     const candidate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
     return candidate >= min && candidate <= max
   }
+
+  const locationMap = (
+    <div className="property__map-preview" role="presentation">
+      <MapContainer center={LISTING_LOCATION} zoom={14} scrollWheelZoom={false} zoomControl={false} style={{ width: '100%', height: '100%' }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <Marker position={LISTING_LOCATION} icon={mapPinIcon} />
+      </MapContainer>
+    </div>
+  )
 
   if (showMap) {
     return <LocationMap onBack={() => setShowMap(false)} />
@@ -392,7 +415,7 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
 
           <div className="property__divider" />
 
-          <section className="property__section">
+          <section id="calendar" className="property__section">
             <h2 className="property__section-title">Одеса : 5 ночей</h2>
             <p className="property__date-range">{formatRange(selectedStart, selectedEnd)}</p>
 
@@ -476,12 +499,8 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
 
           <section id="location" className="property__section">
             <h2 className="property__section-title">Де ви будете</h2>
-            <button type="button" className="property__map-preview" onClick={() => setShowMap(true)}>
-              <img
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&q=60"
-                alt="Карта розташування"
-              />
-              <span className="property__map-pin">HFU</span>
+            <button type="button" className="property__map-preview-button" onClick={() => setShowMap(true)}>
+              {locationMap}
             </button>
             <h3 className="property__location-title">Одеса, Одеська область, Україна</h3>
             <p className="property__location-sub">

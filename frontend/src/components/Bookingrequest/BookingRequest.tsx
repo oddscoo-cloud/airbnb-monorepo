@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useGoogleLogin } from '@react-oauth/google'
 import { ChevronLeft, Info, Star, Mail, Globe, DollarSign } from 'lucide-react'
 import type { Listing } from '../CategoryListings/CategoryListings'
@@ -6,24 +6,55 @@ import './BookingRequest.css'
 
 type PaymentOption = 'full' | 'split'
 
-const COUNTRY_CODES = [
-  { code: 'UA', label: 'Україна (+380)' },
-  { code: 'PL', label: 'Польща (+48)' },
-  { code: 'US', label: 'США (+1)' },
-]
-
 export function BookingRequest({
   listing,
   onBack,
   onContinue,
+  onAuthenticated,
+  onEditDates,
+  onEditGuests,
 }: {
   listing: Listing
   onBack: () => void
   onContinue: () => void
+  onAuthenticated?: (email: string) => void
+  onEditDates?: () => void
+  onEditGuests?: () => void
 }) {
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('full')
-  const [country, setCountry] = useState(COUNTRY_CODES[0].code)
-  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleLoginSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setLoginError('')
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message ?? 'Невірний логін або пароль')
+      }
+
+      sessionStorage.setItem('access_token', data.access_token)
+      onAuthenticated?.(email)
+      onContinue()
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : 'Не вдалося увійти')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -73,7 +104,9 @@ export function BookingRequest({
                 <h3>Дати</h3>
                 <p>4-9 січ.2024</p>
               </div>
-              <a href="#edit-dates">Редагувати</a>
+              <button type="button" className="booking__edit-link" onClick={onEditDates}>
+                Редагувати
+              </button>
             </div>
 
             <div className="booking__divider" />
@@ -83,7 +116,9 @@ export function BookingRequest({
                 <h3>Гості</h3>
                 <p>1 гість</p>
               </div>
-              <a href="#edit-guests">Редагувати</a>
+              <button type="button" className="booking__edit-link" onClick={onEditGuests}>
+                Редагувати
+              </button>
             </div>
           </section>
 
@@ -138,45 +173,44 @@ export function BookingRequest({
               Увійдіть або зареєструйтеся, щоб зробити бронювання
             </h2>
 
-            <div className="booking__fieldset">
-              <div className="booking__field">
-                <span className="booking__field-label">Країна/регіон</span>
-                <select
-                  className="booking__field-input"
-                  value={country}
-                  onChange={(event) => setCountry(event.target.value)}
-                  aria-label="Код країни"
-                >
-                  {COUNTRY_CODES.map((item) => (
-                    <option key={item.code} value={item.code}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+            <form onSubmit={handleLoginSubmit}>
+              <div className="booking__fieldset">
+                <div className="booking__field">
+                  <span className="booking__field-label">Email</span>
+                  <input
+                    className="booking__field-input"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                </div>
+                <div className="booking__field">
+                  <span className="booking__field-label">Пароль</span>
+                  <input
+                    className="booking__field-input"
+                    type="password"
+                    autoComplete="current-password"
+                    placeholder="Пароль"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
+                </div>
               </div>
-              <div className="booking__field">
-                <input
-                  className="booking__field-input"
-                  type="tel"
-                  placeholder="Номер телефону"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                />
-              </div>
-            </div>
 
-            <p className="booking__phone-hint">
-              Ми зателефонуємо або надішлемо SMS-повідомлення, щоб підтвердити ваш номер.
-              <br />
-              Застосовуються стандартні тарифи вашого оператора за повідомлення і передачу
-              даних.
-              <br />
-              <a href="#privacy">Політика конфіденційності</a>
-            </p>
+              {loginError && (
+                <p className="booking__phone-hint" style={{ color: '#8b1f1f', marginBottom: 16 }}>
+                  {loginError}
+                </p>
+              )}
 
-            <button type="button" className="booking__continue" onClick={onContinue}>
-              Продовжити
-            </button>
+              <button type="submit" className="booking__continue" disabled={isSubmitting}>
+                {isSubmitting ? 'Вхід...' : 'Продовжити'}
+              </button>
+            </form>
 
             <div className="booking__or">
               <span />

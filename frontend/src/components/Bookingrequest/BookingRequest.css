@@ -296,6 +296,18 @@
   text-decoration: underline;
 }
 
+.booking__edit-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #211e1a;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .booking__continue {
   width: 100%;
   height: 51px;
