@@ -1,996 +1,834 @@
+/* Точные значения из Figma (узел 53:3149 "Житло") */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800&family=Inknut+Antiqua:wght@500;600&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@400;500;600;700&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800&display=swap');
-
-:root {
-  --color-text: #211e1a;
-  --color-text-muted: #48433d;
-  --color-border: #211e1a;
-  --color-bg: #dddbd7;
-  --color-accent: #6f6558;
-  --color-white: #ffffff;
-  --color-strike: #6f6558;
-  --font-serif: 'Inknut Antiqua', serif;
-  --font-sans: 'Nunito Sans', sans-serif;
-  --container-max: 1920px;
-  --container-pad: 394px;
-  --content-width: 653px;
-  --aside-width: 374px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.page {
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
+.property {
   width: 100%;
-  min-width: 1200px;
-  overflow-x: auto;
+  min-height: 100vh;
+  background: #dddbd7;
+  color: #211e1a;
 }
 
-.inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-pad);
-  position: relative;
-}
+/* Header */
 
-/* ---------- Header ---------- */
-
-.header {
-  display: flex;
+.property__header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  padding-top: 63px;
-  padding-bottom: 24px;
-  gap: 24px;
+  gap: 16px;
+  padding: 20px 40px;
+  border-bottom: 1px solid #211e1a;
 }
 
-.logo {
-  font-family: var(--font-serif);
+.property__logo {
+  font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 24px;
-  color: var(--color-text);
+  color: #211e1a;
   text-decoration: none;
-  white-space: nowrap;
+  justify-self: start;
 }
 
-.searchBar {
+.property__logo-inline {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+}
+
+.property__search {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid var(--color-text);
-  border-radius: 26px;
-  padding: 12px 20px;
-  width: 303px;
-  height: 49px;
-  background: transparent;
-  cursor: pointer;
-}
-
-.searchBar span {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.searchIcon {
-  width: 39px;
-  height: 39px;
-  border-radius: 50%;
-  background: var(--color-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.hostLink {
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: underline;
-  color: var(--color-text);
-  white-space: nowrap;
-}
-
-.site-header__account {
-  position: relative;
-}
-
-.site-header__menu {
-  display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 8px 6px 12px;
-  border: 1px solid #dddddd;
-  border-radius: 999px;
-  background: #fff;
-  color: #222222;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  justify-self: center;
+  padding: 12px 24px;
+  border: 1px solid #2c2823;
+  border-radius: 26px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 15px;
 }
 
-.site-header__menu:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.site-header__avatar {
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #df7058;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.site-header__avatar--empty {
-  background: #d9d4cb;
-}
-
-.site-header__account-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 10;
+.property__header-actions {
   display: flex;
-  flex-direction: column;
-  min-width: 160px;
-  padding: 8px;
-  border: 1px solid #dddddd;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  align-items: center;
+  gap: 24px;
+  justify-self: end;
 }
 
-.site-header__account-menu button {
-  padding: 10px 12px;
-  border: 0;
-  border-radius: 8px;
+.property__header-actions a {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.property__menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #211e1a;
+  border-radius: 26px;
   background: transparent;
-  color: #222222;
-  font: inherit;
-  text-align: left;
+  color: #211e1a;
   cursor: pointer;
 }
 
-.site-header__account-menu button:hover {
-  background: #f7f7f7;
+/* Layout */
+
+.property__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1136px) 374px;
+  justify-content: space-between;
+  gap: 40px;
+  max-width: 1550px;
+  margin: 0 auto;
+  padding: 47px 40px 60px;
 }
 
-/* ---------- Title block ---------- */
-
-.titleBlock {
-  padding-top: 16px;
-}
-
-.title {
-  font-family: var(--font-serif);
+.property__title {
+  margin: 0 0 24px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
   font-size: 20px;
-  margin: 0 0 12px;
 }
 
-.metaLine {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
-/* ---------- Gallery ---------- */
-
-.gallery {
-  display: grid;
-  grid-template-columns: 556px 272px 272px;
-  gap: 16px;
-  margin-top: 32px;
-}
-
-.galleryMain {
-  grid-row: span 2;
-  border-radius: 16px;
-  overflow: hidden;
-  height: 550px;
-}
-
-.galleryMain img,
-.gallerySmall img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.gallerySmall {
-  border-radius: 16px;
-  overflow: hidden;
-  height: 274px;
-}
-
-.gallerySmall:nth-child(4),
-.gallerySmall:nth-child(5) {
-  height: 271px;
-}
-
-/* ---------- Overview row (host info + booking card) ---------- */
-
-.overviewRow {
-  display: grid;
-  grid-template-columns: var(--content-width) 1fr;
-  gap: 145px;
-  margin-top: 48px;
-  align-items: start;
-}
-
-.overviewLeft {
-  max-width: var(--content-width);
-}
-
-.hostRow {
+.property__meta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  margin-bottom: 20px;
 }
 
-.hostInfo {
+.property__meta {
+  margin: 0;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #48433d;
+}
+
+.property__meta-actions {
+  display: flex;
+  gap: 20px;
+}
+
+.property__meta-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #211e1a;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Gallery */
+
+.property__gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 556px) 1fr;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.property__gallery-main {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.property__gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.property__gallery-grid img {
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+/* Host title block */
+
+.property__host-title {
+  margin: 0 0 8px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.property__host-sub {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  color: #48433d;
+}
+
+.property__divider {
+  height: 1px;
+  margin: 27px 0;
+  background: #211e1a;
+}
+
+/* Highlights */
+
+.property__highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 27px;
+}
+
+.property__highlight {
+  display: flex;
+  gap: 16px;
+}
+
+.property__highlight-dot {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: #dddbd7;
+  border: 1px solid #211e1a;
+}
+
+.property__highlight h3 {
+  margin: 0 0 4px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.property__highlight p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  color: #48433d;
+}
+
+/* Section nav */
+
+.property__section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: 40px;
+  padding: 20px 0;
+  margin-bottom: 8px;
+  background: #dddbd7;
+  border-bottom: 1px solid #211e1a;
+}
+
+.property__section-nav-item {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #48433d;
+  text-decoration: none;
+}
+
+.property__section-nav-item--active {
+  color: #211e1a;
+}
+
+.property__section {
+  padding: 27px 0;
+}
+
+.property__section-title {
+  margin: 0 0 20px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.property__section-heading {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+/* Description */
+
+.property__translate {
+  margin: 0 0 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+}
+
+.property__translate a {
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.property__description {
+  margin: 0 0 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.property__link-bold {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+/* Sleeping */
+
+.property__sleeping {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.hostAvatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
+.property__sleeping-image {
+  width: 160px;
+  height: 110px;
+  border-radius: 16px;
   object-fit: cover;
-  flex-shrink: 0;
 }
 
-.hostName {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 24px;
+.property__sleeping h3 {
   margin: 0 0 4px;
-}
-
-.guestsLine {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
   font-size: 16px;
+}
+
+.property__sleeping p {
   margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
 }
 
-.divider {
-  border: none;
-  border-top: 1px solid rgba(33, 30, 26, 0.5);
-  margin: 24px 0;
+/* Amenities */
+
+.property__amenities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+  margin-bottom: 20px;
 }
 
-.highlights {
+.property__amenity {
   display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.highlightItem {
-  display: flex;
-  gap: 16px;
   align-items: flex-start;
+  gap: 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
 }
 
-.highlightIcon {
-  width: 24px;
-  height: 24px;
+.property__amenity svg {
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.highlightTitle {
+.property__outline-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 1px solid #211e1a;
+  border-radius: 16px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 700;
   font-size: 16px;
-  margin: 0 0 4px;
+  color: #211e1a;
+  cursor: pointer;
 }
 
-.highlightText {
+/* Calendar */
+
+.property__date-range {
+  margin: 0 0 24px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 16px;
-  color: var(--color-text-muted);
-  margin: 0;
 }
 
-/* ---------- Booking card ---------- */
+.property__calendars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 16px;
+}
 
-.bookingAside {
-  position: sticky;
-  top: 32px;
+.property__calendar h3 {
+  margin: 0 0 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+}
+
+.property__calendar-weekdays,
+.property__calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.property__calendar-weekdays span {
+  padding: 6px 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+.property__calendar-day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+}
+
+.property__calendar-day--disabled {
+  color: #6f6558;
+  text-decoration: line-through;
+}
+
+.property__clear-dates {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+/* Reviews */
+
+.property__rating-categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 60px;
+  margin-bottom: 32px;
+}
+
+.property__rating-category {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+}
+
+.property__rating-category span:last-child {
+  font-size: 14px;
+}
+
+.property__reviews {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 60px;
+  margin-bottom: 32px;
+}
+
+.property__review {
+  display: flex;
+  gap: 12px;
+}
+
+.property__review-avatar {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #6f6558;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+}
+
+.property__review h3 {
+  margin: 0 0 4px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.property__review p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Location */
+
+.property__map-preview {
+  position: relative;
+  margin-bottom: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.property__map-preview img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+.property__map-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #2c2823;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+}
+
+.property__location-title {
+  margin: 0 0 8px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.property__location-sub {
+  margin: 0 0 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+}
+
+/* Host */
+
+.property__host-card {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 27px;
+}
+
+.property__host-avatar {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #6f6558;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.property__host-card h2 {
+  margin: 0 0 8px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.property__host-card p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 15px;
+  color: #211e1a;
+  line-height: 1.6;
+}
+
+.property__host-since {
+  color: #6f6558;
+}
+
+.property__subsection-title {
+  margin: 0 0 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.property__host-detail {
+  margin: 0 0 8px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+}
+
+.property__outline-button svg {
+  margin-right: 2px;
+}
+
+.property__safety-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 20px 0 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  color: #211e1a;
+  line-height: 1.5;
+}
+
+/* Rules */
+
+.property__rules-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.property__rules-columns h3 {
+  margin: 0 0 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.property__rules-columns ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.property__rules-columns li {
+  margin-bottom: 10px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+}
+
+.property__rules-columns p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Sidebar / booking widget */
+
+.property__sidebar {
   align-self: start;
 }
 
-.bookingCard {
-  width: var(--aside-width);
-  border: 1px solid var(--color-text);
-  border-radius: 30px;
+.property__widget {
+  position: sticky;
+  top: 24px;
+  width: 374px;
   padding: 24px;
+  background: rgba(221, 219, 215, 0.6);
   backdrop-filter: blur(2px);
+  border: 1px solid #211e1a;
+  border-radius: 30px;
 }
 
-.bookingPriceRow {
+.property__widget-top {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 20px;
 }
 
-.bookingPrice {
-  font-family: var(--font-serif);
+.property__widget-price {
+  font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
   font-size: 16px;
 }
 
-.bookingPerNight {
-  font-size: 16px;
-  color: var(--color-text-muted);
+.property__widget-night {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #48433d;
 }
 
-.bookingRating {
+.property__widget-rating {
   margin-left: auto;
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--color-text-muted);
   display: flex;
   align-items: center;
   gap: 4px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #48433d;
 }
 
-.bookingRating u {
-  text-decoration-skip-ink: none;
+.property__widget-rating a {
+  color: #48433d;
+  text-decoration: underline;
 }
 
-.bookingFields {
-  border: 1px solid var(--color-text);
+.property__widget-dates {
+  border: 1px solid #211e1a;
   border-radius: 13px;
-  overflow: hidden;
   margin-bottom: 16px;
+  overflow: hidden;
 }
 
-.bookingFieldsTop {
+.property__widget-dates-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--color-text);
 }
 
-.bookingField {
-  padding: 10px 16px;
+.property__widget-dates-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
 }
 
-.bookingFieldsTop .bookingField:first-child {
-  border-right: 1px solid var(--color-text);
+.property__widget-dates-row > div:first-child {
+  border-right: 1px solid #211e1a;
 }
 
-.bookingFieldLabel {
-  font-size: 12px;
+.property__widget-label {
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 700;
-  color: var(--color-text-muted);
-  margin: 0 0 4px;
-}
-
-.bookingFieldValue {
   font-size: 12px;
-  color: var(--color-text-muted);
-  margin: 0;
+  color: #48433d;
 }
 
-.bookNowBtn {
+.property__widget-dates-row span:last-child,
+.property__widget-guests span:last-child {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  color: #48433d;
+}
+
+.property__widget-divider {
+  height: 1px;
+  background: #211e1a;
+}
+
+.property__widget-guests {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.property__widget-submit {
   width: 100%;
-  background: var(--color-accent);
-  color: var(--color-white);
-  border: none;
+  height: 46px;
+  border: 0;
   border-radius: 16px;
-  padding: 15px 0;
-  font-size: 16px;
+  background: #6f6558;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 700;
-  font-family: var(--font-sans);
+  font-size: 16px;
   cursor: pointer;
   margin-bottom: 16px;
 }
 
-.bookingNote {
+.property__widget-submit:hover {
+  background: #5f564a;
+}
+
+.property__widget-note {
+  margin: 0;
   text-align: center;
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 16px;
-  color: var(--color-text-muted);
-  margin: 0 0 16px;
+  color: #48433d;
 }
 
-.bookingBreakdown {
-  border-top: 1px solid rgba(33, 30, 26, 0.4);
-  padding-top: 16px;
+.property__widget-price-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bookingBreakdownRow {
-  display: flex;
+  align-items: center;
   justify-content: space-between;
+  padding: 8px 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 16px;
-  color: var(--color-text-muted);
+  color: #48433d;
 }
 
-.bookingBreakdownRow.underline span:first-child {
+.property__widget-price-row a {
+  color: #48433d;
   text-decoration: underline;
 }
 
-.bookingBreakdownRow.total {
+.property__widget-price-row--total {
   font-weight: 700;
-  border-top: 1px solid rgba(33, 30, 26, 0.4);
-  padding-top: 10px;
-  margin-top: 4px;
 }
 
-.reportLink {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  font-size: 16px;
+.property__widget-report {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
   color: rgba(72, 67, 61, 0.9);
   text-decoration: underline;
 }
 
-/* ---------- Section tabs (Фотографії / Зручності / Відгуки / Розташування) ---------- */
+/* Footer */
 
-.tabsRow {
-  display: flex;
-  gap: 24px;
-  padding: 20px 0;
-}
-
-.tabsRow button {
-  background: none;
-  border: none;
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--color-text);
-  cursor: pointer;
-  padding: 0;
-}
-
-.sectionFullDivider {
-  border: none;
-  border-top: 1px solid rgba(33, 30, 26, 0.5);
-  margin: 0;
-  width: 100%;
-}
-
-/* ---------- Generic section ---------- */
-
-.section {
-  padding: 40px 0;
-  max-width: var(--content-width);
-}
-
-.sectionWide {
-  padding: 40px 0;
-}
-
-.sectionTitle {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 20px;
-  margin: 0 0 20px;
-}
-
-.description {
-  font-size: 16px;
-  line-height: 22px;
-  margin: 0 0 16px;
-  white-space: pre-line;
-}
-
-.translateNote {
-  font-size: 16px;
-  margin: 0 0 24px;
-}
-
-.translateNote u {
-  text-decoration-skip-ink: none;
-}
-
-.showMoreBtn {
-  background: none;
-  border: none;
-  font-weight: 700;
-  font-size: 16px;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 0;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-}
-
-/* ---------- Sleeping ---------- */
-
-.sleepGrid {
-  display: flex;
-  gap: 32px;
-  margin-top: 20px;
-}
-
-.sleepCard {
-  width: 317px;
-}
-
-.sleepCard img {
-  width: 317px;
-  height: 218px;
-  object-fit: cover;
-  border-radius: 16px;
-  margin-bottom: 12px;
-}
-
-.sleepCardTitle {
-  font-weight: 700;
-  font-size: 16px;
-  margin: 0 0 4px;
-}
-
-.sleepCardText {
-  font-size: 16px;
-  margin: 0;
-}
-
-/* ---------- Amenities preview ---------- */
-
-.amenitiesGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px 336px;
-  margin-bottom: 24px;
-}
-
-.amenityItem {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.amenityIcon {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.amenityText {
-  font-size: 16px;
-}
-
-.showAllBtn {
-  border: 1px solid var(--color-text);
-  border-radius: 16px;
-  background: none;
-  padding: 13px 24px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-}
-
-/* ---------- Calendar ---------- */
-
-.calendarHeaderRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.calendarDates {
-  font-size: 16px;
-  margin: 0 0 24px;
-}
-
-.calendarMonths {
-  display: flex;
-  gap: 48px;
-}
-
-.calendarMonth {
-  width: 100%;
-}
-
-.calendarMonthTitle {
-  font-weight: 700;
-  font-size: 16px;
-  text-align: center;
-  margin: 0 0 16px;
-}
-
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px 8px;
-  text-align: center;
-}
-
-.calendarDow {
-  font-size: 14px;
-  padding-bottom: 12px;
-}
-
-.calendarDay {
-  font-size: 12px;
-  padding: 8px 0;
-  border: 1px solid transparent;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.calendarDay:hover,
-.calendarDay:focus-visible {
-  background: rgba(33, 30, 26, 0.05);
-  transform: translateY(-1px);
-}
-
-.calendarDay.disabled {
-  color: var(--color-strike);
-  text-decoration: line-through;
-}
-
-.calendarDay.inRange {
-  background: rgba(111, 101, 88, 0.12);
-  border-color: rgba(111, 101, 88, 0.2);
-}
-
-.calendarDay.selected {
-  background: var(--color-accent);
-  color: var(--color-white);
-}
-
-.calendarDay.emptyDay {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.clearDatesRow {
-  text-align: right;
-  margin-top: 16px;
-}
-
-.clearDatesRow button {
-  background: none;
-  border: none;
-  font-size: 16px;
-  text-decoration: underline;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-}
-
-/* ---------- Reviews ---------- */
-
-.reviewsSummary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.reviewsScore {
-  font-size: 32px;
-}
-
-.reviewsCount {
-  font-size: 16px;
-  color: var(--color-text-muted);
-}
-
-.ratingBars {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 273px;
-  row-gap: 24px;
-  max-width: 1136px;
-  margin-bottom: 40px;
-}
-
-.ratingBarRow {
+.property__footer {
   display: flex;
   align-items: center;
   gap: 16px;
-}
-
-.ratingBarLabel {
-  font-size: 16px;
-  width: 130px;
-  flex-shrink: 0;
-}
-
-.ratingBarTrack {
-  flex: 1;
-  height: 1px;
-  background: rgba(33, 30, 26, 0.3);
-  position: relative;
-}
-
-.ratingBarFill {
-  position: absolute;
-  top: -2px;
-  left: 0;
-  height: 5px;
-  border-radius: 3px;
-  background: var(--color-text);
-}
-
-.ratingBarValue {
-  font-size: 14px;
-  width: 28px;
-  text-align: right;
-}
-
-.reviewsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 178px;
-  row-gap: 48px;
-  max-width: 1136px;
-}
-
-.reviewCard {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.reviewAuthor {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.reviewAvatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.reviewAuthorName {
-  font-weight: 700;
-  font-size: 16px;
-  margin: 0;
-}
-
-.reviewText {
-  font-size: 16px;
-  line-height: 22px;
-  margin: 0;
-}
-
-.showAllReviewsRow {
-  margin-top: 40px;
-}
-
-/* ---------- Location / map ---------- */
-
-.mapWrap {
-  width: 1118px;
-  max-width: 100%;
-  height: 474px;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-  margin-bottom: 24px;
-}
-
-.mapWrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.mapPin {
-  position: absolute;
-  top: 209px;
-  left: 531px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
-  font-family: var(--font-sans);
-}
-
-.locationAddress {
-  font-weight: 700;
-  font-size: 16px;
-  margin: 0 0 16px;
-}
-
-.locationText {
-  font-size: 16px;
-  margin: 0 0 16px;
-}
-
-/* ---------- Host card ---------- */
-
-.hostCardRow {
-  display: flex;
-  gap: 32px;
-}
-
-.hostCardAvatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.hostCardName {
-  font-weight: 700;
-  font-size: 20px;
-  margin: 0 0 8px;
-}
-
-.hostCardMeta {
-  font-size: 15px;
-  margin: 0 0 4px;
-}
-
-.hostCardMeta small {
+  padding: 24px 40px;
+  border-top: 1px solid #211e1a;
+  font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: #211e1a;
 }
 
-.hostCardMeta .serifWord {
-  font-family: var(--font-serif);
-}
-
-.contactSection {
-  margin-top: 32px;
-}
-
-.contactTitle {
+.property__footer a {
+  margin-left: auto;
   font-weight: 700;
-  font-size: 16px;
-  margin: 0 0 12px;
-}
-
-.contactBtn {
-  border: 1px solid var(--color-text);
-  border-radius: 16px;
-  background: none;
-  padding: 13px 24px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-  margin-bottom: 24px;
-}
-
-.safetyNote {
-  font-size: 12px;
-  max-width: 260px;
-  line-height: 17px;
-}
-
-/* ---------- House rules ---------- */
-
-.rulesGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px 383px;
-  max-width: 1136px;
-}
-
-.rulesCol {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.rulesColTitle {
-  font-weight: 700;
-  font-size: 16px;
-  margin: 0 0 4px;
-}
-
-.rulesItem {
-  font-size: 12px;
-  margin: 0;
-}
-
-.rulesItemLong {
-  font-size: 12px;
-  line-height: 17px;
-  margin: 0;
-}
-
-/* ---------- Footer ---------- */
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 32px 0;
-  font-size: 12px;
-}
-
-.footerBreadcrumbs {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.footerLogo {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 12px;
-  margin-right: 8px;
-}
-
-.footerDot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-text);
-  display: inline-block;
-}
-
-.footerSupport {
-  font-weight: 700;
+  color: #211e1a;
   text-decoration: underline;
 }
 
-/* ---------- Responsive ---------- */
-
-@media (max-width: 1400px) {
-  :root {
-    --container-pad: 5vw;
-  }
-  .overviewRow {
+@media (max-width: 1100px) {
+  .property__layout {
     grid-template-columns: 1fr;
   }
-  .bookingAside {
+
+  .property__widget {
     position: static;
+    width: 100%;
   }
-  .gallery {
-    grid-template-columns: 1fr 1fr;
-  }
-  .galleryMain {
-    grid-column: span 2;
-    height: 400px;
-  }
-  .ratingBars,
-  .reviewsGrid,
-  .rulesGrid {
+
+  .property__header {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 12px;
+    text-align: center;
   }
-  .calendarMonths {
-    flex-direction: column;
+
+  .property__search,
+  .property__header-actions {
+    justify-self: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .property__layout {
+    padding: 24px 16px;
+  }
+
+  .property__gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .property__amenities,
+  .property__reviews,
+  .property__rating-categories,
+  .property__calendars,
+  .property__rules-columns {
+    grid-template-columns: 1fr;
   }
 }

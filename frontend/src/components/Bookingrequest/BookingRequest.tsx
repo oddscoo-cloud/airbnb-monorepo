@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useGoogleLogin } from '@react-oauth/google'
 import { ChevronLeft, Info, Star, Mail, Globe, DollarSign } from 'lucide-react'
 import type { Listing } from '../CategoryListings/CategoryListings'
 import './BookingRequest.css'
@@ -23,6 +24,24 @@ export function BookingRequest({
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('full')
   const [country, setCountry] = useState(COUNTRY_CODES[0].code)
   const [phone, setPhone] = useState('')
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: tokenResponse.access_token }),
+        })
+
+        if (!response.ok) throw new Error('Google auth failed')
+        await response.json()
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    onError: () => console.error('Google login failed'),
+  })
 
   return (
     <div className="booking">
@@ -174,7 +193,7 @@ export function BookingRequest({
                   />
                 </svg>
               </button>
-              <button type="button" className="booking__social-button" aria-label="Google">
+              <button type="button" className="booking__social-button" aria-label="Google" onClick={() => googleLogin()}>
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
                   <path
                     fill="#4285F4"
