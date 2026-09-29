@@ -14,6 +14,15 @@ public class Listing
     [Column("title")]
     public required string Title { get; set; }
 
+    [Column("location")]
+    public string? Location { get; set; }
+
+    [Column("region")]
+    public string? Region { get; set; }
+
+    [Column("category")]
+    public string? Category { get; set; }
+
     [Column("description")]
     public string? Description { get; set; }
 

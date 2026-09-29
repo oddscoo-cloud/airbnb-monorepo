@@ -39,7 +39,7 @@ public class AppDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<User>()
-            .HasMany<RefreshToken>()
+            .HasMany(user => user.RefreshTokens)
             .WithOne(token => token.User)
             .HasForeignKey(token => token.UserId)
             .OnDelete(DeleteBehavior.Cascade);

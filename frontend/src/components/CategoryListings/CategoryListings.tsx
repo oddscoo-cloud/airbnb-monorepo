@@ -27,6 +27,7 @@ interface Category {
 }
 
 const CATEGORIES: Category[] = [
+  { id: 'all', label: 'Усі помешкання', icon: Home },
   { id: 'views', label: 'Гарні краєвиди', icon: Mountain },
   { id: 'small-flats', label: 'Невеликі квартири', icon: Home },
   { id: 'big-flats', label: 'Великі квартири', icon: Building2 },
@@ -43,38 +44,25 @@ const CATEGORIES: Category[] = [
 
 export interface Listing {
   id: string
+  title: string
+  description: string | null
   location: string
   category: string
   region: string
-  dates: string
   price: number
-  rating: number
+  rating: number | null
+  reviewCount: number
+  maxGuests: number
   image: string
   gallery?: string[]
+  latitude: number
+  longitude: number
 }
 
-export const LISTINGS: Listing[] = [
-  { id: '1', location: 'Odesa, Ukraine', category: 'Біля моря', region: 'Галичина', dates: '1-10лист.', price: 70, rating: 4.88, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80'] },
-  { id: '2', location: 'Odesa, Ukraine', category: 'Біля моря', region: 'Галичина', dates: '3-7груд.', price: 100, rating: 4.98, image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80','https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80','https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80','https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80','https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80'] },
-  { id: '3', location: 'Odesa, Ukraine', category: 'Біля моря', region: 'Буковина', dates: '25-30груд.', price: 75, rating: 4.76, image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80','https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80','https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80','https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80','https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80'] },
-  { id: '4', location: 'Odesa, Ukraine', category: 'Біля моря', region: 'Буковина', dates: '6-11груд.', price: 42, rating: 4.78, image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80'] },
-  { id: '5', location: 'Odesa, Ukraine', category: 'Біля моря', region: 'Румунія', dates: '5-10ноч.', price: 50, rating: 4.68, image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80','https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80','https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80','https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80','https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80'] },
-  { id: '6', location: 'Odesa, Ukraine', category: 'Біля моря', region: 'Румунія', dates: '10-22ноч.', price: 28, rating: 4.78, image: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&q=80','https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&q=80','https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&q=80','https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&q=80','https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&q=80'] },
-  { id: '7', location: 'Kyiv, Ukraine', category: 'У центрі міста', region: 'Південна Італія', dates: '3-9груд.', price: 60, rating: 4.85, image: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=1200&q=80','https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=1200&q=80','https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=1200&q=80','https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=1200&q=80','https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=1200&q=80'] },
-  { id: '8', location: 'Lviv, Ukraine', category: 'Від дизайнера', region: 'Південна Італія', dates: '2-7груд.', price: 90, rating: 4.82, image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80','https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80','https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80','https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80','https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80'] },
-  { id: '9', location: 'Ternopil, Ukraine', category: 'Гарні краєвиди', region: 'Словенія', dates: '25-30груд.', price: 110, rating: 4.80, image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1200&q=80','https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1200&q=80','https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1200&q=80','https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1200&q=80','https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1200&q=80'] },
-  { id: '10', location: 'Kharkiv, Ukraine', category: 'Особняки', region: 'Крим', dates: '7-13лист.', price: 130, rating: 4.71, image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80','https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80','https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80','https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80','https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80'] },
-  { id: '11', location: 'Zaporizhzhia, Ukraine', category: 'Великі квартири', region: 'Балкани', dates: '8-18ноч.', price: 90, rating: 4.68, image: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80','https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80','https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80','https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80','https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80'] },
-  { id: '12', location: 'Mykolaiv, Ukraine', category: 'Кімнати', region: 'Франція', dates: '10-15ноч.', price: 122, rating: 4.66, image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80','https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80','https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80','https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80','https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80'] },
-  { id: '13', location: 'Crimea, Ukraine', category: 'Гарні краєвиди', region: 'Крим', dates: '12-18лист.', price: 84, rating: 4.74, image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80','https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80','https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80','https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80','https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80'] },
-  { id: '14', location: 'Bucharest, Romania', category: 'Від дизайнера', region: 'Румунія', dates: '10-14груд.', price: 96, rating: 4.72, image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80','https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80','https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80','https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80','https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'] },
-  { id: '15', location: 'Ljubljana, Slovenia', category: 'Невеликі квартири', region: 'Словенія', dates: '9-13груд.', price: 88, rating: 4.91, image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80','https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80','https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80','https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80','https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80'] },
-  { id: '16', location: 'Nice, France', category: 'Біля моря', region: 'Франція', dates: '17-24лист.', price: 118, rating: 4.95, image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80','https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80','https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80','https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80','https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80'] },
-  { id: '17', location: 'Split, Croatia', category: 'Люкс', region: 'Балкани', dates: '22-28лист.', price: 144, rating: 4.89, image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80','https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80','https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80','https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80','https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80'] },
-  { id: '18', location: 'Chernivtsi, Ukraine', category: 'Невеликі квартири', region: 'Буковина', dates: '2-8груд.', price: 58, rating: 4.62, image: 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&q=80', gallery: ['https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80','https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80','https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80','https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80','https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80'] },
-]
-
 interface CategoryListingsProps {
+  listings: Listing[]
+  isLoading: boolean
+  error: string
   selectedRegion: string | null
   onSelectRegion: (region: string | null) => void
   onClearRegionFilter: () => void
@@ -82,25 +70,45 @@ interface CategoryListingsProps {
 }
 
 export function CategoryListings({
+  listings,
+  isLoading,
+  error,
   selectedRegion,
   onSelectRegion,
   onClearRegionFilter,
   onOpenListing,
 }: CategoryListingsProps) {
-  const [activeCategory, setActiveCategory] = useState('seaside')
+  const [activeCategory, setActiveCategory] = useState('all')
   const [taxIncluded, setTaxIncluded] = useState(false)
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [isRegionPickerOpen, setIsRegionPickerOpen] = useState(false)
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+  const [minimumRating, setMinimumRating] = useState('')
+  const [guests, setGuests] = useState('1')
 
   const filteredListings = useMemo(() => {
-    return LISTINGS.filter((listing) => {
-      const matchesCategory = activeCategory === 'seaside' || listing.category === CATEGORIES.find((category) => category.id === activeCategory)?.label
-      const matchesRegion = !selectedRegion || listing.region === selectedRegion
-      return matchesCategory && matchesRegion
+    return listings.filter((listing) => {
+      const matchesCategory = activeCategory === 'all' || listing.category === CATEGORIES.find((category) => category.id === activeCategory)?.label
+      const matchesRegion = !selectedRegion || listing.region.toLocaleLowerCase() === selectedRegion.toLocaleLowerCase()
+      const matchesMinPrice = !minPrice || listing.price >= Number(minPrice)
+      const matchesMaxPrice = !maxPrice || listing.price <= Number(maxPrice)
+      const matchesRating = !minimumRating || (listing.rating !== null && listing.rating >= Number(minimumRating))
+      const matchesGuests = listing.maxGuests >= Number(guests || 1)
+      return matchesCategory && matchesRegion && matchesMinPrice && matchesMaxPrice && matchesRating && matchesGuests
     })
-  }, [activeCategory, selectedRegion])
+  }, [activeCategory, guests, listings, maxPrice, minPrice, minimumRating, selectedRegion])
 
-  const allRegions = [...new Set(LISTINGS.map((listing) => listing.region))]
+  function clearFilters() {
+    onClearRegionFilter()
+    setActiveCategory('all')
+    setMinPrice('')
+    setMaxPrice('')
+    setMinimumRating('')
+    setGuests('1')
+  }
+
+  const allRegions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
 
   return (
     <section className="category-listings" aria-label="Категорії та помешкання">
@@ -140,7 +148,28 @@ export function CategoryListings({
           </button>
 
           {isFilterMenuOpen && (
-            <div className="category-nav__filter-menu" role="menu">
+            <div className="category-nav__filter-menu" role="dialog" aria-label="Фільтри помешкань">
+              <label className="category-nav__filter-field">
+                <span>Ціна за ніч, від</span>
+                <input type="number" min="0" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} />
+              </label>
+              <label className="category-nav__filter-field">
+                <span>Ціна за ніч, до</span>
+                <input type="number" min="0" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} />
+              </label>
+              <label className="category-nav__filter-field">
+                <span>Мінімальний рейтинг</span>
+                <select value={minimumRating} onChange={(event) => setMinimumRating(event.target.value)}>
+                  <option value="">Будь-який</option>
+                  <option value="4">Від 4,0</option>
+                  <option value="4.5">Від 4,5</option>
+                  <option value="4.8">Від 4,8</option>
+                </select>
+              </label>
+              <label className="category-nav__filter-field">
+                <span>Гості</span>
+                <input type="number" min="1" value={guests} onChange={(event) => setGuests(event.target.value)} />
+              </label>
               <button
                 type="button"
                 className="category-nav__filter-item"
@@ -155,7 +184,7 @@ export function CategoryListings({
                 type="button"
                 className="category-nav__filter-item"
                 onClick={() => {
-                  onClearRegionFilter()
+                  clearFilters()
                   setIsFilterMenuOpen(false)
                 }}
               >
@@ -191,7 +220,7 @@ export function CategoryListings({
                 type="button"
                 className="category-nav__region-option category-nav__region-option--clear"
                 onClick={() => {
-                  onClearRegionFilter()
+                  clearFilters()
                   setIsRegionPickerOpen(false)
                 }}
               >
@@ -222,7 +251,7 @@ export function CategoryListings({
       </div>
 
       <div className="listings__grid">
-        {filteredListings.map((listing) => (
+        {isLoading ? <p>Завантаження помешкань…</p> : error ? <p role="alert">{error}</p> : filteredListings.length === 0 ? <p>За вибраними фільтрами помешкань не знайдено.</p> : filteredListings.map((listing) => (
           <article
             key={listing.id}
             className="listing-card"
@@ -238,12 +267,12 @@ export function CategoryListings({
             aria-label={`Відкрити оголошення в ${listing.location}`}
           >
             <div className="listing-card__image-wrap">
-              <img
+              {listing.image && <img
                 className="listing-card__image"
                 src={listing.image}
                 alt={`Помешкання в ${listing.location}`}
                 loading="lazy"
-              />
+              />}
               <button
                 type="button"
                 className="listing-card__like"
@@ -258,12 +287,10 @@ export function CategoryListings({
               <div className="listing-card__row">
                 <span className="listing-card__location">{listing.location}</span>
                 <span className="listing-card__rating">
-                  <Star size={13} fill="currentColor" aria-hidden />
-                  {listing.rating.toFixed(2)}
+                  {listing.rating !== null && <><Star size={13} fill="currentColor" aria-hidden />{listing.rating.toFixed(2)}</>}
                 </span>
               </div>
-              <p className="listing-card__meta">{listing.category}</p>
-              <p className="listing-card__meta">{listing.dates}</p>
+              {listing.category && <p className="listing-card__meta">{listing.category}</p>}
               <p className="listing-card__price">
                 <strong>${listing.price}</strong> ночі
               </p>

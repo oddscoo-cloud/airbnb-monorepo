@@ -122,6 +122,26 @@
   background: #f6f2ee;
 }
 
+.category-nav__filter-field {
+  display: grid;
+  gap: 5px;
+  padding: 8px 10px;
+  color: #433d35;
+  font-size: 12px;
+}
+
+.category-nav__filter-field input,
+.category-nav__filter-field select {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid #ddd7d1;
+  border-radius: 8px;
+  background: #fff;
+  color: #211e1a;
+  font: inherit;
+}
+
 .category-nav__region-picker {
   position: absolute;
   top: 52px;

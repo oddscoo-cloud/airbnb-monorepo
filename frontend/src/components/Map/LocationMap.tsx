@@ -4,12 +4,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { useEffect } from 'react'
+import type { Listing } from '../CategoryListings/CategoryListings'
 import 'leaflet/dist/leaflet.css'
 import './LocationMap.css'
-
-// Координаты объекта — на реальном проекте приходят из БД вместе с объявлением.
-// Здесь — примерные координаты района Аркадія, Одеса (под макет).
-const LISTING_LOCATION: [number, number] = [46.4362, 30.7371]
 
 const pinIcon = L.divIcon({
   html: renderToStaticMarkup(<div className="location-map__pin">HFU</div>),
@@ -46,11 +43,30 @@ function TransitLayerToggle({ enabled }: { enabled: boolean }) {
 }
 
 interface LocationMapProps {
+  listings: Listing[]
   onBack: () => void
 }
 
-export function LocationMap({ onBack }: LocationMapProps) {
+function FitListingsBounds({ listings }: { listings: Listing[] }) {
+  const map = useMap()
+
+  useEffect(() => {
+    const locations = listings
+      .filter((listing) => listing.latitude !== 0 && listing.longitude !== 0)
+      .map((listing) => [listing.latitude, listing.longitude] as [number, number])
+
+    if (locations.length) map.fitBounds(locations, { padding: [32, 32], maxZoom: 14 })
+  }, [listings, map])
+
+  return null
+}
+
+export function LocationMap({ listings, onBack }: LocationMapProps) {
   const [showTransit, setShowTransit] = useState(false)
+  const locatedListings = listings.filter((listing) => listing.latitude !== 0 && listing.longitude !== 0)
+  const initialCenter: [number, number] = locatedListings.length
+    ? [locatedListings[0].latitude, locatedListings[0].longitude]
+    : [0, 0]
 
   return (
     <div className="location-map">
@@ -67,26 +83,17 @@ export function LocationMap({ onBack }: LocationMapProps) {
 
       <div className="location-map__layout">
         <aside className="location-map__sidebar">
-          <h1>Де ви будете</h1>
-
+          <h1>Помешкання на мапі</h1>
           <section>
-            <h2>Одеса, Одеська область, Україна</h2>
-            <p>Перша лінія біля моря, Аркадія, Французький бульвар</p>
-          </section>
-
-          <section>
-            <h2>Пересування містом</h2>
-            <p>
-              У разі необхідності на території є паркінг, зробіть запит
-              заздалегідь. Безкоштовний паркінг на Французькому бульварі.
-            </p>
+            <h2>{locatedListings.length} помешкань із координатами</h2>
+            {!locatedListings.length && <p>Для оголошень ще не вказані координати.</p>}
           </section>
         </aside>
 
         <div className="location-map__map">
           <MapContainer
-            center={LISTING_LOCATION}
-            zoom={14}
+            center={initialCenter}
+            zoom={locatedListings.length ? 10 : 2}
             style={{ width: '100%', height: '100%' }}
             zoomControl={false}
           >
@@ -96,10 +103,13 @@ export function LocationMap({ onBack }: LocationMapProps) {
             />
 
             <TransitLayerToggle enabled={showTransit} />
+            <FitListingsBounds listings={locatedListings} />
 
-            <Marker position={LISTING_LOCATION} icon={pinIcon}>
-              <Popup>Точне розташування буде повідомлено після бронювання.</Popup>
-            </Marker>
+            {locatedListings.map((listing) => (
+              <Marker key={listing.id} position={[listing.latitude, listing.longitude]} icon={pinIcon}>
+                <Popup>{listing.title} · ${listing.price} / ніч</Popup>
+              </Marker>
+            ))}
           </MapContainer>
 
           <label className="location-map__transit-toggle">

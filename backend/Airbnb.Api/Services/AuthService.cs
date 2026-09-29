@@ -40,8 +40,9 @@ public sealed class AuthService(
         var user = new User
         {
             Email = email,
-            FirstName = request.FirstName?.Trim(),
-            LastName = request.LastName?.Trim(),
+            FirstName = request.FirstName?.Trim() ?? string.Empty,
+            LastName = request.LastName?.Trim() ?? string.Empty,
+            AvatarUrl = string.Empty,
             CreatedAt = DateTimeOffset.UtcNow
         };
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
@@ -54,7 +55,8 @@ public sealed class AuthService(
     public async Task<TokenResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
     {
         var user = await users.FindByEmailAsync(request.Email.Trim().ToLowerInvariant(), cancellationToken);
-        if (user is null || passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password)
+        if (user is null || user.PasswordHash is null
+            || passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password)
             == PasswordVerificationResult.Failed)
             return null;
 
@@ -113,6 +115,7 @@ public sealed class AuthService(
             UserId = user.Id,
             Token = HashToken(rawRefreshToken),
             ExpiresAt = DateTimeOffset.UtcNow.Add(refreshLifetime),
+            IsRevoked = false,
             CreatedAt = DateTimeOffset.UtcNow
         }, cancellationToken);
         await refreshTokens.SaveChangesAsync(cancellationToken);

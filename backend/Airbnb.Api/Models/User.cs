@@ -15,10 +15,10 @@ public class User
     public string? PasswordHash { get; set; }
 
     [Column("first_name")]
-    public required string FirstName { get; set; }
+    public string? FirstName { get; set; }
 
     [Column("last_name")]
-    public required string LastName { get; set; }
+    public string? LastName { get; set; }
 
     [Column("avatar_url")]
     public required string AvatarUrl { get; set; }

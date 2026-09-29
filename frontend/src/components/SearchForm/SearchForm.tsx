@@ -7,6 +7,7 @@ import './SearchForm.css'
 
 interface SearchFormProps {
   selectedRegion?: string | null
+  regions: string[]
   onRegionSelect?: (region: string) => void
   onFocusRegion?: () => void
   onFocusDates?: () => void
@@ -16,6 +17,7 @@ interface SearchFormProps {
 
 export function SearchForm({
   selectedRegion,
+  regions,
   onRegionSelect,
   onFocusRegion,
   onFocusDates,
@@ -107,6 +109,7 @@ export function SearchForm({
 
       {activePanel === 'region' && (
         <RegionPickerPanel
+          regions={regions}
           onClose={closePanels}
           onSelectRegion={(region) => {
             onRegionSelect?.(region)

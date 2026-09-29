@@ -26,17 +26,23 @@ public static class ListingsSeeder
         context.Listings.AddRange(testListings);
         context.SaveChanges();
 
-        testListings[0].Amenities.Add(amenities[1]);
-        testListings[1].Amenities.Add(amenities[2]);
-        testListings[2].Amenities.AddRange(amenities[1],amenities[2]);
-        //testListings[3] without any amenity
-        testListings[4].Amenities.Add(amenities[1]);
+        if (amenities.Count > 0)
+        {
+            testListings[0].Amenities.Add(amenities[0]);
+            testListings[2].Amenities.Add(amenities[0]);
+            testListings[4].Amenities.Add(amenities[0]);
+            testListings[5].Amenities.Add(amenities[0]);
+            testListings[7].Amenities.Add(amenities[0]);
+        }
 
-        testListings[5].Amenities.Add(amenities[1]);
-        testListings[6].Amenities.Add(amenities[2]);
-        testListings[7].Amenities.AddRange(amenities[1],amenities[2]);
-        //testListings[8] without any amenity
-        testListings[9].Amenities.Add(amenities[2]);
+        if (amenities.Count > 1)
+        {
+            testListings[1].Amenities.Add(amenities[1]);
+            testListings[2].Amenities.Add(amenities[1]);
+            testListings[6].Amenities.Add(amenities[1]);
+            testListings[7].Amenities.Add(amenities[1]);
+            testListings[9].Amenities.Add(amenities[1]);
+        }
 
         await context.SaveChangesAsync();
     }

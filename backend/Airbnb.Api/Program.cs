@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,7 +61,8 @@ if (app.Environment.IsDevelopment())
         }
         catch (Exception ex)
         {
-            //когда добавим логгер можно выводить ошибку
+            app.Logger.LogCritical(ex, "Database migration or development seeding failed.");
+            throw;
         }
     }
 }

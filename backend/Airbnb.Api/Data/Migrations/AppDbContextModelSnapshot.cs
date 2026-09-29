@@ -112,6 +112,10 @@ namespace Airbnb.Api.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Category")
+                        .HasColumnType("text")
+                        .HasColumnName("category");
+
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
@@ -124,6 +128,10 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("real")
                         .HasColumnName("latitude");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("text")
+                        .HasColumnName("location");
+
                     b.Property<float>("Longtitude")
                         .HasColumnType("real")
                         .HasColumnName("longtitude");
@@ -135,6 +143,10 @@ namespace Airbnb.Api.Data.Migrations
                     b.Property<float>("PricePerNight")
                         .HasColumnType("real")
                         .HasColumnName("price_per_night");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("text")
+                        .HasColumnName("region");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -195,8 +207,15 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnName("expires_at");
 
                     b.Property<bool>("IsRevoked")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("is_revoked");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -204,9 +223,12 @@ namespace Airbnb.Api.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Token")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("refresh_tokens");
+                    b.ToTable("refresh_tokens", (string)null);
                 });
 
             modelBuilder.Entity("Review", b =>
@@ -283,9 +305,17 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
+
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("AmenityListing", b =>

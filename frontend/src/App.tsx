@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu } from 'lucide-react'
 import { SearchForm } from './components/SearchForm/SearchForm'
 import { CategoryListings, type Listing } from './components/CategoryListings/CategoryListings'
@@ -11,6 +11,22 @@ import { BookingRequest } from './components/Bookingrequest/BookingRequest'
 import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
 import './App.css'
 
+interface ListingResponse {
+  id: number
+  title: string
+  description: string | null
+  pricePerNight: number
+  maxGuests: number
+  latitude: number
+  longtitude: number
+  location: string | null
+  region: string | null
+  category: string | null
+  images: { imageUrl: string; isCover: boolean }[]
+  rating: number | null
+  reviewCount: number
+}
+
 function App() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
@@ -20,10 +36,60 @@ function App() {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
   const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment'>('home')
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
+  const [listings, setListings] = useState<Listing[]>([])
+  const [listingsLoading, setListingsLoading] = useState(true)
+  const [listingsError, setListingsError] = useState('')
   const [accountInitial, setAccountInitial] = useState(() => {
     const savedEmail = sessionStorage.getItem('account_email')
     return savedEmail?.charAt(0).toUpperCase() ?? ''
   })
+
+  useEffect(() => {
+    let isCurrent = true
+
+    async function loadListings() {
+      try {
+        const response = await fetch('/api/listings')
+        if (!response.ok) throw new Error(`Не вдалося завантажити помешкання (${response.status})`)
+
+        const data: ListingResponse[] = await response.json()
+        if (!isCurrent) return
+
+        setListings(data.map((item) => {
+          const images = item.images ?? []
+          const orderedImages = [...images].sort((left, right) => Number(right.isCover) - Number(left.isCover))
+
+          return {
+            id: String(item.id),
+            title: item.title,
+            description: item.description,
+            location: item.location || item.title,
+            category: item.category ?? '',
+            region: item.region ?? '',
+            price: item.pricePerNight,
+            rating: item.rating,
+            reviewCount: item.reviewCount,
+            maxGuests: item.maxGuests,
+            image: orderedImages[0]?.imageUrl ?? '',
+            gallery: orderedImages.map((image) => image.imageUrl),
+            latitude: item.latitude,
+            longitude: item.longtitude,
+          }
+        }))
+      } catch (error) {
+        if (isCurrent) {
+          setListingsError(error instanceof Error ? error.message : 'Не вдалося завантажити помешкання')
+        }
+      } finally {
+        if (isCurrent) setListingsLoading(false)
+      }
+    }
+
+    void loadListings()
+    return () => { isCurrent = false }
+  }, [])
+
+  const regions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
 
   function handleAuthenticated(email: string) {
     const initial = email.trim().charAt(0).toUpperCase()
@@ -167,7 +233,7 @@ function App() {
     <div className="App">
       <div className="page">
         {isLocationMapOpen ? (
-          <LocationMap onBack={() => setIsLocationMapOpen(false)} />
+          <LocationMap listings={listings} onBack={() => setIsLocationMapOpen(false)} />
         ) : (
           <>
             <header className={`site-header${isHeaderDark ? ' site-header--dark' : ''}`}>
@@ -249,6 +315,7 @@ function App() {
 
               <SearchForm
                 selectedRegion={selectedRegion}
+                regions={regions}
                 onRegionSelect={(region) => setSelectedRegion(region)}
                 onFocusRegion={() => setIsHeaderDark(true)}
                 onFocusDates={() => setIsHeaderDark(true)}
@@ -259,6 +326,9 @@ function App() {
 
             <main>
               <CategoryListings
+                listings={listings}
+                isLoading={listingsLoading}
+                error={listingsError}
                 selectedRegion={selectedRegion}
                 onSelectRegion={setSelectedRegion}
                 onClearRegionFilter={() => setSelectedRegion(null)}

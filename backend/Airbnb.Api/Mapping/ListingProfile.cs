@@ -6,5 +6,6 @@ public class ListingProfile : Profile
     {
         CreateMap<Listing, ListingResponseDTO>();
         CreateMap<ListingRequestDTO, Listing>();
+        CreateMap<ListingImage, ListingImageResponseDTO>();
     }
 }

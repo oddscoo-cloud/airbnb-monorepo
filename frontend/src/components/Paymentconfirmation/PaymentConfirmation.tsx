@@ -42,8 +42,8 @@ export function PaymentConfirmation({
           <div className="payment__notice">
             <Info size={22} aria-hidden className="payment__notice-icon" />
             <div className="payment__notice-text">
-              <h2>Це рідкісна знахідка</h2>
-              <p>Помешкання господаря Марія зазвичай заброньоване.</p>
+              <h2>Перевірте деталі помешкання</h2>
+              <p>{listing.title}</p>
             </div>
           </div>
 
@@ -53,7 +53,7 @@ export function PaymentConfirmation({
             <div className="payment__trip-row">
               <div>
                 <h3>Дати</h3>
-                <p>4-9 січ.2024</p>
+                <p>Дати не обрано</p>
               </div>
               <a href="#edit-dates">Редагувати</a>
             </div>
@@ -63,7 +63,7 @@ export function PaymentConfirmation({
             <div className="payment__trip-row">
               <div>
                 <h3>Гості</h3>
-                <p>1 гість</p>
+                <p>До {listing.maxGuests} гостей</p>
               </div>
               <a href="#edit-guests">Редагувати</a>
             </div>
@@ -254,14 +254,12 @@ export function PaymentConfirmation({
               <p className="payment__summary-desc">
                 {listing.location}
                 <br />
-                {listing.category}
-                <br />
-                {listing.dates}
+                {listing.title}
               </p>
-              <p className="payment__summary-rating">
+              {listing.rating !== null && <p className="payment__summary-rating">
                 <Star size={12} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} ·{' '}
-                <a href="#reviews">35 відгуків</a>
-              </p>
+                <a href="#reviews">{listing.reviewCount} відгуків</a>
+              </p>}
             </div>
           </div>
 

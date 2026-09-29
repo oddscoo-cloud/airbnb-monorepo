@@ -12,19 +12,6 @@ namespace Airbnb.Api.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Users",
-                table: "Users");
-
-            migrationBuilder.RenameTable(
-                name: "Users",
-                newName: "users");
-
-            migrationBuilder.RenameColumn(
-                name: "role",
-                table: "users",
-                newName: "avatar_url");
-
             migrationBuilder.AlterColumn<string>(
                 name: "password_hash",
                 table: "users",
@@ -33,10 +20,12 @@ namespace Airbnb.Api.Data.Migrations
                 oldClrType: typeof(string),
                 oldType: "text");
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_users",
+            migrationBuilder.AddColumn<string>(
+                name: "avatar_url",
                 table: "users",
-                column: "id");
+                type: "text",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.CreateTable(
                 name: "amenities",
@@ -72,28 +61,6 @@ namespace Airbnb.Api.Data.Migrations
                     table.ForeignKey(
                         name: "FK_listings_users_host_id",
                         column: x => x.host_id,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "refresh_tokens",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<int>(type: "integer", nullable: false),
-                    expires_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    is_revoked = table.Column<bool>(type: "boolean", nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_refresh_tokens", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_refresh_tokens_users_user_id",
-                        column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -229,11 +196,6 @@ namespace Airbnb.Api.Data.Migrations
                 column: "host_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_refresh_tokens_user_id",
-                table: "refresh_tokens",
-                column: "user_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_reviews_author_id",
                 table: "reviews",
                 column: "author_id");
@@ -257,9 +219,6 @@ namespace Airbnb.Api.Data.Migrations
                 name: "listing_images");
 
             migrationBuilder.DropTable(
-                name: "refresh_tokens");
-
-            migrationBuilder.DropTable(
                 name: "reviews");
 
             migrationBuilder.DropTable(
@@ -268,33 +227,9 @@ namespace Airbnb.Api.Data.Migrations
             migrationBuilder.DropTable(
                 name: "listings");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_users",
-                table: "users");
-
-            migrationBuilder.RenameTable(
-                name: "users",
-                newName: "Users");
-
-            migrationBuilder.RenameColumn(
+            migrationBuilder.DropColumn(
                 name: "avatar_url",
-                table: "Users",
-                newName: "role");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "password_hash",
-                table: "Users",
-                type: "text",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Users",
-                table: "Users",
-                column: "id");
+                table: "users");
         }
     }
 }
