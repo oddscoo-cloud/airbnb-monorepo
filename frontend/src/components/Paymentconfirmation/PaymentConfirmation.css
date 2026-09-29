@@ -1,0 +1,555 @@
+/* Точные значения из Figma (узел 53:3161 "Оплата") — тот же дизайн-язык,
+   что и BookingRequest (bg #dddbd7, контурные карточки 1px solid #211e1a) */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800&family=Inknut+Antiqua:wght@500;700&family=Inder&display=swap');
+
+.payment {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #dddbd7;
+  color: #211e1a;
+}
+
+.payment__back {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(33, 30, 26, 0.7);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #211e1a;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment__back:hover,
+.payment__back:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 22px rgba(33, 30, 26, 0.12);
+}
+
+.payment__back:active {
+  transform: translateY(0);
+}
+
+.payment__header {
+  padding: 21px 40px 27px;
+}
+
+.payment__logo {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 32px;
+  color: #211e1a;
+}
+
+.payment__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 566px) 468px;
+  justify-content: space-between;
+  gap: 64px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 47px 40px 80px;
+  border-top: 1px solid #211e1a;
+}
+
+/* Main column */
+
+.payment__title {
+  margin: 0 0 24px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.payment__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  margin-bottom: 32px;
+  border: 1px solid #211e1a;
+  border-radius: 16px;
+}
+
+.payment__notice-icon {
+  flex-shrink: 0;
+  color: #211e1a;
+}
+
+.payment__notice-text h2 {
+  margin: 0 0 6px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.payment__notice-text p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+}
+
+.payment__section {
+  padding: 27px 0;
+}
+
+.payment__section-title {
+  margin: 0 0 27px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.payment__trip-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+}
+
+.payment__trip-row h3 {
+  margin: 0 0 8px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.payment__trip-row p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+}
+
+.payment__trip-row a {
+  flex-shrink: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.payment__divider {
+  height: 1px;
+  background: #211e1a;
+}
+
+/* Payment options (same contiguous-card pattern as BookingRequest) */
+
+.payment__payment-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment__payment-option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 21px;
+  border: 1px solid #211e1a;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.payment__payment-option:hover,
+.payment__payment-option:focus-within {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(33, 30, 26, 0.08);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.payment__payment-option:first-child {
+  border-radius: 16px 16px 0 0;
+  border-bottom: none;
+}
+
+.payment__payment-option:last-child {
+  border-radius: 0 0 16px 16px;
+}
+
+.payment__payment-option h3 {
+  margin: 0 0 8px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.payment__payment-option p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.payment__payment-option p a {
+  color: #211e1a;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.payment__radio {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border: 1px solid #211e1a;
+  border-radius: 50%;
+  background: #f6f1eb;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.payment__radio input {
+  position: absolute;
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.payment__radio--active {
+  border-color: #211e1a;
+  box-shadow: inset 0 0 0 4px #f6f1eb;
+  background: #211e1a;
+}
+
+/* Payment method — selector row + card form */
+
+.payment__method-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 20px;
+  margin-bottom: 0;
+  border: 1px solid #211e1a;
+  border-radius: 16px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #48433d;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.payment__method-picker:hover,
+.payment__method-picker:focus-within {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(33, 30, 26, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.payment__fieldset {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.payment__field {
+  position: relative;
+  border: 1px solid #211e1a;
+  border-top: none;
+}
+
+.payment__fieldset .payment__field:first-child {
+  border-top: 1px solid #211e1a;
+  border-radius: 16px 16px 0 0;
+}
+
+.payment__fieldset .payment__field:last-child {
+  border-radius: 0 0 16px 16px;
+}
+
+.payment__field--split {
+  display: flex;
+}
+
+.payment__field-half {
+  position: relative;
+  flex: 1;
+}
+
+.payment__field-divider {
+  width: 1px;
+  background: #211e1a;
+}
+
+.payment__field-label {
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #48433d;
+  pointer-events: none;
+}
+
+.payment__field-input {
+  width: 100%;
+  height: 56px;
+  padding: 24px 20px 6px;
+  border: 0;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #211e1a;
+  outline: none;
+}
+
+.payment__field-input::placeholder {
+  color: #a6a098;
+}
+
+/* "Потрібно для подорожі" */
+
+.payment__requirement {
+  padding: 12px 0;
+}
+
+.payment__requirement h3 {
+  margin: 0 0 4px;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.payment__requirement p {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  color: #48433d;
+}
+
+/* Policy text blocks */
+
+.payment__policy-text {
+  margin: 0 0 12px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #48433d;
+}
+
+.payment__policy-text strong {
+  color: #211e1a;
+  font-weight: 700;
+}
+
+.payment__policy-link {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.payment__rules-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  color: #211e1a;
+}
+
+.payment__rules-list li {
+  margin-bottom: 8px;
+}
+
+.payment__legal {
+  margin: 20px 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #48433d;
+}
+
+.payment__legal a {
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.payment__submit {
+  width: 100%;
+  height: 51px;
+  border: 0;
+  border-radius: 16px;
+  background: #6f6558;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.payment__submit:hover,
+.payment__submit:focus-visible {
+  background: #5f564a;
+  box-shadow: 0 12px 24px rgba(111, 101, 88, 0.22);
+  transform: translateY(-1px);
+}
+
+.payment__submit:active {
+  transform: translateY(0);
+}
+
+/* Summary sidebar (identical to BookingRequest's) */
+
+.payment__summary {
+  align-self: start;
+  position: sticky;
+  top: 40px;
+  padding: 20px 22px;
+  border: 1px solid #211e1a;
+  border-radius: 16px;
+}
+
+.payment__summary-card {
+  display: flex;
+  gap: 14px;
+}
+
+.payment__summary-image {
+  flex-shrink: 0;
+  width: 124px;
+  height: 107px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.payment__summary-desc {
+  margin: 0 0 6px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.payment__summary-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #48433d;
+}
+
+.payment__summary-rating a {
+  color: #48433d;
+  text-decoration: underline;
+}
+
+.payment__summary-title {
+  margin: 25px 0 20px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.payment__price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #211e1a;
+}
+
+.payment__price-row a {
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.payment__price-row--total,
+.payment__price-row--total a {
+  font-weight: 700;
+}
+
+.payment__summary .payment__divider {
+  margin: 4px 0;
+}
+
+/* Footer */
+
+.payment__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 24px 40px;
+  border-top: 1px solid #211e1a;
+}
+
+.payment__footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  font-family: 'Inder', Arial, sans-serif;
+  font-size: 12px;
+  color: #6f6558;
+}
+
+.payment__footer-legal a {
+  color: #6f6558;
+  text-decoration: underline;
+}
+
+.payment__footer-locale {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.payment__footer-locale button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  font-family: 'Inder', Arial, sans-serif;
+  font-size: 14px;
+  color: #2c2823;
+  cursor: pointer;
+}
+
+.payment__footer-locale a {
+  display: grid;
+  place-items: center;
+  color: #2c2823;
+}
+
+@media (max-width: 900px) {
+  .payment__layout {
+    grid-template-columns: 1fr;
+    padding: 24px 16px;
+    gap: 32px;
+  }
+
+  .payment__summary {
+    position: static;
+  }
+
+  .payment__header {
+    padding: 16px;
+  }
+
+  .payment__footer {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
