@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Airbnb.API.Controllers;
 
@@ -17,7 +19,7 @@ public class AuthController : ControllerBase
             return Conflict(new { message = result.Error });
 
         return StatusCode(StatusCodes.Status201Created,
-            new { message = "Пользователь успешно зарегистрирован" });
+            new { message = "Пользователь успешно зарегистрирован", role = "Guest" });
     }
 
     [HttpPost("login")]
@@ -33,6 +35,15 @@ public class AuthController : ControllerBase
         SetRefreshCookie(tokens.RefreshToken);
         return Ok(tokens);
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult Me() => Ok(new
+    {
+        id = User.FindFirstValue(ClaimTypes.NameIdentifier),
+        email = User.FindFirstValue(ClaimTypes.Email),
+        role = User.FindFirstValue(ClaimTypes.Role)
+    });
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(

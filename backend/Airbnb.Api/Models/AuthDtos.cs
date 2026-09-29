@@ -33,4 +33,5 @@ public sealed class RefreshRequest
 public sealed record TokenResponse(
     [property: JsonPropertyName("access_token")] string AccessToken,
     [property: JsonPropertyName("refresh_token")] string RefreshToken,
-    [property: JsonPropertyName("access_token_expires_at")] DateTimeOffset AccessTokenExpiresAt);
+    [property: JsonPropertyName("access_token_expires_at")] DateTimeOffset AccessTokenExpiresAt,
+    [property: JsonPropertyName("role")] string Role);

@@ -17,7 +17,7 @@ export function BookingRequest({
   listing: Listing
   onBack: () => void
   onContinue: () => void
-  onAuthenticated?: (email: string) => void
+  onAuthenticated?: (email: string, role: string) => void
   onEditDates?: () => void
   onEditGuests?: () => void
 }) {
@@ -47,7 +47,7 @@ export function BookingRequest({
       }
 
       sessionStorage.setItem('access_token', data.access_token)
-      onAuthenticated?.(email)
+      onAuthenticated?.(email, data.role)
       onContinue()
     } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'Не вдалося увійти')

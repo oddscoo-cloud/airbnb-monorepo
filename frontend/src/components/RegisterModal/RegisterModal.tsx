@@ -7,7 +7,7 @@ const MAX_LENGTH = 50
 
 interface RegisterModalProps {
   onClose: () => void
-  onAuthenticated: (email: string) => void
+  onAuthenticated: (email: string, role: string) => void
 }
 
 export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) {
@@ -60,7 +60,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
         throw new Error(data.message ?? 'Не удалось зарегистрироваться')
       }
 
-      onAuthenticated(email)
+      onAuthenticated(email, data.role ?? 'Guest')
       onClose()
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Не удалось зарегистрироваться')

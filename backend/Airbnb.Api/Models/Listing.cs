@@ -23,6 +23,9 @@ public class Listing
     [Column("category")]
     public string? Category { get; set; }
 
+    [Column("is_published")]
+    public bool IsPublished { get; set; }
+
     [Column("description")]
     public string? Description { get; set; }
 

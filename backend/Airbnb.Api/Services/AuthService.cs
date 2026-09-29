@@ -43,6 +43,7 @@ public sealed class AuthService(
             FirstName = request.FirstName?.Trim() ?? string.Empty,
             LastName = request.LastName?.Trim() ?? string.Empty,
             AvatarUrl = string.Empty,
+            Role = "Guest",
             CreatedAt = DateTimeOffset.UtcNow
         };
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
@@ -120,7 +121,7 @@ public sealed class AuthService(
         }, cancellationToken);
         await refreshTokens.SaveChangesAsync(cancellationToken);
 
-        return new TokenResponse(accessToken, rawRefreshToken, accessExpiresAt);
+        return new TokenResponse(accessToken, rawRefreshToken, accessExpiresAt, user.Role);
     }
 
     private static string HashToken(string rawToken) =>

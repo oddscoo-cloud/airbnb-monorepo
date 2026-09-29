@@ -5,7 +5,7 @@ import { useGoogleLogin } from '@react-oauth/google'
 
 interface SignInModalProps {
   onClose: () => void
-  onAuthenticated: (email: string) => void
+  onAuthenticated: (email: string, role: string) => void
   onSwitchToRegister?: () => void
 }
 
@@ -51,7 +51,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
       }
 
       sessionStorage.setItem('access_token', data.access_token)
-      onAuthenticated(email)
+      onAuthenticated(email, data.role)
       onClose()
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Не удалось выполнить вход')

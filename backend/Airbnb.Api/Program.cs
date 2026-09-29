@@ -58,6 +58,10 @@ if (app.Environment.IsDevelopment())
             UserSeeder.Initialize(context);
             AmenitiesSeeder.Initialize(context);
             await ListingsSeeder.Initialize(context);
+            await AdminSeeder.Initialize(
+                context,
+                services.GetRequiredService<IPasswordHasher<User>>(),
+                builder.Configuration);
         }
         catch (Exception ex)
         {
@@ -68,6 +72,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();

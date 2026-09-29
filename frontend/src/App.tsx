@@ -9,6 +9,7 @@ import { LocationMap } from './components/Map/LocationMap'
 import ZhitloPage from './components/Buildingpage/Buildingpage'
 import { BookingRequest } from './components/Bookingrequest/BookingRequest'
 import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
+import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
 import './App.css'
 
 interface ListingResponse {
@@ -23,6 +24,9 @@ interface ListingResponse {
   region: string | null
   category: string | null
   images: { imageUrl: string; isCover: boolean }[]
+  amenities: { id: number; name: string; icon: string }[]
+  reviews: { id: number; rating: number; comment: string; createdAt: string }[]
+  isPublished: boolean
   rating: number | null
   reviewCount: number
 }
@@ -34,11 +38,13 @@ function App() {
   const [isLocationMapOpen, setIsLocationMapOpen] = useState(false)
   const [isHeaderDark, setIsHeaderDark] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment'>('home')
+  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin'>('home')
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [listings, setListings] = useState<Listing[]>([])
   const [listingsLoading, setListingsLoading] = useState(true)
   const [listingsError, setListingsError] = useState('')
+  const [listingsRevision, setListingsRevision] = useState(0)
+  const [accountRole, setAccountRole] = useState('')
   const [accountInitial, setAccountInitial] = useState(() => {
     const savedEmail = sessionStorage.getItem('account_email')
     return savedEmail?.charAt(0).toUpperCase() ?? ''
@@ -69,6 +75,9 @@ function App() {
             price: item.pricePerNight,
             rating: item.rating,
             reviewCount: item.reviewCount,
+            amenities: item.amenities ?? [],
+            reviews: item.reviews ?? [],
+            isPublished: item.isPublished,
             maxGuests: item.maxGuests,
             image: orderedImages[0]?.imageUrl ?? '',
             gallery: orderedImages.map((image) => image.imageUrl),
@@ -87,14 +96,39 @@ function App() {
 
     void loadListings()
     return () => { isCurrent = false }
+  }, [listingsRevision])
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem('access_token')
+    if (!accessToken) {
+      setAccountRole('')
+      return
+    }
+
+    let isCurrent = true
+    void fetch('/api/auth/me', { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Сесія завершилася')
+        return response.json()
+      })
+      .then((account: { role: string }) => {
+        if (isCurrent) setAccountRole(account.role)
+      })
+      .catch(() => {
+        if (isCurrent) setAccountRole('')
+      })
+
+    return () => { isCurrent = false }
   }, [])
 
   const regions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
 
-  function handleAuthenticated(email: string) {
+  function handleAuthenticated(email: string, role: string) {
     const initial = email.trim().charAt(0).toUpperCase()
     sessionStorage.setItem('account_email', email)
+    sessionStorage.setItem('account_role', role)
     setAccountInitial(initial)
+    setAccountRole(role)
   }
 
   function handleOpenListing(listing: Listing) {
@@ -135,10 +169,22 @@ function App() {
     } finally {
       sessionStorage.removeItem('account_email')
       sessionStorage.removeItem('access_token')
+      sessionStorage.removeItem('account_role')
       document.cookie = 'refresh_token=; Max-Age=0; path=/; SameSite=Lax'
       setAccountInitial('')
+      setAccountRole('')
       setIsUserMenuOpen(false)
     }
+  }
+
+  if (activePage === 'admin' && accountRole === 'Admin') {
+    return (
+      <AdminDashboard
+        accessToken={sessionStorage.getItem('access_token') ?? ''}
+        onBack={() => setActivePage('home')}
+        onSaved={() => setListingsRevision((revision) => revision + 1)}
+      />
+    )
   }
 
   if (activePage === 'listing' && selectedListing) {
@@ -275,13 +321,13 @@ function App() {
                       {isUserMenuOpen && (
                         <div className="site-header__account-menu" id="user-menu" role="menu">
                           {accountInitial ? (
-                            <button
-                              type="button"
-                              role="menuitem"
-                              onClick={handleLogout}
-                            >
-                              Выйти
-                            </button>
+                            <>
+                              {accountRole === 'Admin' && <button type="button" role="menuitem" onClick={() => {
+                                setIsUserMenuOpen(false)
+                                setActivePage('admin')
+                              }}>Админ-панель</button>}
+                              <button type="button" role="menuitem" onClick={handleLogout}>Выйти</button>
+                            </>
                           ) : (
                             <>
                               <button

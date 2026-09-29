@@ -124,6 +124,10 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("host_id");
 
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_published");
+
                     b.Property<float>("Latitude")
                         .HasColumnType("real")
                         .HasColumnName("latitude");

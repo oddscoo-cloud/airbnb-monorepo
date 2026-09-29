@@ -53,6 +53,9 @@ export interface Listing {
   rating: number | null
   reviewCount: number
   maxGuests: number
+  amenities: { id: number; name: string; icon: string }[]
+  reviews: { id: number; rating: number; comment: string; createdAt: string }[]
+  isPublished: boolean
   image: string
   gallery?: string[]
   latitude: number

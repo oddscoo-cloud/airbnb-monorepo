@@ -275,7 +275,11 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
 
           <section id="amenities" className="property__section">
             <h2 className="property__section-title">Які тут зручності</h2>
-            <p>Інформація про зручності ще не додана.</p>
+            {listing.amenities.length > 0 ? (
+              <div className="property__amenities">
+                {listing.amenities.map((amenity) => <span key={amenity.id}>{amenity.name}</span>)}
+              </div>
+            ) : <p>Інформація про зручності ще не додана.</p>}
           </section>
 
           <div className="property__divider" />
@@ -337,6 +341,14 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
                 ? `${listing.rating.toFixed(2)} · ${listing.reviewCount} відгуків`
                 : 'Відгуків ще немає'}
             </h2>
+            {listing.reviews.length > 0 && <div className="property__reviews">
+              {listing.reviews.map((review) => (
+                <article key={review.id} className="property__review">
+                  <h3><Star size={14} fill="currentColor" aria-hidden /> {review.rating.toFixed(1)}</h3>
+                  <p>{review.comment}</p>
+                </article>
+              ))}
+            </div>}
           </section>
 
           <div className="property__divider" />
