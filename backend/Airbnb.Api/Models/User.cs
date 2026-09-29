@@ -22,6 +22,9 @@ public class User
 
     [Column("avatar_url")]
     public required string AvatarUrl { get; set; }
+  
+    [Column("role")]
+    public string Role { get; set; } = "Guest";
 
     [Column("created_at")]
     public DateTimeOffset CreatedAt { get; set; }

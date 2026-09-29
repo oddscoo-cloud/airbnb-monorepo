@@ -7,9 +7,10 @@ const MAX_LENGTH = 50
 
 interface RegisterModalProps {
   onClose: () => void
+  onAuthenticated: (email: string) => void
 }
 
-export function RegisterModal({ onClose }: RegisterModalProps) {
+export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) {
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     try {
@@ -19,7 +20,7 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
         body: JSON.stringify({ access_token: tokenResponse.access_token }),
       })
       if (!res.ok) throw new Error('Auth failed')
-      const { user } = await res.json()
+      await res.json()
       onClose()
     } catch (err) {
       console.error(err)
@@ -30,9 +31,42 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setError('')
+
+    if (password !== repeatPassword) {
+      setError('Пароли не совпадают')
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          confirm_password: repeatPassword,
+        }),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message ?? 'Не удалось зарегистрироваться')
+      }
+
+      onAuthenticated(email)
+      onClose()
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Не удалось зарегистрироваться')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -112,8 +146,9 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
           </p>
 
           <button type="submit" className="register-modal__submit">
-            Contunie
+            {isSubmitting ? 'Регистрация...' : 'Continue'}
           </button>
+          {error && <p className="register-modal__error" role="alert">{error}</p>}
         </form>
 
         <div className="register-modal__social">

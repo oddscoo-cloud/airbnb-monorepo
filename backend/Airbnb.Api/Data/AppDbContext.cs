@@ -27,5 +27,29 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>()
+            .ToTable("users");
+
+        modelBuilder.Entity<RefreshToken>()
+            .ToTable("refresh_tokens");
+
+        modelBuilder.Entity<User>()
+            .HasIndex(user => user.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .HasMany<RefreshToken>()
+            .WithOne(token => token.User)
+            .HasForeignKey(token => token.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RefreshToken>()
+            .HasIndex(token => token.Token)
+            .IsUnique();
+
+        modelBuilder.Entity<RefreshToken>()
+            .Property(token => token.IsRevoked)
+            .HasDefaultValue(false);
     }
 }

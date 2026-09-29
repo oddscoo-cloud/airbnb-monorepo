@@ -11,6 +11,9 @@ public class RefreshToken
     [Column("user_id")]
     public required int UserId { get; set; }
 
+    [Column("token")]
+    public string Token { get; set; } = string.Empty;
+
     [Column("expires_at")]
     public DateTimeOffset ExpiresAt { get; set; }
 

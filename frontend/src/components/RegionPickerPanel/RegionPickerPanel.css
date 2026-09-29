@@ -1,0 +1,68 @@
+.region-picker {
+  position: absolute;
+  top: 124px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  width: min(560px, calc(100% - 32px));
+  padding: 20px 20px 12px;
+  border: 1px solid #e7e7e7;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 16px 30px rgba(34, 34, 34, 0.12);
+}
+
+.region-picker__title {
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+}
+
+.region-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.region-picker__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 8px 12px;
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  background: #f8f8f8;
+  color: #222;
+  font: inherit;
+  cursor: pointer;
+}
+
+.region-picker__item:hover {
+  border-color: #d9d9d9;
+  background: #f1f1f1;
+}
+
+.region-picker__map {
+  width: 86px;
+  height: 72px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e2e2e2 0%, #d9d9d9 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.region-picker__map::before,
+.region-picker__map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.36);
+  clip-path: polygon(0 40%, 26% 30%, 42% 44%, 62% 25%, 100% 36%, 100% 100%, 0 100%);
+}
+
+.region-picker__map::after {
+  background: rgba(180, 180, 180, 0.18);
+  clip-path: polygon(26% 42%, 42% 62%, 70% 56%, 86% 68%, 100% 100%, 0 100%);
+}

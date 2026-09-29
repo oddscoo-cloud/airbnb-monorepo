@@ -1,0 +1,126 @@
+/* Same design tokens as BookingRequest (Nunito Sans + dark palette) — this screen
+   is part of the same booking flow. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800&display=swap');
+
+.location-map {
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f2f0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.location-map__back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  color: #211e1a;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.location-map__layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+}
+
+.location-map__sidebar {
+  padding: 72px 24px 24px;
+}
+
+.location-map__sidebar h1 {
+  margin: 0 0 24px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #211e1a;
+}
+
+.location-map__sidebar section {
+  margin-bottom: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #dddddd;
+}
+
+.location-map__sidebar section:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.location-map__sidebar h2 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #211e1a;
+}
+
+.location-map__sidebar p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6f6558;
+}
+
+.location-map__map {
+  position: relative;
+  height: 100vh;
+}
+
+.location-map__pin-wrapper {
+  background: transparent;
+  border: 0;
+}
+
+.location-map__pin {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #2c2823;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.location-map__transit-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 13px;
+  color: #211e1a;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .location-map__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .location-map__sidebar {
+    padding: 72px 16px 16px;
+  }
+
+  .location-map__map {
+    height: 400px;
+  }
+}

@@ -272,12 +272,10 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnName("email");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 

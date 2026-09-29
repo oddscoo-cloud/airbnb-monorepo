@@ -102,6 +102,13 @@
   background: #211e1a;
 }
 
+.sign-in-modal__error {
+  margin: -4px 0 0;
+  color: #a33a2b;
+  font-size: 13px;
+  text-align: center;
+}
+
 .sign-in-modal__switch {
   margin: -4px 0 4px;
   padding: 0 4px;

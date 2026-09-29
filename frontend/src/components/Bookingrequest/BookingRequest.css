@@ -1,0 +1,442 @@
+/* Design tokens reused from the confirmed Figma values elsewhere in this project:
+   dark text #211e1a / #433d35, muted #6f6558, borders #a6a098 / #dddddd,
+   dark button #2c2823 — font 'Nunito Sans', matching the auth-flow (modals) styling
+   this page shares (pill inputs, radio cards, social buttons). Not individually
+   re-verified against this exact frame due to Figma tool rate limits. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap');
+
+.booking {
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f2f0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  color: #211e1a;
+}
+
+.booking__header {
+  padding: 20px 40px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.booking__logo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #211e1a;
+}
+
+.booking__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(280px, 380px);
+  gap: 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Main column */
+
+.booking__back {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 16px;
+  border: 1px solid #a6a098;
+  border-radius: 50%;
+  color: #211e1a;
+  text-decoration: none;
+}
+
+.booking__title {
+  margin: 0 0 24px;
+  font-size: 26px;
+  font-weight: 800;
+  color: #211e1a;
+}
+
+.booking__notice {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  margin-bottom: 32px;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+}
+
+.booking__notice-text h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.booking__notice-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #6f6558;
+}
+
+.booking__notice-icon {
+  flex-shrink: 0;
+  color: #6f6558;
+}
+
+.booking__section {
+  padding: 24px 0;
+  border-top: 1px solid #dddddd;
+}
+
+.booking__section-title {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.booking__trip-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.booking__trip-row h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.booking__trip-row p {
+  margin: 0;
+  font-size: 14px;
+  color: #433d35;
+}
+
+.booking__trip-row a {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.booking__divider {
+  height: 1px;
+  margin: 16px 0;
+  background: #dddddd;
+}
+
+/* Payment options */
+
+.booking__payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.booking__payment-option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid #a6a098;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.booking__payment-option--active {
+  border-color: #211e1a;
+  border-width: 2px;
+  padding: 17px 19px;
+}
+
+.booking__payment-option h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.booking__payment-option p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6f6558;
+}
+
+.booking__payment-option p a {
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.booking__payment-option input {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #211e1a;
+}
+
+/* Phone / continue */
+
+.booking__phone {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.booking__phone-country,
+.booking__phone-input {
+  height: 56px;
+  padding: 0 20px;
+  border: 1px solid #a6a098;
+  border-radius: 12px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 15px;
+  color: #211e1a;
+  outline: none;
+}
+
+.booking__phone-input::placeholder {
+  color: #717171;
+}
+
+.booking__phone-country:focus,
+.booking__phone-input:focus {
+  border-color: #211e1a;
+}
+
+.booking__phone-hint {
+  margin: 0 0 20px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #6f6558;
+}
+
+.booking__phone-hint a {
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.booking__continue {
+  width: 100%;
+  height: 56px;
+  border: 0;
+  border-radius: 64px;
+  background: #2c2823;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.booking__continue:hover {
+  background: #211e1a;
+}
+
+.booking__or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: #6f6558;
+}
+
+.booking__or span:first-child,
+.booking__or span:last-child {
+  flex: 1;
+  height: 1px;
+  background: #dddddd;
+}
+
+.booking__social {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.booking__social-button {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  border: 1px solid #a6a098;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.booking__social-button:hover {
+  background: #f7f7f5;
+}
+
+.booking__email-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 56px;
+  border: 1px solid #a6a098;
+  border-radius: 12px;
+  background: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #211e1a;
+  cursor: pointer;
+}
+
+.booking__email-button:hover {
+  background: #f7f7f5;
+}
+
+/* Summary sidebar */
+
+.booking__summary {
+  align-self: start;
+  position: sticky;
+  top: 40px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 16px;
+}
+
+.booking__summary-card {
+  display: flex;
+  gap: 12px;
+}
+
+.booking__summary-image {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.booking__summary-desc {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #211e1a;
+}
+
+.booking__summary-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 13px;
+  color: #433d35;
+}
+
+.booking__summary-rating a {
+  color: #433d35;
+  text-decoration: underline;
+}
+
+.booking__summary-title {
+  margin: 20px 0 16px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.booking__price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #211e1a;
+}
+
+.booking__price-row a {
+  color: #211e1a;
+  text-decoration: underline;
+}
+
+.booking__price-row--total {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* Footer */
+
+.booking__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 24px 40px;
+  border-top: 1px solid #dddddd;
+}
+
+.booking__footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  font-size: 13px;
+  color: #433d35;
+}
+
+.booking__footer-legal a {
+  color: #433d35;
+  text-decoration: underline;
+}
+
+.booking__footer-locale {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.booking__footer-locale button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #433d35;
+  cursor: pointer;
+}
+
+.booking__footer-locale a {
+  display: grid;
+  place-items: center;
+  color: #433d35;
+}
+
+@media (max-width: 900px) {
+  .booking__layout {
+    grid-template-columns: 1fr;
+    padding: 24px 16px;
+    gap: 32px;
+  }
+
+  .booking__summary {
+    position: static;
+  }
+
+  .booking__header {
+    padding: 16px;
+  }
+
+  .booking__footer {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

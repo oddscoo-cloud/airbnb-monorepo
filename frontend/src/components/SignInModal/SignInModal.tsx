@@ -5,10 +5,11 @@ import { useGoogleLogin } from '@react-oauth/google'
 
 interface SignInModalProps {
   onClose: () => void
+  onAuthenticated: (email: string) => void
   onSwitchToRegister?: () => void
 }
 
-export function SignInModal({ onClose, onSwitchToRegister }: SignInModalProps) {
+export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: SignInModalProps) {
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     try {
@@ -18,7 +19,7 @@ export function SignInModal({ onClose, onSwitchToRegister }: SignInModalProps) {
         body: JSON.stringify({ access_token: tokenResponse.access_token }),
       })
       if (!res.ok) throw new Error('Auth failed')
-      const { user } = await res.json()
+      await res.json()
       onClose()
     } catch (err) {
       console.error(err)
@@ -28,9 +29,35 @@ export function SignInModal({ onClose, onSwitchToRegister }: SignInModalProps) {
   })
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setError('')
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message ?? 'Не удалось выполнить вход')
+      }
+
+      sessionStorage.setItem('access_token', data.access_token)
+      onAuthenticated(email)
+      onClose()
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Не удалось выполнить вход')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -81,8 +108,9 @@ export function SignInModal({ onClose, onSwitchToRegister }: SignInModalProps) {
           </div>
 
           <button type="submit" className="sign-in-modal__submit">
-            Continue
+            {isSubmitting ? 'Выполняется вход...' : 'Continue'}
           </button>
+          {error && <p className="sign-in-modal__error" role="alert">{error}</p>}
         </form>
 
         <p className="sign-in-modal__switch">
