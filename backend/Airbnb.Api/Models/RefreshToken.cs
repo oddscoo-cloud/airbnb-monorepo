@@ -1,6 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
+[Table("refresh_tokens")]
 public class RefreshToken
 {
     [Key]
@@ -8,7 +9,7 @@ public class RefreshToken
     public int Id { get; set; }
 
     [Column("user_id")]
-    public int UserId { get; set; }
+    public required int UserId { get; set; }
 
     [Column("token")]
     public string Token { get; set; } = string.Empty;
@@ -17,10 +18,14 @@ public class RefreshToken
     public DateTimeOffset ExpiresAt { get; set; }
 
     [Column("is_revoked")]
-    public bool IsRevoked { get; set; }
+    public required bool IsRevoked { get; set; }
 
     [Column("created_at")]
     public DateTimeOffset CreatedAt { get; set; }
 
-    public User User { get; set; } = null!;
+
+
+
+    [ForeignKey("UserId")]
+    public User? User { get; set; }
 }

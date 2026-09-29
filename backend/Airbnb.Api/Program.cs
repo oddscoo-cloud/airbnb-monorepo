@@ -1,14 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAutoMapper(cfg => {}, typeof(Program).Assembly);
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -46,6 +41,25 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(); 
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<AppDbContext>();
+
+            context.Database.Migrate();
+            
+            UserSeeder.Initialize(context);
+            AmenitiesSeeder.Initialize(context);
+            await ListingsSeeder.Initialize(context);
+        }
+        catch (Exception ex)
+        {
+            //когда добавим логгер можно выводить ошибку
+        }
+    }
 }
 
 app.UseHttpsRedirection();
