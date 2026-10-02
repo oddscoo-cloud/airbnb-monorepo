@@ -51,5 +51,11 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<RefreshToken>()
             .Property(token => token.IsRevoked)
             .HasDefaultValue(false);
+
+        modelBuilder.Entity<Review>()
+            .HasOne(review => review.Author)
+            .WithMany(user => user.Reviews)
+            .HasForeignKey(review => review.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

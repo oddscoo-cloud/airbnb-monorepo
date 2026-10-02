@@ -48,6 +48,7 @@ export function SearchForm({
   return (
     <div className={`search-form-shell${activePanel ? ' search-form-shell--active' : ''}`}>
       <form
+        id="home-search"
         className="search-form"
         role="search"
         aria-label="Пошук помешкань"

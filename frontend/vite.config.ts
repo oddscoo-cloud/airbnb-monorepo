@@ -8,6 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': 'http://localhost:5189',
+      '/listing-images': 'http://localhost:5189',
     },
   },
 })

@@ -38,6 +38,10 @@
 }
 
 .booking__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
   padding: 21px 40px 27px;
 }
 
@@ -46,6 +50,13 @@
   font-weight: 500;
   font-size: 32px;
   color: #211e1a;
+}
+
+.booking__home-link,
+.payment__home-link {
+  color: #211e1a;
+  font: 500 12px 'Inknut Antiqua', Georgia, serif;
+  text-align: right;
 }
 
 .booking__layout {

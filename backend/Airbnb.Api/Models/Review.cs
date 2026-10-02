@@ -12,7 +12,7 @@ public class Review
     public required int ListingId { get; set; }
 
     [Column("author_id")]
-    public required int AuthorId { get; set; }
+    public int? AuthorId { get; set; }
 
     [Column("rating")]
     public required float Rating { get; set; }

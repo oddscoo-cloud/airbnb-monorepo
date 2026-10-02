@@ -14,18 +14,34 @@ type PaymentOption = 'full' | 'split'
 
 export function PaymentConfirmation({
   listing,
+  stayDates,
+  stayNights,
+  paymentOption,
+  onPaymentOptionChange,
   onBack,
+  onHome,
   onPaid,
 }: {
   listing: Listing
+  stayDates: { start: Date | null; end: Date | null }
+  stayNights: number
+  paymentOption: PaymentOption
+  onPaymentOptionChange: (option: PaymentOption) => void
   onBack: () => void
+  onHome: () => void
   onPaid: () => void
 }) {
-  const [paymentOption, setPaymentOption] = useState<PaymentOption>('full')
   const [cardNumber, setCardNumber] = useState('')
   const [expiry, setExpiry] = useState('')
   const [cvv, setCvv] = useState('')
   const [postalCode, setPostalCode] = useState('')
+  const totalPrice = listing.price * stayNights + 20
+  const firstInstallment = Math.round(totalPrice * 50) / 100
+  const secondInstallment = totalPrice - firstInstallment
+  const formatMoney = (amount: number) => amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const dateRangeText = stayDates.start
+    ? `${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`
+    : 'Дати не обрано'
 
   function handlePaymentSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -59,6 +75,7 @@ export function PaymentConfirmation({
 
       <header className="payment__header">
         <span className="payment__logo">HomeFU</span>
+        <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
       </header>
 
       <div className="payment__layout">
@@ -79,7 +96,7 @@ export function PaymentConfirmation({
             <div className="payment__trip-row">
               <div>
                 <h3>Дати</h3>
-                <p>Дати не обрано</p>
+                <p>{dateRangeText}</p>
               </div>
               <a href="#edit-dates">Редагувати</a>
             </div>
@@ -106,14 +123,14 @@ export function PaymentConfirmation({
               >
                 <div>
                   <h3>Оплатити в повному обсязі</h3>
-                  <p>Сплатіть усю суму ($335,00) одразу.</p>
+                  <p>Сплатіть усю суму (${formatMoney(totalPrice)}) одразу.</p>
                 </div>
                 <span className={`payment__radio${paymentOption === 'full' ? ' payment__radio--active' : ''}`} aria-hidden="true">
                   <input
                     type="radio"
                     name="payment"
                     checked={paymentOption === 'full'}
-                    onChange={() => setPaymentOption('full')}
+                    onChange={() => onPaymentOptionChange('full')}
                     aria-label="Оплатити в повному обсязі"
                   />
                 </span>
@@ -125,7 +142,7 @@ export function PaymentConfirmation({
                 <div>
                   <h3>Оплата двома частинами</h3>
                   <p>
-                    $65,60 потрібно оплатити сьогодні, $262,40 - 22груд.2023р…
+                    ${formatMoney(firstInstallment)} потрібно сплатити сьогодні, ${formatMoney(secondInstallment)} — перед поїздкою.
                     <br />
                     Жодних додаткових зборів. <a href="#more">Докладніше</a>
                   </p>
@@ -135,7 +152,7 @@ export function PaymentConfirmation({
                     type="radio"
                     name="payment"
                     checked={paymentOption === 'split'}
-                    onChange={() => setPaymentOption('split')}
+                    onChange={() => onPaymentOptionChange('split')}
                     aria-label="Оплата двома частинами"
                   />
                 </span>
@@ -310,8 +327,8 @@ export function PaymentConfirmation({
           <h2 className="payment__summary-title">Детальніше про ціну</h2>
 
           <div className="payment__price-row">
-            <span>${listing.price},00 х 5 ночей</span>
-            <span>${listing.price * 5},00</span>
+            <span>${formatMoney(listing.price)} х {stayNights} ночей</span>
+            <span>${formatMoney(listing.price * stayNights)}</span>
           </div>
           <div className="payment__price-row">
             <a href="#cleaning-fee">Плата за прибирання</a>
@@ -322,7 +339,7 @@ export function PaymentConfirmation({
 
           <div className="payment__price-row payment__price-row--total">
             <span>Усього <a href="#usd">(USD)</a></span>
-            <span>${listing.price * 5 + 20},00</span>
+            <span>${formatMoney(totalPrice)}</span>
           </div>
         </aside>
       </div>

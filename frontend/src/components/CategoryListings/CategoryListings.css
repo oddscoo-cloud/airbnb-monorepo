@@ -54,6 +54,11 @@
   opacity: 1;
 }
 
+.category-nav__item svg {
+  display: block;
+  flex: 0 0 20px;
+}
+
 .category-nav__item--active {
   opacity: 1;
   border-bottom-color: #211e1a;

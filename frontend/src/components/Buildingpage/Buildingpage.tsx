@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -23,18 +23,6 @@ const SECTIONS = [
 ]
 
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
-const MONTHS = Array.from({ length: 2 }, (_, offset) => {
-  const date = new Date()
-  date.setDate(1)
-  date.setMonth(date.getMonth() + offset)
-  return {
-    label: new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(date),
-    year: date.getFullYear(),
-    month: date.getMonth(),
-    disabledThrough: offset === 0 ? new Date().getDate() - 1 : 0,
-  }
-})
-
 const mapPinIcon = L.divIcon({
   html: renderToStaticMarkup(<span className="property__map-pin">HFU</span>),
   className: 'property__map-pin-wrapper',
@@ -56,12 +44,17 @@ function BookingWidget({
   expanded = false,
   onBook,
   dateRangeText,
+  stayNights,
 }: {
   listing: Listing
   expanded?: boolean
   onBook?: () => void
   dateRangeText?: string
+  stayNights: number
 }) {
+  const cleaningFee = 20
+  const totalPrice = listing.price * stayNights + cleaningFee
+
   return (
     <div className="property__widget">
       <div className="property__widget-top">
@@ -98,17 +91,17 @@ function BookingWidget({
       {expanded ? (
         <>
           <div className="property__widget-price-row">
-            <a href="#nights">${listing.price} х 5 ночей</a>
-            <span>$ {listing.price * 5}</span>
+            <a href="#nights">${listing.price} х {stayNights} ночей</a>
+            <span>${listing.price * stayNights}</span>
           </div>
           <div className="property__widget-price-row">
             <a href="#cleaning">Плата за прибирання</a>
-            <span>$ 20</span>
+            <span>${cleaningFee}</span>
           </div>
           <div className="property__widget-divider" />
           <div className="property__widget-price-row property__widget-price-row--total">
             <span>Усього до сплати податків</span>
-            <span>$ {listing.price * 5 + 20}</span>
+            <span>${totalPrice}</span>
           </div>
           <a href="#report" className="property__widget-report">
             <Flag size={12} aria-hidden /> Поскаржитись на це оголошення
@@ -123,19 +116,61 @@ function BookingWidget({
 
 type BuildingpageProps = {
   listing: Listing
+  stayDates: { start: Date | null; end: Date | null }
+  onStayDatesChange: (dates: { start: Date | null; end: Date | null }) => void
+  stayNights: number
   onBack: () => void
+  onStartSearch: () => void
+  onHome: () => void
+  onReviewAdded: () => void
   onBook: () => void
   onOpenSignIn: () => void
   onOpenRegister: () => void
 }
 
-export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRegister }: BuildingpageProps) {
+export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn, onOpenRegister }: BuildingpageProps) {
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
-  const [selectedStart, setSelectedStart] = useState<Date | null>(null)
-  const [selectedEnd, setSelectedEnd] = useState<Date | null>(null)
+  const [reviews, setReviews] = useState(listing.reviews)
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewComment, setReviewComment] = useState('')
+  const [reviewError, setReviewError] = useState('')
+  const [isReviewSubmitting, setIsReviewSubmitting] = useState(false)
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date()
+    return new Date(today.getFullYear(), today.getMonth(), 1)
+  })
 
   void onOpenRegister
+
+  async function handleReviewSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setReviewError('')
+    setIsReviewSubmitting(true)
+
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const accessToken = sessionStorage.getItem('access_token')
+      if (accessToken) headers.Authorization = `Bearer ${accessToken}`
+
+      const response = await fetch(`/api/listings/${listing.id}/reviews`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ rating: reviewRating, comment: reviewComment }),
+      })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.message ?? 'Не вдалося додати відгук.')
+
+      setReviews((current) => [result, ...current])
+      setReviewComment('')
+      setReviewRating(5)
+      onReviewAdded()
+    } catch (error) {
+      setReviewError(error instanceof Error ? error.message : 'Не вдалося додати відгук.')
+    } finally {
+      setIsReviewSubmitting(false)
+    }
+  }
 
   function formatDate(date: Date | null) {
     return date
@@ -152,26 +187,26 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
   }
 
   function handleCalendarDateClick(date: Date) {
-    if (!selectedStart || (selectedStart && selectedEnd)) {
-      setSelectedStart(date)
-      setSelectedEnd(null)
+    const { start, end } = stayDates
+    if (!start || end) {
+      onStayDatesChange({ start: date, end: null })
       return
     }
 
-    if (date < selectedStart) {
-      setSelectedEnd(selectedStart)
-      setSelectedStart(date)
+    if (date < start) {
+      onStayDatesChange({ start: date, end: start })
       return
     }
 
-    setSelectedEnd(date)
+    if (date.getTime() === start.getTime()) return
+    onStayDatesChange({ start, end: date })
   }
 
   function isDateInSelectedRange(date: Date) {
-    if (!selectedStart) return false
-    const rangeEnd = selectedEnd ?? selectedStart
-    const min = new Date(Math.min(selectedStart.getTime(), rangeEnd.getTime()))
-    const max = new Date(Math.max(selectedStart.getTime(), rangeEnd.getTime()))
+    if (!stayDates.start) return false
+    const rangeEnd = stayDates.end ?? stayDates.start
+    const min = new Date(Math.min(stayDates.start.getTime(), rangeEnd.getTime()))
+    const max = new Date(Math.max(stayDates.start.getTime(), rangeEnd.getTime()))
     const candidate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
     return candidate >= min && candidate <= max
   }
@@ -203,11 +238,11 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
 
         <div className="property__search">
           <Search size={16} aria-hidden />
-          <span>Почніть пошук</span>
+          <button type="button" onClick={onStartSearch}>Почніть пошук</button>
         </div>
 
         <div className="property__header-actions">
-          <a href="#host-your-home">Запропонувати помешкання на HomeFU</a>
+          <a href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
           <button type="button" className="property__menu" aria-label="Меню" onClick={onOpenSignIn}>
             <Menu size={16} aria-hidden />
             <User size={20} aria-hidden />
@@ -286,14 +321,47 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
 
           <section id="calendar" className="property__section">
             <h2 className="property__section-title">Дати перебування · {listing.location}</h2>
-            <p className="property__date-range">{formatRange(selectedStart, selectedEnd)}</p>
+            <p className="property__date-range">{formatRange(stayDates.start, stayDates.end)}</p>
+
+            <div className="property__calendar-controls">
+              <label>
+                <span>Місяць</span>
+                <select
+                  value={calendarMonth.getMonth()}
+                  onChange={(event) => setCalendarMonth(new Date(calendarMonth.getFullYear(), Number(event.target.value), 1))}
+                >
+                  {Array.from({ length: 12 }, (_, month) => (
+                    <option key={month} value={month}>
+                      {new Intl.DateTimeFormat('uk-UA', { month: 'long' }).format(new Date(calendarMonth.getFullYear(), month, 1))}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>Рік</span>
+                <select
+                  value={calendarMonth.getFullYear()}
+                  onChange={(event) => setCalendarMonth(new Date(Number(event.target.value), calendarMonth.getMonth(), 1))}
+                >
+                  {Array.from({ length: 6 }, (_, offset) => new Date().getFullYear() + offset).map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
             <div className="property__calendars">
-              {MONTHS.map((m) => {
-                const cells = getMonthGrid(m.year, m.month)
+              {Array.from({ length: 2 }, (_, offset) => {
+                const monthDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + offset, 1)
+                const year = monthDate.getFullYear()
+                const month = monthDate.getMonth()
+                const label = new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(monthDate)
+                const cells = getMonthGrid(year, month)
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
                 return (
-                  <div key={m.label} className="property__calendar">
-                    <h3>{m.label}</h3>
+                  <div key={label} className="property__calendar">
+                    <h3>{label}</h3>
                     <div className="property__calendar-weekdays">
                       {WEEKDAYS.map((day) => (
                         <span key={day}>{day}</span>
@@ -301,22 +369,23 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
                     </div>
                     <div className="property__calendar-grid">
                       {cells.map((day, i) => {
-                        const date = day ? new Date(m.year, m.month, day) : null
+                        const date = day ? new Date(year, month, day) : null
                         const isSelected = date ? isDateInSelectedRange(date) : false
-                        const isExactStart = date && selectedStart && date.getTime() === selectedStart.getTime()
-                        const isExactEnd = date && selectedEnd && date.getTime() === selectedEnd.getTime()
+                        const isExactStart = date && stayDates.start && date.getTime() === stayDates.start.getTime()
+                        const isExactEnd = date && stayDates.end && date.getTime() === stayDates.end.getTime()
+                        const isPastDate = date ? date < today : false
                         return (
                           <button
                             key={i}
                             type="button"
                             className={[
                               'property__calendar-day',
-                              day && day <= m.disabledThrough ? 'property__calendar-day--disabled' : '',
+                              isPastDate ? 'property__calendar-day--disabled' : '',
                               isSelected ? 'property__calendar-day--selected' : '',
                               isExactStart || isExactEnd ? 'property__calendar-day--range-edge' : '',
                             ].filter(Boolean).join(' ')}
                             onClick={() => date && handleCalendarDateClick(date)}
-                            disabled={!date || !!(date && day && day <= m.disabledThrough)}
+                            disabled={!date || isPastDate}
                           >
                             {day ?? ''}
                           </button>
@@ -328,27 +397,52 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
               })}
             </div>
 
-            <a href="#clear-dates" className="property__clear-dates">
+            <button type="button" className="property__clear-dates" onClick={() => onStayDatesChange({ start: null, end: null })}>
               Очистити дати
-            </a>
+            </button>
           </section>
 
           <div className="property__divider" />
 
           <section id="reviews" className="property__section">
             <h2 className="property__section-title">
-              {listing.rating !== null
-                ? `${listing.rating.toFixed(2)} · ${listing.reviewCount} відгуків`
-                : 'Відгуків ще немає'}
+              {reviews.length > 0 ? `${(reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(2)} · ${reviews.length} відгуків` : 'Відгуків ще немає'}
             </h2>
-            {listing.reviews.length > 0 && <div className="property__reviews">
-              {listing.reviews.map((review) => (
+            {reviews.length > 0 && <div className="property__reviews">
+              {reviews.map((review) => {
+                const authorName = review.authorName || 'Анонімний користувач'
+                const avatarUrl = review.avatarUrl && (review.avatarUrl.startsWith('/') || /^https?:\/\//i.test(review.avatarUrl))
+                  ? review.avatarUrl
+                  : null
+                return (
                 <article key={review.id} className="property__review">
-                  <h3><Star size={14} fill="currentColor" aria-hidden /> {review.rating.toFixed(1)}</h3>
-                  <p>{review.comment}</p>
+                  <div className="property__review-avatar">
+                    {avatarUrl ? <img src={avatarUrl} alt="" /> : authorName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3>{authorName}</h3>
+                    <span className="property__review-rating"><Star size={14} fill="currentColor" aria-hidden /> {review.rating.toFixed(1)}</span>
+                    <p>{review.comment}</p>
+                  </div>
                 </article>
-              ))}
+                )
+              })}
             </div>}
+            <form className="property__review-form" onSubmit={handleReviewSubmit}>
+              <h3>Залишити відгук</h3>
+              <label>
+                <span>Оцінка</span>
+                <select value={reviewRating} onChange={(event) => setReviewRating(Number(event.target.value))}>
+                  {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} з 5</option>)}
+                </select>
+              </label>
+              <label>
+                <span>Коментар</span>
+                <textarea value={reviewComment} onChange={(event) => setReviewComment(event.target.value)} maxLength={2000} required />
+              </label>
+              {reviewError && <p className="property__review-error" role="alert">{reviewError}</p>}
+              <button type="submit" disabled={isReviewSubmitting}>{isReviewSubmitting ? 'Надсилання…' : 'Додати відгук'}</button>
+            </form>
           </section>
 
           <div className="property__divider" />
@@ -370,7 +464,7 @@ export function PropertyDetail({ listing, onBack, onBook, onOpenSignIn, onOpenRe
         </main>
 
         <aside className="property__sidebar">
-          <BookingWidget listing={listing} expanded onBook={onBook} dateRangeText={formatRange(selectedStart, selectedEnd)} />
+          <BookingWidget listing={listing} expanded onBook={onBook} dateRangeText={formatRange(stayDates.start, stayDates.end)} stayNights={stayNights} />
         </aside>
       </div>
 

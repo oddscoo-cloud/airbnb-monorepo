@@ -1,4 +1,5 @@
 import { useMemo, useState, type ComponentType } from 'react'
+import { useEffect } from 'react'
 import {
   Mountain,
   Home,
@@ -54,7 +55,7 @@ export interface Listing {
   reviewCount: number
   maxGuests: number
   amenities: { id: number; name: string; icon: string }[]
-  reviews: { id: number; rating: number; comment: string; createdAt: string }[]
+  reviews: { id: number; rating: number; comment: string; createdAt: string; authorName?: string | null; avatarUrl?: string | null }[]
   isPublished: boolean
   image: string
   gallery?: string[]
@@ -89,6 +90,7 @@ export function CategoryListings({
   const [maxPrice, setMaxPrice] = useState('')
   const [minimumRating, setMinimumRating] = useState('')
   const [guests, setGuests] = useState('1')
+  const [visibleCount, setVisibleCount] = useState(8)
 
   const filteredListings = useMemo(() => {
     return listings.filter((listing) => {
@@ -102,6 +104,10 @@ export function CategoryListings({
     })
   }, [activeCategory, guests, listings, maxPrice, minPrice, minimumRating, selectedRegion])
 
+  useEffect(() => {
+    setVisibleCount(8)
+  }, [activeCategory, guests, maxPrice, minPrice, minimumRating, selectedRegion])
+
   function clearFilters() {
     onClearRegionFilter()
     setActiveCategory('all')
@@ -110,6 +116,7 @@ export function CategoryListings({
     setMinimumRating('')
     setGuests('1')
   }
+  const visibleListings = filteredListings.slice(0, visibleCount)
 
   const allRegions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
 
@@ -254,7 +261,7 @@ export function CategoryListings({
       </div>
 
       <div className="listings__grid">
-        {isLoading ? <p>Завантаження помешкань…</p> : error ? <p role="alert">{error}</p> : filteredListings.length === 0 ? <p>За вибраними фільтрами помешкань не знайдено.</p> : filteredListings.map((listing) => (
+        {isLoading ? <p>Завантаження помешкань…</p> : error ? <p role="alert">{error}</p> : filteredListings.length === 0 ? <p>За вибраними фільтрами помешкань не знайдено.</p> : visibleListings.map((listing) => (
           <article
             key={listing.id}
             className="listing-card"
@@ -295,7 +302,8 @@ export function CategoryListings({
               </div>
               {listing.category && <p className="listing-card__meta">{listing.category}</p>}
               <p className="listing-card__price">
-                <strong>${listing.price}</strong> ночі
+                <strong>${taxIncluded ? listing.price * 5 + 20 : listing.price},00</strong>{' '}
+                {taxIncluded ? 'за 5 ночей' : 'за ніч'}
               </p>
             </div>
           </article>
@@ -308,9 +316,15 @@ export function CategoryListings({
             ? `Продовжити огляд регіону «${selectedRegion}»`
             : `Продовжити огляд категорії «${CATEGORIES.find((c) => c.id === activeCategory)?.label}»`}
         </h2>
-        <button type="button" className="category-listings__more">
-          Показати більше
-        </button>
+        {visibleCount < filteredListings.length && (
+          <button
+            type="button"
+            className="category-listings__more"
+            onClick={() => setVisibleCount((count) => count + 8)}
+          >
+            Показати більше
+          </button>
+        )}
       </div>
     </section>
   )

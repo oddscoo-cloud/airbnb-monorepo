@@ -24,7 +24,7 @@ public class ListingsController : ControllerBase
         List<Listing> listings = await Context.Listings
             .Where(listing => listing.IsPublished)
             .Include(listing => listing.ListingImages)
-            .Include(listing => listing.Reviews)
+            .Include(listing => listing.Reviews).ThenInclude(review => review.Author)
             .Include(listing => listing.Amenities)
             .AsNoTracking()
             .AsSplitQuery()
@@ -45,7 +45,7 @@ public class ListingsController : ControllerBase
             listing.Longtitude,
             Mapper.Map<List<ListingImageResponseDTO>>(listing.ListingImages),
             Mapper.Map<List<AmenityResponseDTO>>(listing.Amenities),
-            Mapper.Map<List<ReviewResponseDTO>>(listing.Reviews),
+            listing.Reviews.Select(MapReview).ToList(),
             listing.Reviews.Count == 0 ? null : listing.Reviews.Average(review => review.Rating),
             listing.Reviews.Count
         )).ToList();
@@ -58,7 +58,7 @@ public class ListingsController : ControllerBase
         Listing? listing = await Context.Listings
             .Where(item => item.IsPublished)
             .Include(item => item.ListingImages)
-            .Include(item => item.Reviews)
+            .Include(item => item.Reviews).ThenInclude(review => review.Author)
             .Include(item => item.Amenities)
             .AsNoTracking()
             .AsSplitQuery()
@@ -80,11 +80,47 @@ public class ListingsController : ControllerBase
             listing.Longtitude,
             Mapper.Map<List<ListingImageResponseDTO>>(listing.ListingImages),
             Mapper.Map<List<AmenityResponseDTO>>(listing.Amenities),
-            Mapper.Map<List<ReviewResponseDTO>>(listing.Reviews),
+            listing.Reviews.Select(MapReview).ToList(),
             listing.Reviews.Count == 0 ? null : listing.Reviews.Average(review => review.Rating),
             listing.Reviews.Count
         );
         return Ok(listingDTO);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("{id:int}/reviews")]
+    public async Task<IActionResult> CreateReview(
+        int id,
+        [FromBody] CreateReviewRequest request,
+        CancellationToken cancellationToken)
+    {
+        var listing = await Context.Listings
+            .FirstOrDefaultAsync(item => item.Id == id && item.IsPublished, cancellationToken);
+        if (listing is null)
+            return NotFound(new { message = "Помешкання не знайдено." });
+
+        User? author = null;
+        if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var authorId))
+        {
+            author = await Context.Users.FirstOrDefaultAsync(user => user.Id == authorId, cancellationToken);
+            if (author is null)
+                return Unauthorized();
+        }
+
+        var review = new Review
+        {
+            ListingId = listing.Id,
+            AuthorId = author?.Id,
+            Author = author,
+            Rating = request.Rating,
+            Comment = request.Comment.Trim(),
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+
+        Context.Reviews.Add(review);
+        await Context.SaveChangesAsync(cancellationToken);
+
+        return CreatedAtAction(nameof(GetById), new { id = listing.Id }, MapReview(review));
     }
 
     [Authorize(Roles = "Admin")]
@@ -105,5 +141,19 @@ public class ListingsController : ControllerBase
         await Context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetById), new { id = listing.Id }, listing);
+    }
+
+    private static ReviewResponseDTO MapReview(Review review)
+    {
+        if (review.Author is null)
+            return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, "Анонімний користувач", null);
+
+        var fullName = $"{review.Author.FirstName} {review.Author.LastName}".Trim();
+        var authorName = string.IsNullOrWhiteSpace(fullName)
+            ? review.Author.Email.Split('@')[0]
+            : fullName;
+        var avatarUrl = string.IsNullOrWhiteSpace(review.Author.AvatarUrl) ? null : review.Author.AvatarUrl;
+
+        return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, authorName, avatarUrl);
     }
 }

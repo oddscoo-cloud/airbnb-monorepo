@@ -25,7 +25,7 @@ interface ListingResponse {
   category: string | null
   images: { imageUrl: string; isCover: boolean }[]
   amenities: { id: number; name: string; icon: string }[]
-  reviews: { id: number; rating: number; comment: string; createdAt: string }[]
+  reviews: { id: number; rating: number; comment: string; createdAt: string; authorName: string | null; avatarUrl: string | null }[]
   isPublished: boolean
   rating: number | null
   reviewCount: number
@@ -40,6 +40,8 @@ function App() {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
   const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin'>('home')
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
+  const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
+  const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
   const [listings, setListings] = useState<Listing[]>([])
   const [listingsLoading, setListingsLoading] = useState(true)
   const [listingsError, setListingsError] = useState('')
@@ -122,6 +124,9 @@ function App() {
   }, [])
 
   const regions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
+  const stayNights = stayDates.start && stayDates.end
+    ? Math.max(1, Math.round((stayDates.end.getTime() - stayDates.start.getTime()) / 86_400_000))
+    : 5
 
   function handleAuthenticated(email: string, role: string) {
     const initial = email.trim().charAt(0).toUpperCase()
@@ -133,12 +138,23 @@ function App() {
 
   function handleOpenListing(listing: Listing) {
     setSelectedListing(listing)
+    setStayDates({ start: null, end: null })
     setActivePage('listing')
   }
 
   function handleBackHome() {
     setActivePage('home')
     setSelectedListing(null)
+    setStayDates({ start: null, end: null })
+  }
+
+  function handleStartSearch() {
+    handleBackHome()
+    requestAnimationFrame(() => {
+      const searchForm = document.querySelector<HTMLElement>('.search-form')
+      searchForm?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      searchForm?.querySelector<HTMLButtonElement>('button')?.focus()
+    })
   }
 
   function handleJumpToListingCalendar() {
@@ -192,7 +208,13 @@ function App() {
       <div className="App">
         <ZhitloPage
           listing={selectedListing}
+          stayDates={stayDates}
+          onStayDatesChange={setStayDates}
+          stayNights={stayNights}
           onBack={handleBackHome}
+          onStartSearch={handleStartSearch}
+          onHome={handleBackHome}
+          onReviewAdded={() => setListingsRevision((revision) => revision + 1)}
           onBook={() => setActivePage('booking')}
           onOpenSignIn={() => {
             setIsUserMenuOpen(false)
@@ -226,7 +248,12 @@ function App() {
       <div className="App">
         <BookingRequest
           listing={selectedListing}
+          stayDates={stayDates}
+          stayNights={stayNights}
+          paymentOption={paymentOption}
+          onPaymentOptionChange={setPaymentOption}
           onBack={() => setActivePage('listing')}
+          onHome={handleBackHome}
           onContinue={() => setActivePage('payment')}
           onAuthenticated={handleAuthenticated}
           onEditDates={handleJumpToListingCalendar}
@@ -255,7 +282,12 @@ function App() {
       <div className="App">
         <PaymentConfirmation
           listing={selectedListing}
+          stayDates={stayDates}
+          stayNights={stayNights}
+          paymentOption={paymentOption}
+          onPaymentOptionChange={setPaymentOption}
           onBack={() => setActivePage('booking')}
+          onHome={handleBackHome}
           onPaid={handleBackHome}
         />
 
@@ -297,7 +329,10 @@ function App() {
 
                 <div className="site-header__actions">
                   <div className="site-header__bar">
-                    <a className="site-header__host" href="#host">
+                    <a className="site-header__host" href="/" onClick={(event) => {
+                      event.preventDefault()
+                      handleBackHome()
+                    }}>
                       Запропонувати помешкання на HomeFU
                     </a>
                     <div className="site-header__account">

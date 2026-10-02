@@ -45,6 +45,15 @@
   font-size: 15px;
 }
 
+.property__search button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
 .property__header-actions {
   display: flex;
   align-items: center;
@@ -362,6 +371,29 @@
   font-size: 16px;
 }
 
+.property__calendar-controls {
+  display: flex;
+  gap: 12px;
+  margin: 0 0 20px;
+}
+
+.property__calendar-controls label {
+  display: grid;
+  gap: 4px;
+  color: #433d35;
+  font: 12px 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__calendar-controls select {
+  min-height: 38px;
+  padding: 6px 30px 6px 10px;
+  border: 1px solid #6f6558;
+  border-radius: 8px;
+  background: transparent;
+  color: #211e1a;
+  font: 14px 'Nunito Sans', Arial, sans-serif;
+}
+
 .property__calendars {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -404,10 +436,14 @@
 }
 
 .property__clear-dates {
+  padding: 0;
+  border: 0;
+  background: transparent;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 16px;
   color: #211e1a;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 /* Reviews */
@@ -456,6 +492,13 @@
   font-weight: 700;
 }
 
+.property__review-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
 .property__review h3 {
   margin: 0 0 4px;
   font-family: 'Nunito Sans', Arial, sans-serif;
@@ -468,6 +511,72 @@
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.4;
+}
+
+.property__review-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  font: 14px 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__review-form {
+  display: grid;
+  gap: 14px;
+  max-width: 560px;
+  padding-top: 12px;
+}
+
+.property__review-form h3,
+.property__review-form label {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__review-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.property__review-form select,
+.property__review-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #6f6558;
+  border-radius: 8px;
+  background: transparent;
+  color: #211e1a;
+  font: 15px 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__review-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.property__review-form button {
+  justify-self: start;
+  min-height: 42px;
+  padding: 8px 18px;
+  border: 1px solid #211e1a;
+  border-radius: 8px;
+  background: #211e1a;
+  color: #fff;
+  font: 700 14px 'Nunito Sans', Arial, sans-serif;
+  cursor: pointer;
+}
+
+.property__review-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.property__review-error {
+  margin: 0;
+  color: #8b1f1f;
+  font: 14px 'Nunito Sans', Arial, sans-serif;
 }
 
 /* Location */

@@ -8,24 +8,40 @@ type PaymentOption = 'full' | 'split'
 
 export function BookingRequest({
   listing,
+  stayDates,
+  stayNights,
+  paymentOption,
+  onPaymentOptionChange,
   onBack,
+  onHome,
   onContinue,
   onAuthenticated,
   onEditDates,
   onEditGuests,
 }: {
   listing: Listing
+  stayDates: { start: Date | null; end: Date | null }
+  stayNights: number
+  paymentOption: PaymentOption
+  onPaymentOptionChange: (option: PaymentOption) => void
   onBack: () => void
+  onHome: () => void
   onContinue: () => void
   onAuthenticated?: (email: string, role: string) => void
   onEditDates?: () => void
   onEditGuests?: () => void
 }) {
-  const [paymentOption, setPaymentOption] = useState<PaymentOption>('full')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const totalPrice = listing.price * stayNights + 20
+  const firstInstallment = Math.round(totalPrice * 50) / 100
+  const secondInstallment = totalPrice - firstInstallment
+  const formatMoney = (amount: number) => amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const dateRangeText = stayDates.start
+    ? `${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`
+    : 'Дати не обрано'
 
   async function handleLoginSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -82,6 +98,7 @@ export function BookingRequest({
 
       <header className="booking__header">
         <span className="booking__logo">HomeFU</span>
+        <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
       </header>
 
       <div className="booking__layout">
@@ -102,7 +119,7 @@ export function BookingRequest({
             <div className="booking__trip-row">
               <div>
                 <h3>Дати</h3>
-                <p>Дати не обрано</p>
+                <p>{dateRangeText}</p>
               </div>
               <button type="button" className="booking__edit-link" onClick={onEditDates}>
                 Редагувати
@@ -131,14 +148,14 @@ export function BookingRequest({
               >
                 <div>
                   <h3>Оплатити в повному обсязі</h3>
-                  <p>Сплатіть усю суму ($335,00) одразу.</p>
+                  <p>Сплатіть усю суму (${formatMoney(totalPrice)}) одразу.</p>
                 </div>
                 <span className="booking__radio" aria-hidden="true">
                   <input
                     type="radio"
                     name="payment"
                     checked={paymentOption === 'full'}
-                    onChange={() => setPaymentOption('full')}
+                    onChange={() => onPaymentOptionChange('full')}
                     aria-label="Оплатити в повному обсязі"
                   />
                 </span>
@@ -150,7 +167,7 @@ export function BookingRequest({
                 <div>
                   <h3>Оплата двома частинами</h3>
                   <p>
-                    $65,60 потрібно оплатити сьогодні, $262,40 - 22груд.2023р…
+                    ${formatMoney(firstInstallment)} потрібно сплатити сьогодні, ${formatMoney(secondInstallment)} — перед поїздкою.
                     <br />
                     Жодних додаткових зборів. <a href="#more">Докладніше</a>
                   </p>
@@ -160,7 +177,7 @@ export function BookingRequest({
                     type="radio"
                     name="payment"
                     checked={paymentOption === 'split'}
-                    onChange={() => setPaymentOption('split')}
+                    onChange={() => onPaymentOptionChange('split')}
                     aria-label="Оплата двома частинами"
                   />
                 </span>
@@ -293,8 +310,8 @@ export function BookingRequest({
           <h2 className="booking__summary-title">Детальніше про ціну</h2>
 
           <div className="booking__price-row">
-            <span>${listing.price},00 х 5 ночей</span>
-            <span>${listing.price * 5},00</span>
+            <span>${formatMoney(listing.price)} х {stayNights} ночей</span>
+            <span>${formatMoney(listing.price * stayNights)}</span>
           </div>
           <div className="booking__price-row">
             <a href="#cleaning-fee">Плата за прибирання</a>
@@ -305,7 +322,7 @@ export function BookingRequest({
 
           <div className="booking__price-row booking__price-row--total">
             <span>Усього <a href="#usd">(USD)</a></span>
-            <span>${listing.price * 5 + 20},00</span>
+            <span>${formatMoney(totalPrice)}</span>
           </div>
         </aside>
       </div>

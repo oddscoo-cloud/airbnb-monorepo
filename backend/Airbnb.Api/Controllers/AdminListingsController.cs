@@ -20,7 +20,7 @@ public sealed class AdminListingsController(
         var listings = await context.Listings
             .Include(listing => listing.ListingImages)
             .Include(listing => listing.Amenities)
-            .Include(listing => listing.Reviews)
+            .Include(listing => listing.Reviews).ThenInclude(review => review.Author)
             .AsNoTracking()
             .AsSplitQuery()
             .OrderByDescending(listing => listing.Id)
@@ -78,7 +78,7 @@ public sealed class AdminListingsController(
         var listing = await context.Listings
             .Include(item => item.ListingImages)
             .Include(item => item.Amenities)
-            .Include(item => item.Reviews)
+            .Include(item => item.Reviews).ThenInclude(review => review.Author)
             .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
         if (listing is null)
             return NotFound();

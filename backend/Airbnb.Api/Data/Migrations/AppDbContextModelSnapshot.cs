@@ -244,7 +244,7 @@ namespace Airbnb.Api.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("integer")
                         .HasColumnName("author_id");
 
@@ -394,9 +394,7 @@ namespace Airbnb.Api.Data.Migrations
                     b.HasOne("User", "Author")
                         .WithMany("Reviews")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
+                        .OnDelete(DeleteBehavior.Cascade);
                     b.HasOne("Listing", "Listing")
                         .WithMany("Reviews")
                         .HasForeignKey("ListingId")
