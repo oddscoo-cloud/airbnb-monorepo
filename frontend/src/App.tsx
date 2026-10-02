@@ -256,6 +256,7 @@ function App() {
         <PaymentConfirmation
           listing={selectedListing}
           onBack={() => setActivePage('booking')}
+          onPaid={handleBackHome}
         />
 
         {!isLocationMapOpen && isRegisterModalOpen && (
