@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Menu } from 'lucide-react'
 import { SearchForm } from './components/SearchForm/SearchForm'
-import { CategoryListings, type Listing } from './components/CategoryListings/CategoryListings'
+import { CategoryListings } from './components/CategoryListings/CategoryListings'
 import { Footer } from './components/Footer/Footer'
 import { RegisterModal } from './components/RegisterModal/RegisterModal'
 import { SignInModal } from './components/SignInModal/SignInModal'
@@ -10,26 +10,10 @@ import ZhitloPage from './components/Buildingpage/Buildingpage'
 import { BookingRequest } from './components/Bookingrequest/BookingRequest'
 import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
 import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
+import { useListings } from './hooks/useListings'
+import { useAccountSession } from './hooks/useAccountSession'
+import type { Listing } from './types/listing'
 import './App.css'
-
-interface ListingResponse {
-  id: number
-  title: string
-  description: string | null
-  pricePerNight: number
-  maxGuests: number
-  latitude: number
-  longtitude: number
-  location: string | null
-  region: string | null
-  category: string | null
-  images: { imageUrl: string; isCover: boolean }[]
-  amenities: { id: number; name: string; icon: string }[]
-  reviews: { id: number; rating: number; comment: string; createdAt: string; authorName: string | null; avatarUrl: string | null }[]
-  isPublished: boolean
-  rating: number | null
-  reviewCount: number
-}
 
 function App() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
@@ -42,99 +26,14 @@ function App() {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
-  const [listings, setListings] = useState<Listing[]>([])
-  const [listingsLoading, setListingsLoading] = useState(true)
-  const [listingsError, setListingsError] = useState('')
   const [listingsRevision, setListingsRevision] = useState(0)
-  const [accountRole, setAccountRole] = useState('')
-  const [accountInitial, setAccountInitial] = useState(() => {
-    const savedEmail = sessionStorage.getItem('account_email')
-    return savedEmail?.charAt(0).toUpperCase() ?? ''
-  })
-
-  useEffect(() => {
-    let isCurrent = true
-
-    async function loadListings() {
-      try {
-        const response = await fetch('/api/listings')
-        if (!response.ok) throw new Error(`Не вдалося завантажити помешкання (${response.status})`)
-
-        const data: ListingResponse[] = await response.json()
-        if (!isCurrent) return
-
-        setListings(data.map((item) => {
-          const images = item.images ?? []
-          const orderedImages = [...images].sort((left, right) => Number(right.isCover) - Number(left.isCover))
-
-          return {
-            id: String(item.id),
-            title: item.title,
-            description: item.description,
-            location: item.location || item.title,
-            category: item.category ?? '',
-            region: item.region ?? '',
-            price: item.pricePerNight,
-            rating: item.rating,
-            reviewCount: item.reviewCount,
-            amenities: item.amenities ?? [],
-            reviews: item.reviews ?? [],
-            isPublished: item.isPublished,
-            maxGuests: item.maxGuests,
-            image: orderedImages[0]?.imageUrl ?? '',
-            gallery: orderedImages.map((image) => image.imageUrl),
-            latitude: item.latitude,
-            longitude: item.longtitude,
-          }
-        }))
-      } catch (error) {
-        if (isCurrent) {
-          setListingsError(error instanceof Error ? error.message : 'Не вдалося завантажити помешкання')
-        }
-      } finally {
-        if (isCurrent) setListingsLoading(false)
-      }
-    }
-
-    void loadListings()
-    return () => { isCurrent = false }
-  }, [listingsRevision])
-
-  useEffect(() => {
-    const accessToken = sessionStorage.getItem('access_token')
-    if (!accessToken) {
-      setAccountRole('')
-      return
-    }
-
-    let isCurrent = true
-    void fetch('/api/auth/me', { headers: { Authorization: `Bearer ${accessToken}` } })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Сесія завершилася')
-        return response.json()
-      })
-      .then((account: { role: string }) => {
-        if (isCurrent) setAccountRole(account.role)
-      })
-      .catch(() => {
-        if (isCurrent) setAccountRole('')
-      })
-
-    return () => { isCurrent = false }
-  }, [])
+  const { listings, isLoading: listingsLoading, error: listingsError } = useListings(listingsRevision)
+  const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
 
   const regions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
   const stayNights = stayDates.start && stayDates.end
     ? Math.max(1, Math.round((stayDates.end.getTime() - stayDates.start.getTime()) / 86_400_000))
     : 5
-
-  function handleAuthenticated(email: string, role: string) {
-    const initial = email.trim().charAt(0).toUpperCase()
-    sessionStorage.setItem('account_email', email)
-    sessionStorage.setItem('account_role', role)
-    setAccountInitial(initial)
-    setAccountRole(role)
-  }
 
   function handleOpenListing(listing: Listing) {
     setSelectedListing(listing)
@@ -165,34 +64,6 @@ function App() {
     })
   }
 
-  async function handleLogout() {
-    try {
-      const refreshToken = document.cookie
-        .split('; ')
-        .find((cookie) => cookie.startsWith('refresh_token='))
-        ?.split('=')[1]
-
-      if (refreshToken) {
-        await fetch('/api/auth/logout', {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refresh_token: refreshToken }),
-        })
-      }
-    } catch (error) {
-      console.error('Logout failed', error)
-    } finally {
-      sessionStorage.removeItem('account_email')
-      sessionStorage.removeItem('access_token')
-      sessionStorage.removeItem('account_role')
-      document.cookie = 'refresh_token=; Max-Age=0; path=/; SameSite=Lax'
-      setAccountInitial('')
-      setAccountRole('')
-      setIsUserMenuOpen(false)
-    }
-  }
-
   if (activePage === 'admin' && accountRole === 'Admin') {
     return (
       <AdminDashboard
@@ -219,10 +90,6 @@ function App() {
           onOpenSignIn={() => {
             setIsUserMenuOpen(false)
             setIsSignInModalOpen(true)
-          }}
-          onOpenRegister={() => {
-            setIsUserMenuOpen(false)
-            setIsRegisterModalOpen(true)
           }}
         />
 
@@ -362,7 +229,9 @@ function App() {
                                 setIsUserMenuOpen(false)
                                 setActivePage('admin')
                               }}>Админ-панель</button>}
-                              <button type="button" role="menuitem" onClick={handleLogout}>Выйти</button>
+                              <button type="button" role="menuitem" onClick={() => {
+                                void logout().finally(() => setIsUserMenuOpen(false))
+                              }}>Выйти</button>
                             </>
                           ) : (
                             <>

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -11,8 +11,10 @@ import {
   Star,
   Flag,
 } from 'lucide-react'
-import type { Listing } from '../CategoryListings/CategoryListings'
+import type { Listing } from '../../types/listing'
 import { LocationMap } from '../Map/LocationMap'
+import { PropertyCalendar } from './PropertyCalendar'
+import { PropertyReviews } from './PropertyReviews'
 import './Buildingpage.css'
 
 const SECTIONS = [
@@ -22,22 +24,12 @@ const SECTIONS = [
   { id: 'location', label: 'Розташування' },
 ]
 
-const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
 const mapPinIcon = L.divIcon({
   html: renderToStaticMarkup(<span className="property__map-pin">HFU</span>),
   className: 'property__map-pin-wrapper',
   iconSize: [36, 36],
   iconAnchor: [18, 18],
 })
-
-function getMonthGrid(year: number, month: number) {
-  const first = new Date(year, month, 1)
-  const startOffset = (first.getDay() + 6) % 7 // понедельник — первый день недели
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const cells: (number | null)[] = Array(startOffset).fill(null)
-  for (let day = 1; day <= daysInMonth; day++) cells.push(day)
-  return cells
-}
 
 function BookingWidget({
   listing,
@@ -125,52 +117,11 @@ type BuildingpageProps = {
   onReviewAdded: () => void
   onBook: () => void
   onOpenSignIn: () => void
-  onOpenRegister: () => void
 }
 
-export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn, onOpenRegister }: BuildingpageProps) {
+export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn }: BuildingpageProps) {
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
-  const [reviews, setReviews] = useState(listing.reviews)
-  const [reviewRating, setReviewRating] = useState(5)
-  const [reviewComment, setReviewComment] = useState('')
-  const [reviewError, setReviewError] = useState('')
-  const [isReviewSubmitting, setIsReviewSubmitting] = useState(false)
-  const [calendarMonth, setCalendarMonth] = useState(() => {
-    const today = new Date()
-    return new Date(today.getFullYear(), today.getMonth(), 1)
-  })
-
-  void onOpenRegister
-
-  async function handleReviewSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setReviewError('')
-    setIsReviewSubmitting(true)
-
-    try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      const accessToken = sessionStorage.getItem('access_token')
-      if (accessToken) headers.Authorization = `Bearer ${accessToken}`
-
-      const response = await fetch(`/api/listings/${listing.id}/reviews`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ rating: reviewRating, comment: reviewComment }),
-      })
-      const result = await response.json()
-      if (!response.ok) throw new Error(result.message ?? 'Не вдалося додати відгук.')
-
-      setReviews((current) => [result, ...current])
-      setReviewComment('')
-      setReviewRating(5)
-      onReviewAdded()
-    } catch (error) {
-      setReviewError(error instanceof Error ? error.message : 'Не вдалося додати відгук.')
-    } finally {
-      setIsReviewSubmitting(false)
-    }
-  }
 
   function formatDate(date: Date | null) {
     return date
@@ -184,31 +135,6 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
     const startStr = formatDate(start)
     const endStr = formatDate(end)
     return `${startStr} — ${endStr}`
-  }
-
-  function handleCalendarDateClick(date: Date) {
-    const { start, end } = stayDates
-    if (!start || end) {
-      onStayDatesChange({ start: date, end: null })
-      return
-    }
-
-    if (date < start) {
-      onStayDatesChange({ start: date, end: start })
-      return
-    }
-
-    if (date.getTime() === start.getTime()) return
-    onStayDatesChange({ start, end: date })
-  }
-
-  function isDateInSelectedRange(date: Date) {
-    if (!stayDates.start) return false
-    const rangeEnd = stayDates.end ?? stayDates.start
-    const min = new Date(Math.min(stayDates.start.getTime(), rangeEnd.getTime()))
-    const max = new Date(Math.max(stayDates.start.getTime(), rangeEnd.getTime()))
-    const candidate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-    return candidate >= min && candidate <= max
   }
 
   const hasLocation = listing.latitude !== 0 && listing.longitude !== 0
@@ -319,131 +245,19 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
 
           <div className="property__divider" />
 
-          <section id="calendar" className="property__section">
-            <h2 className="property__section-title">Дати перебування · {listing.location}</h2>
-            <p className="property__date-range">{formatRange(stayDates.start, stayDates.end)}</p>
-
-            <div className="property__calendar-controls">
-              <label>
-                <span>Місяць</span>
-                <select
-                  value={calendarMonth.getMonth()}
-                  onChange={(event) => setCalendarMonth(new Date(calendarMonth.getFullYear(), Number(event.target.value), 1))}
-                >
-                  {Array.from({ length: 12 }, (_, month) => (
-                    <option key={month} value={month}>
-                      {new Intl.DateTimeFormat('uk-UA', { month: 'long' }).format(new Date(calendarMonth.getFullYear(), month, 1))}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Рік</span>
-                <select
-                  value={calendarMonth.getFullYear()}
-                  onChange={(event) => setCalendarMonth(new Date(Number(event.target.value), calendarMonth.getMonth(), 1))}
-                >
-                  {Array.from({ length: 6 }, (_, offset) => new Date().getFullYear() + offset).map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <div className="property__calendars">
-              {Array.from({ length: 2 }, (_, offset) => {
-                const monthDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + offset, 1)
-                const year = monthDate.getFullYear()
-                const month = monthDate.getMonth()
-                const label = new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(monthDate)
-                const cells = getMonthGrid(year, month)
-                const today = new Date()
-                today.setHours(0, 0, 0, 0)
-                return (
-                  <div key={label} className="property__calendar">
-                    <h3>{label}</h3>
-                    <div className="property__calendar-weekdays">
-                      {WEEKDAYS.map((day) => (
-                        <span key={day}>{day}</span>
-                      ))}
-                    </div>
-                    <div className="property__calendar-grid">
-                      {cells.map((day, i) => {
-                        const date = day ? new Date(year, month, day) : null
-                        const isSelected = date ? isDateInSelectedRange(date) : false
-                        const isExactStart = date && stayDates.start && date.getTime() === stayDates.start.getTime()
-                        const isExactEnd = date && stayDates.end && date.getTime() === stayDates.end.getTime()
-                        const isPastDate = date ? date < today : false
-                        return (
-                          <button
-                            key={i}
-                            type="button"
-                            className={[
-                              'property__calendar-day',
-                              isPastDate ? 'property__calendar-day--disabled' : '',
-                              isSelected ? 'property__calendar-day--selected' : '',
-                              isExactStart || isExactEnd ? 'property__calendar-day--range-edge' : '',
-                            ].filter(Boolean).join(' ')}
-                            onClick={() => date && handleCalendarDateClick(date)}
-                            disabled={!date || isPastDate}
-                          >
-                            {day ?? ''}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            <button type="button" className="property__clear-dates" onClick={() => onStayDatesChange({ start: null, end: null })}>
-              Очистити дати
-            </button>
-          </section>
+          <PropertyCalendar
+            location={listing.location}
+            stayDates={stayDates}
+            onStayDatesChange={onStayDatesChange}
+          />
 
           <div className="property__divider" />
 
-          <section id="reviews" className="property__section">
-            <h2 className="property__section-title">
-              {reviews.length > 0 ? `${(reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(2)} · ${reviews.length} відгуків` : 'Відгуків ще немає'}
-            </h2>
-            {reviews.length > 0 && <div className="property__reviews">
-              {reviews.map((review) => {
-                const authorName = review.authorName || 'Анонімний користувач'
-                const avatarUrl = review.avatarUrl && (review.avatarUrl.startsWith('/') || /^https?:\/\//i.test(review.avatarUrl))
-                  ? review.avatarUrl
-                  : null
-                return (
-                <article key={review.id} className="property__review">
-                  <div className="property__review-avatar">
-                    {avatarUrl ? <img src={avatarUrl} alt="" /> : authorName.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <h3>{authorName}</h3>
-                    <span className="property__review-rating"><Star size={14} fill="currentColor" aria-hidden /> {review.rating.toFixed(1)}</span>
-                    <p>{review.comment}</p>
-                  </div>
-                </article>
-                )
-              })}
-            </div>}
-            <form className="property__review-form" onSubmit={handleReviewSubmit}>
-              <h3>Залишити відгук</h3>
-              <label>
-                <span>Оцінка</span>
-                <select value={reviewRating} onChange={(event) => setReviewRating(Number(event.target.value))}>
-                  {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} з 5</option>)}
-                </select>
-              </label>
-              <label>
-                <span>Коментар</span>
-                <textarea value={reviewComment} onChange={(event) => setReviewComment(event.target.value)} maxLength={2000} required />
-              </label>
-              {reviewError && <p className="property__review-error" role="alert">{reviewError}</p>}
-              <button type="submit" disabled={isReviewSubmitting}>{isReviewSubmitting ? 'Надсилання…' : 'Додати відгук'}</button>
-            </form>
-          </section>
+          <PropertyReviews
+            listingId={listing.id}
+            initialReviews={listing.reviews}
+            onReviewAdded={onReviewAdded}
+          />
 
           <div className="property__divider" />
 

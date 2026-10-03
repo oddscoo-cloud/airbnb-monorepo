@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { X } from 'lucide-react'
 import './SignInModal.css'
 import { useGoogleLogin } from '@react-oauth/google'
+import { apiRequest } from '../../api/http'
 
 interface SignInModalProps {
   onClose: () => void
@@ -13,13 +14,10 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     try {
-      const res = await fetch('/api/auth/google', {
+      await apiRequest<unknown>('/api/auth/google', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ access_token: tokenResponse.access_token }),
       })
-      if (!res.ok) throw new Error('Auth failed')
-      await res.json()
       onClose()
     } catch (err) {
       console.error(err)
@@ -38,17 +36,12 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const data = await apiRequest<{ access_token: string; role: string }>('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ email, password }),
+        fallbackError: () => 'Не удалось выполнить вход',
       })
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message ?? 'Не удалось выполнить вход')
-      }
 
       sessionStorage.setItem('access_token', data.access_token)
       onAuthenticated(email, data.role)

@@ -1,50 +1,10 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { ArrowLeft, Eye, EyeOff, Plus, Save, Trash2, Upload } from 'lucide-react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { ArrowLeft, Plus } from 'lucide-react'
+import { AdminListingForm } from './AdminListingForm'
+import { AdminListingList } from './AdminListingList'
+import type { AdminAmenity, AdminImage, AdminListing, ListingForm } from './adminTypes'
+import { apiRequest } from '../../api/http'
 import './AdminDashboard.css'
-
-interface AdminAmenity {
-  id: number
-  name: string
-  icon: string
-}
-
-interface AdminImage {
-  id: number
-  imageUrl: string
-  isCover: boolean
-}
-
-interface AdminListing {
-  id: number
-  title: string
-  location: string | null
-  region: string | null
-  category: string | null
-  description: string | null
-  isPublished: boolean
-  pricePerNight: number
-  maxGuests: number
-  latitude: number
-  longtitude: number
-  images: AdminImage[]
-  amenities: AdminAmenity[]
-  reviewCount: number
-  rating: number | null
-}
-
-interface ListingForm {
-  title: string
-  location: string
-  region: string
-  category: string
-  description: string
-  pricePerNight: string
-  maxGuests: string
-  latitude: string
-  longtitude: string
-  amenityIds: number[]
-  publishAfterSave: boolean
-}
 
 interface AdminDashboardProps {
   accessToken: string
@@ -66,30 +26,12 @@ const EMPTY_FORM: ListingForm = {
   publishAfterSave: false,
 }
 
-const CATEGORIES = [
-  'Гарні краєвиди',
-  'Невеликі квартири',
-  'Великі квартири',
-  'Кімнати',
-  'Хостели',
-  'Люкс',
-  'У центрі міста',
-  'Сільська місцевість',
-  'Від дизайнера',
-  'Біля моря',
-  'Особняки',
-  'Легендарне',
-]
-
 async function adminRequest<T>(accessToken: string, url: string, options: RequestInit = {}): Promise<T> {
-  const headers = new Headers(options.headers)
-  headers.set('Authorization', `Bearer ${accessToken}`)
-  if (options.body && !(options.body instanceof FormData)) headers.set('Content-Type', 'application/json')
-
-  const response = await fetch(url, { ...options, headers })
-  const body = response.status === 204 ? null : await response.json().catch(() => null)
-  if (!response.ok) throw new Error(body?.message ?? `Запит не виконано (${response.status})`)
-  return body as T
+  return apiRequest<T>(url, {
+    ...options,
+    accessToken,
+    fallbackError: (status) => `Запит не виконано (${status})`,
+  })
 }
 
 export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardProps) {
@@ -104,7 +46,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setIsLoading(true)
     setError('')
     try {
@@ -119,11 +61,11 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [accessToken])
 
   useEffect(() => {
     void loadData()
-  }, [accessToken])
+  }, [loadData])
 
   function startNew() {
     setSelectedId(null)
@@ -262,132 +204,26 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
       {(error || notice) && <p className={`admin-message${error ? ' admin-message--error' : ''}`} role={error ? 'alert' : 'status'}>{error || notice}</p>}
 
       <div className="admin-layout">
-        <section className="admin-list-panel" aria-label="Список объявлений">
-          <div className="admin-panel-heading">
-            <h2>Усі оголошення</h2>
-            <span>{listings.length}</span>
-          </div>
-          {isLoading ? <p className="admin-empty">Завантаження…</p> : listings.length === 0 ? <p className="admin-empty">Оголошень поки немає.</p> : (
-            <ul className="admin-list">
-              {listings.map((listing) => (
-                <li key={listing.id}>
-                  <button type="button" className={`admin-list-item${selectedId === listing.id ? ' admin-list-item--active' : ''}`} onClick={() => startEdit(listing)}>
-                    <span className="admin-list-item__image">
-                      {listing.images[0] && <img src={listing.images[0].imageUrl} alt="" />}
-                    </span>
-                    <span className="admin-list-item__copy">
-                      <strong>{listing.title}</strong>
-                      <span>{listing.location || 'Адреса не указана'}</span>
-                      <span className={`admin-status${listing.isPublished ? ' admin-status--published' : ''}`}>
-                        {listing.isPublished ? 'Опубликовано' : 'Черновик'} · ${listing.pricePerNight}/ніч
-                      </span>
-                    </span>
-                  </button>
-                  <button type="button" className="admin-icon-button admin-list-item__publish" onClick={() => void togglePublished(listing)} aria-label={listing.isPublished ? 'Снять с публикации' : 'Опубликовать'}>
-                    {listing.isPublished ? <EyeOff size={16} aria-hidden /> : <Eye size={16} aria-hidden />}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        <AdminListingList
+          listings={listings}
+          isLoading={isLoading}
+          selectedId={selectedId}
+          onEdit={startEdit}
+          onTogglePublished={(listing) => void togglePublished(listing)}
+        />
 
-        <section className="admin-form-panel" aria-label="Форма объявления">
-          <div className="admin-panel-heading">
-            <h2>{selectedId === null ? 'Новое объявление' : `Объявление #${selectedId}`}</h2>
-          </div>
-          <form className="admin-form" onSubmit={handleSubmit}>
-            <label className="admin-field admin-field--wide">
-              <span>Название</span>
-              <input required maxLength={160} value={form.title} onChange={(event) => update('title', event.target.value)} />
-            </label>
-            <label className="admin-field">
-              <span>Адрес / город</span>
-              <input required maxLength={160} value={form.location} onChange={(event) => update('location', event.target.value)} />
-            </label>
-            <label className="admin-field">
-              <span>Регион</span>
-              <input required maxLength={120} value={form.region} onChange={(event) => update('region', event.target.value)} />
-            </label>
-            <label className="admin-field">
-              <span>Категория</span>
-              <select required value={form.category} onChange={(event) => update('category', event.target.value)}>
-                <option value="">Выберите категорию</option>
-                {CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
-              </select>
-            </label>
-            <label className="admin-field">
-              <span>Цена за ночь, USD</span>
-              <input required type="number" min="1" step="0.01" value={form.pricePerNight} onChange={(event) => update('pricePerNight', event.target.value)} />
-            </label>
-            <label className="admin-field">
-              <span>Максимум гостей</span>
-              <input required type="number" min="1" max="30" value={form.maxGuests} onChange={(event) => update('maxGuests', event.target.value)} />
-            </label>
-            <label className="admin-field">
-              <span>Широта</span>
-              <input required type="number" min="-90" max="90" step="any" value={form.latitude} onChange={(event) => update('latitude', event.target.value)} />
-            </label>
-            <label className="admin-field">
-              <span>Долгота</span>
-              <input required type="number" min="-180" max="180" step="any" value={form.longtitude} onChange={(event) => update('longtitude', event.target.value)} />
-            </label>
-            <label className="admin-field admin-field--wide">
-              <span>Описание</span>
-              <textarea rows={5} maxLength={5000} value={form.description} onChange={(event) => update('description', event.target.value)} />
-            </label>
-
-            <fieldset className="admin-fieldset admin-field--wide">
-              <legend>Удобства</legend>
-              {amenities.length === 0 ? <p>Список удобств пока пуст.</p> : (
-                <div className="admin-checkboxes">
-                  {amenities.map((amenity) => (
-                    <label key={amenity.id}>
-                      <input
-                        type="checkbox"
-                        checked={form.amenityIds.includes(amenity.id)}
-                        onChange={(event) => update('amenityIds', event.target.checked
-                          ? [...form.amenityIds, amenity.id]
-                          : form.amenityIds.filter((id) => id !== amenity.id))}
-                      />
-                      {amenity.name}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </fieldset>
-
-            <div className="admin-field admin-field--wide">
-              <span>Фотографии</span>
-              {selectedImages.length > 0 && <div className="admin-image-list">
-                {selectedImages.map((image) => (
-                  <div key={image.id} className="admin-image-item">
-                    <img src={image.imageUrl} alt="Фото объявления" />
-                    {image.isCover && <span>Обложка</span>}
-                    <button type="button" className="admin-icon-button" onClick={() => void deleteImage(image)} aria-label="Удалить фото">
-                      <Trash2 size={15} aria-hidden />
-                    </button>
-                  </div>
-                ))}
-              </div>}
-              <label className="admin-upload">
-                <Upload size={17} aria-hidden /> Выбрать фото
-                <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(event) => setFiles(Array.from(event.target.files ?? []))} />
-              </label>
-              {files.length > 0 && <span className="admin-file-note">Выбрано файлов: {files.length}</span>}
-            </div>
-
-            <label className="admin-publish-check admin-field--wide">
-              <input type="checkbox" checked={form.publishAfterSave} onChange={(event) => update('publishAfterSave', event.target.checked)} />
-              Опубликовать после сохранения
-            </label>
-            <div className="admin-form-actions admin-field--wide">
-              <button className="admin-primary-button" type="submit" disabled={isSaving}>
-                <Save size={16} aria-hidden /> {isSaving ? 'Сохранение…' : 'Сохранить объявление'}
-              </button>
-            </div>
-          </form>
-        </section>
+        <AdminListingForm
+          selectedId={selectedId}
+          form={form}
+          amenities={amenities}
+          selectedImages={selectedImages}
+          files={files}
+          isSaving={isSaving}
+          onUpdate={update}
+          onFilesChange={setFiles}
+          onDeleteImage={(image) => void deleteImage(image)}
+          onSubmit={handleSubmit}
+        />
       </div>
     </main>
   )

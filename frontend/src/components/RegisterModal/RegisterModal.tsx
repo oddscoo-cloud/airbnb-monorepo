@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { X } from 'lucide-react'
 import './RegisterModal.css'
 import { useGoogleLogin } from '@react-oauth/google'
+import { apiRequest } from '../../api/http'
 
 const MAX_LENGTH = 50
 
@@ -14,13 +15,10 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     try {
-      const res = await fetch('/api/auth/google', {
+      await apiRequest<unknown>('/api/auth/google', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ access_token: tokenResponse.access_token }),
       })
-      if (!res.ok) throw new Error('Auth failed')
-      await res.json()
       onClose()
     } catch (err) {
       console.error(err)
@@ -45,20 +43,15 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
 
     setIsSubmitting(true)
     try {
-      const response = await fetch('/api/auth/register', {
+      const data = await apiRequest<{ role?: string }>('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
           password,
           confirm_password: repeatPassword,
         }),
+        fallbackError: () => 'Не удалось зарегистрироваться',
       })
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message ?? 'Не удалось зарегистрироваться')
-      }
 
       onAuthenticated(email, data.role ?? 'Guest')
       onClose()

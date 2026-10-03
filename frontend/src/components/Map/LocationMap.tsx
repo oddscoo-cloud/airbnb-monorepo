@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { useEffect } from 'react'
-import type { Listing } from '../CategoryListings/CategoryListings'
+import type { Listing } from '../../types/listing'
 import 'leaflet/dist/leaflet.css'
 import './LocationMap.css'
 
