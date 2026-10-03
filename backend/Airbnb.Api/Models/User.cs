@@ -11,6 +11,9 @@ public class User
     [Column("email")]
     public required string Email { get; set; }
 
+    [Column("facebook_id")]
+    public string? FacebookId { get; set; }
+
     [Column("password_hash")]
     public string? PasswordHash { get; set; }
 
