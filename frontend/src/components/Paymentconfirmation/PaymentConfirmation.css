@@ -1,5 +1,4 @@
-/* Точные значения из Figma (узел 53:3161 "Оплата") — тот же дизайн-язык,
-   что и BookingRequest (bg #dddbd7, контурные карточки 1px solid #211e1a) */
+/* Цвета и типографика по макету Figma; общая палитра с экраном бронирования. */
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800&family=Inknut+Antiqua:wght@500;700&family=Inder&display=swap');
 
 .payment {
@@ -70,7 +69,7 @@
   border-top: 1px solid #211e1a;
 }
 
-/* Main column */
+/* Основная колонка */
 
 .payment__title {
   margin: 0 0 24px;
@@ -153,7 +152,7 @@
   background: #211e1a;
 }
 
-/* Payment options (same contiguous-card pattern as BookingRequest) */
+/* Варианты оплаты по шаблону смежных карточек BookingRequest */
 
 .payment__payment-options {
   display: flex;
@@ -235,7 +234,7 @@
   background: #211e1a;
 }
 
-/* Payment method — selector row + card form */
+/* Способ оплаты: строка выбора и форма карты */
 
 .payment__method-picker {
   display: flex;
@@ -320,7 +319,7 @@
   color: #a6a098;
 }
 
-/* "Потрібно для подорожі" */
+/* Требования к поездке */
 
 .payment__requirement {
   padding: 12px 0;
@@ -340,7 +339,7 @@
   color: #48433d;
 }
 
-/* Policy text blocks */
+/* Текст правил и условий */
 
 .payment__policy-text {
   margin: 0 0 12px;
@@ -413,7 +412,7 @@
   transform: translateY(0);
 }
 
-/* Summary sidebar (identical to BookingRequest's) */
+/* Боковая сводка по шаблону BookingRequest */
 
 .payment__summary {
   align-self: start;
@@ -491,7 +490,7 @@
   margin: 4px 0;
 }
 
-/* Footer */
+/* Нижняя часть страницы */
 
 .payment__footer {
   display: flex;

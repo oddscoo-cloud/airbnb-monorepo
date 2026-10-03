@@ -1,3 +1,4 @@
+// Общая UI-модель объявления после преобразования ответа API.
 export interface ListingAmenity {
   id: number
   name: string

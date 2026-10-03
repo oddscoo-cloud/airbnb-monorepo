@@ -6,6 +6,7 @@ type PaymentMethodSectionProps = {
 }
 
 export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
+  // Локальное состояние полей без передачи реквизитов на сервер.
   const [cardNumber, setCardNumber] = useState('')
   const [expiry, setExpiry] = useState('')
   const [cvv, setCvv] = useState('')
@@ -14,12 +15,14 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
   function handlePaymentSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
+    // Очистка номера карты от нецифровых символов перед проверкой длины.
     const cardDigits = cardNumber.replace(/\D/g, '')
     if (cardDigits.length < 13 || cardDigits.length > 19) {
       window.alert('Номер картки має містити від 13 до 19 цифр.')
       return
     }
 
+    // Сравнение срока MM / YY с началом текущего месяца.
     const [month, year] = expiry.split('/').map((part) => Number(part.trim()))
     const expirationDate = new Date(2000 + year, month)
     const currentMonth = new Date()
@@ -31,6 +34,7 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
       return
     }
 
+    // Демонстрационное подтверждение без авторизации и списания средств.
     window.alert('Оплату успішно підтверджено!')
     onPaid()
   }

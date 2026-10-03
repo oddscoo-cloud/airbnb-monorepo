@@ -1,6 +1,4 @@
-/* Same design system as RegisterModal — 'Group 267' in Figma reuses the identical
-   frame structure (Rectangle 36 background, Frame 19/20/25/21/22/23), so these
-   tokens (bg, radius, border, shadow, font) are the ones already confirmed there. */
+/* Та же структура и визуальные параметры, что и у RegisterModal. */
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap');
 
 .sign-in-modal__overlay {

@@ -12,6 +12,7 @@ interface RegisterModalProps {
 }
 
 export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) {
+  // Обмен Google OAuth-токена; синхронизация профиля App в этом callback не подключена.
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     try {
@@ -33,6 +34,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Локальная проверка пароля перед запросом регистрации.
     event.preventDefault()
     setError('')
 
@@ -53,6 +55,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
         fallbackError: () => 'Не удалось зарегистрироваться',
       })
 
+      // Передача данных пользователя в App и закрытие диалога после регистрации.
       onAuthenticated(email, data.role ?? 'Guest')
       onClose()
     } catch (submitError) {
@@ -62,6 +65,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
     }
   }
 
+  // Закрытие по клику на overlay; изоляция кликов внутри диалога.
   return (
     <div className="register-modal__overlay" role="presentation" onClick={onClose}>
       <div

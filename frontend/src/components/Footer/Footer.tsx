@@ -43,6 +43,7 @@ const DESTINATIONS: Destination[] = [
   { id: '17', city: 'Сонома', type: 'Помешкання для відпоч…' },
 ]
 
+// Статические группы ссылок для колонок футера.
 const SUPPORT_LINKS = [
   'Довідковий центр',
   'AirCover',
@@ -67,6 +68,7 @@ interface FooterProps {
 }
 
 export function Footer({ onOpenMap }: FooterProps) {
+  // Состояние активной вкладки; список направлений пока не фильтруется.
   const [activeTab, setActiveTab] = useState('popular')
 
   return (
@@ -90,6 +92,7 @@ export function Footer({ onOpenMap }: FooterProps) {
         </div>
 
         <div className="destinations__grid">
+          {/* Направления и подписи из статического массива. */}
           {DESTINATIONS.map((destination) => (
             <a key={destination.id} className="destinations__item" href="#">
               <span className="destinations__city">{destination.city}</span>
@@ -146,6 +149,7 @@ export function Footer({ onOpenMap }: FooterProps) {
             <a
               href="#site-map"
               onClick={(event) => {
+                // Открытие карты через callback без перехода по якорю.
                 event.preventDefault()
                 onOpenMap()
               }}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { mapListingResponse, type ListingResponse } from './listings'
 
 describe('mapListingResponse', () => {
+  // Проверка преобразования полей API и приоритета обложки.
   it('uses the cover image first and maps API fields to the listing model', () => {
     const response: ListingResponse = {
       id: 42,
@@ -36,6 +37,7 @@ describe('mapListingResponse', () => {
     })
   })
 
+  // Проверка значений по умолчанию для необязательных полей.
   it('provides defaults when optional listing data is absent', () => {
     const response: ListingResponse = {
       id: 7,

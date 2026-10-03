@@ -20,8 +20,11 @@ export interface ListingResponse {
   reviewCount: number
 }
 
+// Преобразование ответа backend в общую UI-модель Listing.
 export function mapListingResponse(item: ListingResponse): Listing {
+  // Значения по умолчанию для отсутствующих списков.
   const images = item.images ?? []
+  // Приоритет обложки в каталоге и галерее.
   const orderedImages = [...images].sort((left, right) => Number(right.isCover) - Number(left.isCover))
 
   return {
@@ -46,6 +49,7 @@ export function mapListingResponse(item: ListingResponse): Listing {
 }
 
 export async function getListings(): Promise<Listing[]> {
+  // Загрузка DTO и преобразование каждой записи для UI.
   const data = await apiRequest<ListingResponse[]>('/api/listings', {
     fallbackError: (status) => `Не вдалося завантажити помешкання (${status})`,
   })

@@ -10,6 +10,7 @@ type PropertyCalendarProps = {
   onStayDatesChange: (dates: StayDates) => void
 }
 
+// Сетка месяца с понедельником в начале недели и пустыми ячейками до первого числа.
 function getMonthGrid(year: number, month: number) {
   const first = new Date(year, month, 1)
   const startOffset = (first.getDay() + 6) % 7
@@ -32,6 +33,7 @@ function formatRange({ start, end }: StayDates) {
 }
 
 export function PropertyCalendar({ location, stayDates, onStayDatesChange }: PropertyCalendarProps) {
+  // Видимые месяцы — локальное состояние; выбранные даты принадлежат App.
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const today = new Date()
     return new Date(today.getFullYear(), today.getMonth(), 1)
@@ -39,8 +41,10 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
 
   function handleDateClick(date: Date) {
     const { start, end } = stayDates
+    // Начало нового диапазона при первом выборе или после завершённого диапазона.
     if (!start || end) {
       onStayDatesChange({ start: date, end: null })
+    // Порядок границ при выборе более раннего второго дня.
     } else if (date < start) {
       onStayDatesChange({ start: date, end: start })
     } else if (date.getTime() !== start.getTime()) {
@@ -53,6 +57,7 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
     const rangeEnd = stayDates.end ?? stayDates.start
     const min = new Date(Math.min(stayDates.start.getTime(), rangeEnd.getTime()))
     const max = new Date(Math.max(stayDates.start.getTime(), rangeEnd.getTime()))
+    // Нормализация сравниваемого значения до начала календарного дня.
     const candidate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
     return candidate >= min && candidate <= max
   }
@@ -90,6 +95,7 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
       </div>
 
       <div className="property__calendars">
+        {/* Два соседних месяца; offset сдвигает второй месяц вперёд. */}
         {Array.from({ length: 2 }, (_, offset) => {
           const monthDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + offset, 1)
           const year = monthDate.getFullYear()

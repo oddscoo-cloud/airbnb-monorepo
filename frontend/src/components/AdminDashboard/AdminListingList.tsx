@@ -11,6 +11,7 @@ type AdminListingListProps = {
 
 export function AdminListingList({ listings, isLoading, selectedId, onEdit, onTogglePublished }: AdminListingListProps) {
   return (
+    // Отображение списка; редактирование и публикация обрабатываются родителем.
     <section className="admin-list-panel" aria-label="Список объявлений">
       <div className="admin-panel-heading">
         <h2>Усі оголошення</h2>

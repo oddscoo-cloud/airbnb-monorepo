@@ -12,6 +12,7 @@ export function RegionPickerPanel({ regions, onClose, onSelectRegion }: RegionPi
       <div className="region-picker__title">Пошук за регіонами</div>
 
       <div className="region-picker__grid">
+        {/* Список регионов из props без отдельного API-запроса. */}
         {regions.map((region) => (
           <button
             key={region}

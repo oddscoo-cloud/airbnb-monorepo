@@ -43,6 +43,7 @@ export function AdminListingForm({
   onSubmit,
 }: AdminListingFormProps) {
   return (
+    // Controlled-форма; значения и обработчики принадлежат AdminDashboard.
     <section className="admin-form-panel" aria-label="Форма объявления">
       <div className="admin-panel-heading">
         <h2>{selectedId === null ? 'Новое объявление' : `Объявление #${selectedId}`}</h2>
@@ -92,6 +93,7 @@ export function AdminListingForm({
           <legend>Удобства</legend>
           {amenities.length === 0 ? <p>Список удобств пока пуст.</p> : (
             <div className="admin-checkboxes">
+              {/* Набор id выбранных удобств. */}
               {amenities.map((amenity) => (
                 <label key={amenity.id}>
                   <input
@@ -110,6 +112,7 @@ export function AdminListingForm({
 
         <div className="admin-field admin-field--wide">
           <span>Фотографии</span>
+          {/* Раздельное отображение сохранённых изображений и новых файлов. */}
           {selectedImages.length > 0 && <div className="admin-image-list">
             {selectedImages.map((image) => (
               <div key={image.id} className="admin-image-item">
@@ -121,6 +124,7 @@ export function AdminListingForm({
               </div>
             ))}
           </div>}
+          {/* Видимая метка для скрытого input выбора файлов. */}
           <label className="admin-upload">
             <Upload size={17} aria-hidden /> Выбрать фото
             <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(event) => onFilesChange(Array.from(event.target.files ?? []))} />

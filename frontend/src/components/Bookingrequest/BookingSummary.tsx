@@ -10,6 +10,7 @@ type BookingSummaryProps = {
 
 export function BookingSummary({ listing, stayNights, totalPrice, formatMoney }: BookingSummaryProps) {
   return (
+    // Отображение сводки по готовым props без собственного расчёта состояния.
     <aside className="booking__summary">
       <div className="booking__summary-card">
         <img className="booking__summary-image" src={listing.image} alt="Помешкання" />

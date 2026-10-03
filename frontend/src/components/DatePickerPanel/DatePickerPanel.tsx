@@ -2,6 +2,7 @@ import './DatePickerPanel.css'
 
 const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
 
+// Демо-данные календаря главного поиска, не связанные с датами поездки.
 const MONTH_DATA = [
   { month: 'Листопад 2021', days: [null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, null] },
   { month: 'Грудень 2021', days: [null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] },
@@ -25,6 +26,7 @@ export function DatePickerPanel({ onClose }: DatePickerPanelProps) {
             </div>
 
             <div className="date-picker__days">
+              {/* Пустые ячейки перед первым числом месяца. */}
               {month.days.map((day, index) => (
                 <span
                   key={`${month.month}-${index}`}
@@ -38,6 +40,7 @@ export function DatePickerPanel({ onClose }: DatePickerPanelProps) {
         ))}
       </div>
 
+      {/* Кнопки закрытия демонстрационной панели. */}
       <div className="date-picker__footer">
         <button type="button" className="date-picker__action" onClick={onClose}>Точні дати</button>
         <button type="button" className="date-picker__action" onClick={onClose}>+/- 1 день</button>

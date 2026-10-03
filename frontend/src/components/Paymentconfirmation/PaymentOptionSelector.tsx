@@ -13,6 +13,7 @@ export function PaymentOptionSelector({
   onPaymentOptionChange,
   formatMoney,
 }: PaymentOptionSelectorProps) {
+  // Расчёт второй части как остатка для точного совпадения с totalPrice.
   const firstInstallment = Math.round(totalPrice * 50) / 100
   const secondInstallment = totalPrice - firstInstallment
 

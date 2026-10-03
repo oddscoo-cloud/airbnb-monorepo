@@ -1,5 +1,4 @@
-/* Same design tokens as BookingRequest (Nunito Sans + dark palette) — this screen
-   is part of the same booking flow. */
+/* Общая типографика и цветовая палитра с экраном BookingRequest. */
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800&display=swap');
 
 .location-map {

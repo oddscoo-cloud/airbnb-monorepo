@@ -24,13 +24,16 @@ export function SearchForm({
   onClosePanels,
   onOpenMap,
 }: SearchFormProps) {
+  // Активная панель поиска: регион, даты или закрытое состояние.
   const [activePanel, setActivePanel] = useState<'region' | 'dates' | null>(null)
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Отмена перезагрузки формы; отправка поиска на сервер пока не подключена.
     event.preventDefault()
   }
 
   function openRegionPanel() {
+    // Изменение оформления header через callback родителя.
     setActivePanel('region')
     onFocusRegion?.()
   }
@@ -41,6 +44,7 @@ export function SearchForm({
   }
 
   function closePanels() {
+    // Закрытие панели и возврат обычного оформления шапки.
     setActivePanel(null)
     onClosePanels?.()
   }
@@ -108,6 +112,7 @@ export function SearchForm({
 
       <ShowMapButton onClick={() => onOpenMap?.()} />
 
+      {/* Передача выбранного региона родителю и закрытие панели. */}
       {activePanel === 'region' && (
         <RegionPickerPanel
           regions={regions}

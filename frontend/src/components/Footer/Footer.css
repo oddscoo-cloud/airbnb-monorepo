@@ -1,6 +1,4 @@
-/* Fonts confirmed from Figma:
-   - 'Inknut Antiqua' (Medium/SemiBold) for section headings, tabs, footer column headings
-   - 'Inder' (Regular) for destination city names and all link text */
+/* Шрифты: Inknut Antiqua для заголовков и вкладок, Inder для городов и ссылок. */
 @import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
 
 
@@ -68,8 +66,7 @@
 }
 
 .destinations__type {
-  /* Subtitle color/size not confirmed via Figma (rate limit) - kept close to the
-     confirmed muted tone used for inactive tabs */
+  /* Цвет и размер подписи подобраны по приглушённому оттенку неактивных вкладок. */
   font-family: 'Inder', Arial, sans-serif;
   font-size: 13px;
   color: rgba(44, 40, 35, 0.6);
@@ -88,12 +85,11 @@
   cursor: pointer;
 }
 
-/* Site footer */
+/* Футер сайта */
 
 .site-footer {
   padding: 40px;
-  /* Exact footer background not confirmed via Figma (rate limit); kept
-     consistent with the header tone already used in App.css */
+  /* Фон футера согласован с оттенком шапки из App.css. */
   background: #f7f7f7;
   border-top: 1px solid #ebebeb;
 }

@@ -25,6 +25,7 @@ export function CategoryListings({
   onClearRegionFilter,
   onOpenListing,
 }: CategoryListingsProps) {
+  // Локальное состояние фильтров каталога.
   const [activeCategory, setActiveCategory] = useState('all')
   const [taxIncluded, setTaxIncluded] = useState(false)
   const [minPrice, setMinPrice] = useState('')
@@ -33,8 +34,10 @@ export function CategoryListings({
   const [guests, setGuests] = useState('1')
   const [visibleCount, setVisibleCount] = useState(8)
 
+  // Пересчёт фильтров только при изменении входных данных.
   const filteredListings = useMemo(() => {
     return listings.filter((listing) => {
+      // Сопоставление id выбранной категории с названием категории объявления.
       const matchesCategory = activeCategory === 'all' || listing.category === CATEGORIES.find((category) => category.id === activeCategory)?.label
       const matchesRegion = !selectedRegion || listing.region.toLocaleLowerCase() === selectedRegion.toLocaleLowerCase()
       const matchesMinPrice = !minPrice || listing.price >= Number(minPrice)
@@ -46,10 +49,12 @@ export function CategoryListings({
   }, [activeCategory, guests, listings, maxPrice, minPrice, minimumRating, selectedRegion])
 
   useEffect(() => {
+    // Возврат к первой порции карточек после изменения фильтров.
     setVisibleCount(8)
   }, [activeCategory, guests, maxPrice, minPrice, minimumRating, selectedRegion])
 
   function clearFilters() {
+    // Сброс региона в App и остальных критериев в локальном состоянии.
     onClearRegionFilter()
     setActiveCategory('all')
     setMinPrice('')
@@ -57,8 +62,10 @@ export function CategoryListings({
     setMinimumRating('')
     setGuests('1')
   }
+  // Клиентский лимит карточек без запроса следующей страницы API.
   const visibleListings = filteredListings.slice(0, visibleCount)
 
+  // Доступные регионы из текущего списка объявлений.
   const allRegions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
 
   return (
@@ -82,6 +89,7 @@ export function CategoryListings({
         onGuestsChange={setGuests}
       />
 
+      {/* Пустой список при загрузке или ошибке вместо устаревших карточек. */}
       <ListingGrid
         listings={isLoading || error ? [] : visibleListings}
         isLoading={isLoading}

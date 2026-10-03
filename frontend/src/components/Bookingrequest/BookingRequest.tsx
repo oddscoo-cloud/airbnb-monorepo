@@ -32,8 +32,10 @@ export function BookingRequest({
   onEditDates?: () => void
   onEditGuests?: () => void
 }) {
+  // Общая сумма с фиксированной платой за уборку, без отдельного расчёта налогов.
   const totalPrice = listing.price * stayNights + 20
   const formatMoney = (amount: number) => amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  // Отображение диапазона из общего состояния App.
   const dateRangeText = stayDates.start
     ? `${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`
     : 'Дати не обрано'
@@ -87,6 +89,7 @@ export function BookingRequest({
             </div>
           </section>
 
+          {/* Способ оплаты из общего состояния App. */}
           <BookingPaymentOptions
             paymentOption={paymentOption}
             totalPrice={totalPrice}
@@ -94,6 +97,7 @@ export function BookingRequest({
             onPaymentOptionChange={onPaymentOptionChange}
           />
 
+          {/* Продолжение сценария после успешного входа. */}
           <BookingLoginSection onContinue={onContinue} onAuthenticated={onAuthenticated} />
         </main>
 

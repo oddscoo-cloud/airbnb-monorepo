@@ -15,19 +15,17 @@ const pinIcon = L.divIcon({
   iconAnchor: [20, 20],
 })
 
-// react-leaflet не даёт готового пропа "показать/скрыть слой" на лету — приходится
-// управлять слоем императивно через инстанс карты (useMap), поэтому вынесено в
-// отдельный компонент-помощник, который ничего не рендерит сам.
+// Управление видимостью слоя через экземпляр карты, полученный из useMap.
+// Компонент-помощник не создаёт DOM-разметку и возвращает null.
 function TransitLayerToggle({ enabled }: { enabled: boolean }) {
   const map = useMap()
 
   useEffect(() => {
+    // Добавление слоя только во включённом состоянии; удаление при выключении или размонтировании.
     if (!enabled) return
 
-    // Публичного бесплатного слоя общественного транспорта в стиле Google Maps
-    // у OpenStreetMap нет "из коробки" — здесь просто пример подключения стороннего
-    // тайл-слоя (Thunderforest Transit). Для реальной работы нужен свой бесплатный
-    // API-ключ на thunderforest.com (тоже без привязки карты).
+    // Пример подключения стороннего слоя общественного транспорта Thunderforest.
+    // Для работы требуется API-ключ; в OpenStreetMap аналогичный готовый слой отсутствует.
     const transitLayer = L.tileLayer(
       'https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=YOUR_THUNDERFOREST_KEY',
       { opacity: 0.9 },
@@ -51,6 +49,7 @@ function FitListingsBounds({ listings }: { listings: Listing[] }) {
   const map = useMap()
 
   useEffect(() => {
+    // Исключение записей без координат из расчёта границ карты.
     const locations = listings
       .filter((listing) => listing.latitude !== 0 && listing.longitude !== 0)
       .map((listing) => [listing.latitude, listing.longitude] as [number, number])
@@ -62,6 +61,7 @@ function FitListingsBounds({ listings }: { listings: Listing[] }) {
 }
 
 export function LocationMap({ listings, onBack }: LocationMapProps) {
+  // Список объявлений с координатами для центра карты и маркеров.
   const [showTransit, setShowTransit] = useState(false)
   const locatedListings = listings.filter((listing) => listing.latitude !== 0 && listing.longitude !== 0)
   const initialCenter: [number, number] = locatedListings.length

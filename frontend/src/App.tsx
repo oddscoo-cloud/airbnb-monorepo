@@ -16,6 +16,7 @@ import type { Listing } from './types/listing'
 import './App.css'
 
 function App() {
+  // Общее состояние экранов приложения.
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false)
@@ -26,22 +27,27 @@ function App() {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
+  // Revision для повторной загрузки каталога через useListings.
   const [listingsRevision, setListingsRevision] = useState(0)
   const { listings, isLoading: listingsLoading, error: listingsError } = useListings(listingsRevision)
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
 
+  // Уникальные регионы из списка объявлений.
   const regions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
+  // Условная длительность по умолчанию: пять ночей.
   const stayNights = stayDates.start && stayDates.end
     ? Math.max(1, Math.round((stayDates.end.getTime() - stayDates.start.getTime()) / 86_400_000))
     : 5
 
   function handleOpenListing(listing: Listing) {
+    // Сброс дат при открытии объявления.
     setSelectedListing(listing)
     setStayDates({ start: null, end: null })
     setActivePage('listing')
   }
 
   function handleBackHome() {
+    // Сброс выбранного объявления и дат при возврате в каталог.
     setActivePage('home')
     setSelectedListing(null)
     setStayDates({ start: null, end: null })
@@ -49,6 +55,7 @@ function App() {
 
   function handleStartSearch() {
     handleBackHome()
+    // Прокрутка к поиску после обновления DOM главного экрана.
     requestAnimationFrame(() => {
       const searchForm = document.querySelector<HTMLElement>('.search-form')
       searchForm?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -58,12 +65,14 @@ function App() {
 
   function handleJumpToListingCalendar() {
     setActivePage('listing')
+    // Прокрутка к календарю после переключения на экран объявления.
     requestAnimationFrame(() => {
       const calendarSection = document.getElementById('calendar')
       calendarSection?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
   }
 
+  // Условная маршрутизация экранов без отдельной библиотеки.
   if (activePage === 'admin' && accountRole === 'Admin') {
     return (
       <AdminDashboard
@@ -175,6 +184,7 @@ function App() {
     )
   }
 
+  // Режим карты заменяет каталог на главном экране.
   return (
     <div className="App">
       <div className="page">

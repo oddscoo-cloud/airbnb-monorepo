@@ -1,4 +1,5 @@
 
+/* Глобальная база: типографика, box sizing и минимальная высота React-контейнера. */
 :root {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.4;

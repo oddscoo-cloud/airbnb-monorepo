@@ -1,4 +1,4 @@
-/* Fonts confirmed from Figma: Inknut Antiqua (Medium/SemiBold) for nav, labels, prices, buttons */
+/* Шрифт Inknut Antiqua для навигации, подписей, цен и кнопок. */
 @import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
 
 .category-listings {
@@ -350,7 +350,7 @@
   font-weight: 600;
 }
 
-/* Continue browsing */
+/* Продолжение просмотра */
 
 .category-listings__continue {
   display: flex;

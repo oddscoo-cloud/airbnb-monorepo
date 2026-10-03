@@ -6,6 +6,7 @@ type PaymentTripSectionProps = {
 }
 
 export function PaymentTripSection({ listing, stayDates }: PaymentTripSectionProps) {
+  // Форматирование дат; ссылки редактирования пока без обработчиков.
   const dateRangeText = stayDates.start
     ? `${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`
     : 'Дати не обрано'

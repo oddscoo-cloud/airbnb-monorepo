@@ -39,12 +39,14 @@ export function CategoryNavigation({
   guests,
   onGuestsChange,
 }: CategoryNavigationProps) {
+  // Локальное состояние видимости меню; значения фильтров принадлежат родителю.
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [isRegionPickerOpen, setIsRegionPickerOpen] = useState(false)
 
   return (
     <div className="category-nav">
       <ul className="category-nav__list">
+        {/* Иконки категорий из конфигурации categories.ts. */}
         {CATEGORIES.map((category) => {
           const Icon = category.icon
           const isActive = category.id === activeCategory
@@ -74,6 +76,7 @@ export function CategoryNavigation({
           <span>Фільтри</span>
         </button>
 
+        {/* Передача значений полей родителю для пересчёта каталога. */}
         {isFilterMenuOpen && (
           <div className="category-nav__filter-menu" role="dialog" aria-label="Фільтри помешкань">
             <label className="category-nav__filter-field">
@@ -113,6 +116,7 @@ export function CategoryNavigation({
         )}
       </div>
 
+      {/* Отдельная панель выбора региона. */}
       {isRegionPickerOpen && (
         <div className="category-nav__region-picker">
           <div className="category-nav__region-picker-header">
@@ -145,6 +149,7 @@ export function CategoryNavigation({
         </div>
       )}
 
+      {/* Переключатель с поддержкой мыши, Enter и Space. */}
       <label className="category-nav__toggle">
         <span>Загальна сума до оподаткування</span>
         <span

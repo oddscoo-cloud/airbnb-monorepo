@@ -12,6 +12,7 @@ type ListingGridProps = {
 export function ListingGrid({ listings, isLoading, error, taxIncluded, onOpenListing }: ListingGridProps) {
   return (
     <div className="listings__grid">
+      {/* Приоритет состояний: загрузка, ошибка, пустой список, карточки. */}
       {isLoading ? <p>Завантаження помешкань…</p> : error ? <p role="alert">{error}</p> : listings.length === 0 ? <p>За вибраними фільтрами помешкань не знайдено.</p> : listings.map((listing) => (
         <ListingCard
           key={listing.id}

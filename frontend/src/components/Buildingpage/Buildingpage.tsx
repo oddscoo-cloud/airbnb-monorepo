@@ -24,6 +24,7 @@ const SECTIONS = [
   { id: 'location', label: 'Розташування' },
 ]
 
+// Создание HTML-иконки маркера для Leaflet.
 const mapPinIcon = L.divIcon({
   html: renderToStaticMarkup(<span className="property__map-pin">HFU</span>),
   className: 'property__map-pin-wrapper',
@@ -31,6 +32,7 @@ const mapPinIcon = L.divIcon({
   iconAnchor: [18, 18],
 })
 
+// Переиспользуемая сводка цены для боковой панели объявления.
 function BookingWidget({
   listing,
   expanded = false,
@@ -44,6 +46,7 @@ function BookingWidget({
   dateRangeText?: string
   stayNights: number
 }) {
+  // Демонстрационная стоимость: цена за ночь, длительность и фиксированная уборка.
   const cleaningFee = 20
   const totalPrice = listing.price * stayNights + cleaningFee
 
@@ -120,6 +123,7 @@ type BuildingpageProps = {
 }
 
 export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn }: BuildingpageProps) {
+  // Локальное состояние навигации страницы объявления.
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
 
@@ -137,6 +141,7 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
     return `${startStr} — ${endStr}`
   }
 
+  // Нулевые координаты трактуются как отсутствие местоположения.
   const hasLocation = listing.latitude !== 0 && listing.longitude !== 0
   const mapCenter: [number, number] = [listing.latitude, listing.longitude]
   const locationMap = hasLocation ? (
@@ -151,6 +156,7 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
     </div>
   ) : <p>Координати помешкання не вказані.</p>
 
+  // Полноэкранный режим карты до возврата на страницу жилья.
   if (showMap) {
     return <LocationMap listings={[listing]} onBack={() => setShowMap(false)} />
   }
@@ -195,6 +201,7 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
             </div>
           </div>
 
+          {/* Cover-фото и до четырёх дополнительных изображений. */}
           <div className="property__gallery">
             {listing.gallery?.length ? <>
               <img className="property__gallery-main" src={listing.gallery[0]} alt={listing.title} />
@@ -245,6 +252,7 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
 
           <div className="property__divider" />
 
+          {/* Выбранные даты из App и callback их изменения. */}
           <PropertyCalendar
             location={listing.location}
             stayDates={stayDates}
@@ -253,6 +261,7 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
 
           <div className="property__divider" />
 
+          {/* Обновление агрегированных данных объявления после добавления отзыва. */}
           <PropertyReviews
             listingId={listing.id}
             initialReviews={listing.reviews}
@@ -292,5 +301,6 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
 }
 
 export default function Buildingpage(props: BuildingpageProps) {
+  // Публичная точка входа страницы объявления.
   return <PropertyDetail {...props} />
 }

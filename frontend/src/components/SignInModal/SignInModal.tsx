@@ -11,6 +11,7 @@ interface SignInModalProps {
 }
 
 export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: SignInModalProps) {
+  // Обмен OAuth-токена через backend; ниже расположена форма парольного входа.
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     try {
@@ -31,6 +32,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Отмена стандартной отправки формы для отображения ошибки в модальном окне.
     event.preventDefault()
     setError('')
     setIsSubmitting(true)
@@ -43,6 +45,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
         fallbackError: () => 'Не удалось выполнить вход',
       })
 
+      // Сохранение токена на время вкладки и обновление состояния пользователя в App.
       sessionStorage.setItem('access_token', data.access_token)
       onAuthenticated(email, data.role)
       onClose()
@@ -53,6 +56,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
     }
   }
 
+  // Закрытие по клику на фон; изоляция кликов внутри окна.
   return (
     <div className="sign-in-modal__overlay" role="presentation" onClick={onClose}>
       <div

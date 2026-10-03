@@ -25,6 +25,7 @@ export function PaymentConfirmation({
   onHome: () => void
   onPaid: () => void
 }) {
+  // Итоговая цена по той же формуле, что и на шаге бронирования.
   const totalPrice = listing.price * stayNights + 20
   const formatMoney = (amount: number) => amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -51,6 +52,7 @@ export function PaymentConfirmation({
             </div>
           </div>
 
+          {/* Экранные подразделы в отдельных компонентах. */}
           <PaymentTripSection listing={listing} stayDates={stayDates} />
 
           <div className="payment__divider" />
@@ -62,6 +64,7 @@ export function PaymentConfirmation({
             formatMoney={formatMoney}
           />
 
+          {/* Демонстрационное подтверждение без запроса к платёжному API. */}
           <PaymentMethodSection onPaid={onPaid} />
 
           <div className="payment__divider" />
@@ -126,6 +129,7 @@ export function PaymentConfirmation({
             збитків (стягнути кошти відповідно до мого способу оплати).
           </p>
 
+          {/* Связь кнопки с формой по id, несмотря на разное положение в DOM. */}
           <button type="submit" form="payment-form" className="payment__submit">
             Підтвердити й оплатити
           </button>

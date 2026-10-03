@@ -1,3 +1,4 @@
+/* Оформление общей шапки главного экрана и базовой ширины страницы. */
 .site-header {
   display: flex;
   flex-direction: column;

@@ -1,3 +1,4 @@
+// Типы данных административного API и формы (числовые поля формы представлены строками).
 export interface AdminAmenity {
   id: number
   name: string

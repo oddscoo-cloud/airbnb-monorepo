@@ -13,6 +13,7 @@ type PropertyReviewsProps = {
 }
 
 export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: PropertyReviewsProps) {
+  // Локальные отзывы и поля формы; начальные данные приходят с объявлением.
   const [reviews, setReviews] = useState(initialReviews)
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewComment, setReviewComment] = useState('')
@@ -20,11 +21,13 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
   const [isReviewSubmitting, setIsReviewSubmitting] = useState(false)
 
   async function handleReviewSubmit(event: FormEvent<HTMLFormElement>) {
+    // Отмена стандартной отправки формы и включение состояния загрузки.
     event.preventDefault()
     setReviewError('')
     setIsReviewSubmitting(true)
 
     try {
+      // Access token текущей вкладки для авторизованной отправки отзыва.
       const accessToken = sessionStorage.getItem('access_token')
       const result = await apiRequest<ListingReview>(`/api/listings/${listingId}/reviews`, {
         method: 'POST',
@@ -33,6 +36,7 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
         fallbackError: () => 'Не вдалося додати відгук.',
       })
 
+      // Обновление списка отзывов, сброс формы и запрос обновления объявления в App.
       setReviews((current) => [result, ...current])
       setReviewComment('')
       setReviewRating(5)
@@ -54,6 +58,7 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
       {reviews.length > 0 && <div className="property__reviews">
         {reviews.map((review) => {
           const authorName = review.authorName || 'Анонімний користувач'
+          // Допустимые адреса аватара: локальный путь или HTTP(S) URL.
           const avatarUrl = review.avatarUrl && (review.avatarUrl.startsWith('/') || /^https?:\/\//i.test(review.avatarUrl))
             ? review.avatarUrl
             : null

@@ -20,6 +20,7 @@ interface Category {
   icon: ComponentType<{ size?: number; strokeWidth?: number; 'aria-hidden'?: boolean }>
 }
 
+// Категории: id хранится в state, label сопоставляется с категорией объявления.
 export const CATEGORIES: Category[] = [
   { id: 'all', label: 'Усі помешкання', icon: Home },
   { id: 'views', label: 'Гарні краєвиди', icon: Mountain },

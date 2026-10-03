@@ -8,6 +8,7 @@ type ListingCardProps = {
 }
 
 export function ListingCard({ listing, taxIncluded, onOpenListing }: ListingCardProps) {
+  // Клавиатурное управление карточкой и изоляция клика вложенной кнопки.
   return (
     <article
       className="listing-card"
@@ -23,6 +24,7 @@ export function ListingCard({ listing, taxIncluded, onOpenListing }: ListingCard
       aria-label={`Відкрити оголошення в ${listing.location}`}
     >
       <div className="listing-card__image-wrap">
+        {/* Необязательное фото с отложенной загрузкой. */}
         {listing.image && <img
           className="listing-card__image"
           src={listing.image}

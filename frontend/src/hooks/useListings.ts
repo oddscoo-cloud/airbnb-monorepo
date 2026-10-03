@@ -8,12 +8,14 @@ type ListingsState = {
   error: string
 }
 
+// Загрузка каталога и состояние запроса для React-компонента.
 export function useListings(revision: number): ListingsState {
   const [listings, setListings] = useState<Listing[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    // Защита от обновления state после отмены эффекта.
     let isCurrent = true
 
     async function loadListings() {
@@ -29,6 +31,7 @@ export function useListings(revision: number): ListingsState {
       }
     }
 
+    // Асинхронная загрузка из эффекта без блокировки рендера.
     void loadListings()
     return () => { isCurrent = false }
   }, [revision])

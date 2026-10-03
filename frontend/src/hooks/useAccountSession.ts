@@ -5,6 +5,7 @@ type Account = {
   role: string
 }
 
+// Восстановление роли, обновление UI после входа и завершение сессии.
 export function useAccountSession() {
   const [accountRole, setAccountRole] = useState('')
   const [accountInitial, setAccountInitial] = useState(() => {
@@ -13,12 +14,14 @@ export function useAccountSession() {
   })
 
   useEffect(() => {
+    // Проверка текущего пользователя только при наличии access token.
     const accessToken = sessionStorage.getItem('access_token')
     if (!accessToken) {
       setAccountRole('')
       return
     }
 
+    // Защита от обновления state после размонтирования компонента.
     let isCurrent = true
     void apiRequest<Account>('/api/auth/me', {
       accessToken,
@@ -35,6 +38,7 @@ export function useAccountSession() {
   }, [])
 
   function handleAuthenticated(email: string, role: string) {
+    // Синхронизация sessionStorage и React state после успешного входа.
     const initial = email.trim().charAt(0).toUpperCase()
     sessionStorage.setItem('account_email', email)
     sessionStorage.setItem('account_role', role)
@@ -44,6 +48,7 @@ export function useAccountSession() {
 
   async function logout() {
     try {
+      // Поиск refresh token в доступной JavaScript cookie перед отзывом на backend.
       const refreshToken = document.cookie
         .split('; ')
         .find((cookie) => cookie.startsWith('refresh_token='))
@@ -59,6 +64,7 @@ export function useAccountSession() {
     } catch (error) {
       console.error('Logout failed', error)
     } finally {
+      // Очистка локальной сессии независимо от результата сетевого запроса.
       sessionStorage.removeItem('account_email')
       sessionStorage.removeItem('access_token')
       sessionStorage.removeItem('account_role')

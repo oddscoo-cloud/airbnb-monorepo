@@ -10,6 +10,7 @@ type PaymentSummaryProps = {
 
 export function PaymentSummary({ listing, stayNights, totalPrice, formatMoney }: PaymentSummaryProps) {
   return (
+    // Итоговая сводка по готовым данным без изменения состояния оплаты.
     <aside className="payment__summary">
       <div className="payment__summary-card">
         <img

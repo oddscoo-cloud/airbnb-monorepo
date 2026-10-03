@@ -8,6 +8,7 @@ type BookingPaymentOptionsProps = {
 }
 
 export function BookingPaymentOptions({ paymentOption, totalPrice, formatMoney, onPaymentOptionChange }: BookingPaymentOptionsProps) {
+  // Расчёт двух частей с учётом округления первой суммы.
   const firstInstallment = Math.round(totalPrice * 50) / 100
   const secondInstallment = totalPrice - firstInstallment
 

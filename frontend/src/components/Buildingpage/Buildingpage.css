@@ -1,4 +1,3 @@
-/* Точные значения из Figma (узел 53:3149 "Житло") */
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800&family=Inknut+Antiqua:wght@500;600&display=swap');
 
 .property {
@@ -8,7 +7,7 @@
   color: #211e1a;
 }
 
-/* Header */
+/* Шапка */
 
 .property__header {
   display: grid;
@@ -81,7 +80,7 @@
   cursor: pointer;
 }
 
-/* Layout */
+/* Основная раскладка */
 
 .property__layout {
   display: grid;
@@ -136,7 +135,7 @@
   cursor: pointer;
 }
 
-/* Gallery */
+/* Галерея */
 
 .property__gallery {
   display: grid;
@@ -167,7 +166,7 @@
   object-fit: cover;
 }
 
-/* Host title block */
+/* Заголовок объявления и сведения о жилье */
 
 .property__host-title {
   margin: 0 0 8px;
@@ -189,7 +188,7 @@
   background: #211e1a;
 }
 
-/* Highlights */
+/* Основные преимущества */
 
 .property__highlights {
   display: flex;
@@ -227,7 +226,7 @@
   color: #48433d;
 }
 
-/* Section nav */
+/* Навигация по разделам */
 
 .property__section-nav {
   position: sticky;
@@ -270,7 +269,7 @@
   font-size: 16px;
 }
 
-/* Description */
+/* Описание */
 
 .property__translate {
   margin: 0 0 16px;
@@ -298,7 +297,7 @@
   text-decoration: underline;
 }
 
-/* Sleeping */
+/* Спальные места */
 
 .property__sleeping {
   display: flex;
@@ -326,7 +325,7 @@
   font-size: 16px;
 }
 
-/* Amenities */
+/* Удобства */
 
 .property__amenities {
   display: grid;
@@ -363,7 +362,7 @@
   cursor: pointer;
 }
 
-/* Calendar */
+/* Календарь */
 
 .property__date-range {
   margin: 0 0 24px;
@@ -446,7 +445,7 @@
   cursor: pointer;
 }
 
-/* Reviews */
+/* Отзывы */
 
 .property__rating-categories {
   display: grid;
@@ -579,7 +578,7 @@
   font: 14px 'Nunito Sans', Arial, sans-serif;
 }
 
-/* Location */
+/* Расположение */
 
 .property__map-preview {
   position: relative;
@@ -640,7 +639,7 @@
   font-size: 16px;
 }
 
-/* Host */
+/* Хозяин */
 
 .property__host-card {
   display: flex;
@@ -709,7 +708,7 @@
   line-height: 1.5;
 }
 
-/* Rules */
+/* Правила */
 
 .property__rules-columns {
   display: grid;
@@ -743,7 +742,7 @@
   line-height: 1.5;
 }
 
-/* Sidebar / booking widget */
+/* Боковая панель и виджет бронирования */
 
 .property__sidebar {
   position: sticky;
@@ -902,7 +901,7 @@
   text-decoration: underline;
 }
 
-/* Footer */
+/* Нижняя часть страницы */
 
 .property__footer {
   display: flex;

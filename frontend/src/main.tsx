@@ -4,8 +4,10 @@ import './index.css'
 import App from './App.tsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
+// Монтирование дерева React в HTML-контейнер #root.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    {/* Контекст Google OAuth для дочерних компонентов. */}
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <App />
     </GoogleOAuthProvider>

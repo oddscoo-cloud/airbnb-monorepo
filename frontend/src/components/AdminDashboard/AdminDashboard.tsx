@@ -26,6 +26,7 @@ const EMPTY_FORM: ListingForm = {
   publishAfterSave: false,
 }
 
+// Access token для запросов к административному API.
 async function adminRequest<T>(accessToken: string, url: string, options: RequestInit = {}): Promise<T> {
   return apiRequest<T>(url, {
     ...options,
@@ -35,6 +36,7 @@ async function adminRequest<T>(accessToken: string, url: string, options: Reques
 }
 
 export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardProps) {
+  // Состояние списка, редактора и запросов админки.
   const [listings, setListings] = useState<AdminListing[]>([])
   const [amenities, setAmenities] = useState<AdminAmenity[]>([])
   const [form, setForm] = useState<ListingForm>(EMPTY_FORM)
@@ -47,6 +49,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   const [notice, setNotice] = useState('')
 
   const loadData = useCallback(async () => {
+    // Параллельная загрузка объявлений и справочника удобств.
     setIsLoading(true)
     setError('')
     try {
@@ -68,6 +71,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   }, [loadData])
 
   function startNew() {
+    // Сброс редактора для создания новой записи.
     setSelectedId(null)
     setSelectedImages([])
     setFiles([])
@@ -77,6 +81,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   }
 
   function startEdit(listing: AdminListing) {
+    // Преобразование числовых значений API в строки формы.
     setSelectedId(listing.id)
     setSelectedImages(listing.images)
     setFiles([])
@@ -98,10 +103,12 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   }
 
   function update<K extends keyof ListingForm>(field: K, value: ListingForm[K]) {
+    // Обновление одного типизированного поля формы.
     setForm((current) => ({ ...current, [field]: value }))
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Сохранение объявления до загрузки изображений, которым требуется его id.
     event.preventDefault()
     setIsSaving(true)
     setError('')
@@ -120,6 +127,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
         longtitude: Number(form.longtitude),
         amenityIds: form.amenityIds,
       }
+      // Преобразование числовых полей и выбор POST/PUT по режиму формы.
       const saved = await adminRequest<AdminListing>(
         accessToken,
         selectedId === null ? '/api/admin/listings' : `/api/admin/listings/${selectedId}`,
@@ -129,6 +137,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
       setSelectedImages(saved.images)
 
       let images = saved.images
+      // Передача бинарного файла через FormData.
       for (const [index, file] of files.entries()) {
         const imageForm = new FormData()
         imageForm.append('file', file)
@@ -142,6 +151,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
       setSelectedImages(images)
       setFiles([])
 
+      // Отдельный запрос публикации только при изменении статуса.
       if (form.publishAfterSave !== saved.isPublished) {
         await adminRequest<void>(accessToken, `/api/admin/listings/${saved.id}/publish`, {
           method: 'POST',
@@ -176,6 +186,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   }
 
   async function deleteImage(image: AdminImage) {
+    // Удаление изображений только для сохранённого объявления.
     if (selectedId === null) return
     try {
       await adminRequest<void>(accessToken, `/api/admin/listings/${selectedId}/images/${image.id}`, { method: 'DELETE' })

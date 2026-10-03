@@ -9,12 +9,14 @@ type BookingLoginSectionProps = {
 }
 
 export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLoginSectionProps) {
+  // Поля и состояние запроса формы входа на шаге бронирования.
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleLoginSubmit(event: FormEvent<HTMLFormElement>) {
+    // Отправка credentials через общий API-клиент без перезагрузки страницы.
     event.preventDefault()
     setLoginError('')
     setIsSubmitting(true)
@@ -27,6 +29,7 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
         fallbackError: () => 'Невірний логін або пароль',
       })
 
+      // Сохранение токена, обновление шапки и переход к следующему шагу.
       sessionStorage.setItem('access_token', data.access_token)
       onAuthenticated?.(email, data.role)
       onContinue()
@@ -37,6 +40,7 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
     }
   }
 
+  // Обмен OAuth-токена через backend; обработка результата сессии пока не подключена.
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
