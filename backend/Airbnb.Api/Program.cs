@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -31,6 +33,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromSeconds(30)
         };
+    })
+    .AddCookie("FacebookExternal")
+    .AddFacebook(FacebookDefaults.AuthenticationScheme, options =>
+    {
+        options.AppId = builder.Configuration["Authentication:Facebook:AppId"]
+            ?? throw new InvalidOperationException(
+                "Authentication:Facebook:AppId is not configured.");
+
+        options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"]
+            ?? throw new InvalidOperationException(
+                "Authentication:Facebook:AppSecret is not configured.");
+
+        options.CallbackPath = "/signin-facebook";
+        options.SignInScheme = "FacebookExternal";
     });
 
 builder.Services.AddAuthorization();
