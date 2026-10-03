@@ -4,7 +4,6 @@ public interface IUserRepository
 {
     Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken);
     Task<User?> FindByIdAsync(int id, CancellationToken cancellationToken);
-    Task<User?> FindByFacebookIdAsync(string facebookId, CancellationToken cancellationToken);
     Task AddAsync(User user, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }
@@ -16,13 +15,6 @@ public sealed class UserRepository(AppDbContext db) : IUserRepository
 
     public Task<User?> FindByIdAsync(int id, CancellationToken cancellationToken) =>
         db.Users.SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
-
-    public Task<User?> FindByFacebookIdAsync(
-        string facebookId,
-        CancellationToken cancellationToken) =>
-        db.Users.SingleOrDefaultAsync(
-            user => user.FacebookId == facebookId,
-            cancellationToken);
 
     public async Task AddAsync(User user, CancellationToken cancellationToken) =>
         await db.Users.AddAsync(user, cancellationToken);

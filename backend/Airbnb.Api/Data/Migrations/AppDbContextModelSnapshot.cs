@@ -395,6 +395,7 @@ namespace Airbnb.Api.Data.Migrations
                         .WithMany("Reviews")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Listing", "Listing")
                         .WithMany("Reviews")
                         .HasForeignKey("ListingId")
