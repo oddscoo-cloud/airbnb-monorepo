@@ -125,7 +125,7 @@ public sealed class AdminListingsController(
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<ListingImageResponseDTO>> UploadImage(
         int id,
-        [FromForm] IFormFile file,
+        IFormFile file,
         [FromForm] bool isCover,
         CancellationToken cancellationToken)
     {
