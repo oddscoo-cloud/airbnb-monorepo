@@ -10,6 +10,7 @@ import ZhitloPage from './components/Buildingpage/Buildingpage'
 import { BookingRequest } from './components/Bookingrequest/BookingRequest'
 import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
 import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
+import { ProfilePage } from './components/ProfilePage/ProfilePage'
 import { useListings } from './hooks/useListings'
 import { useAccountSession } from './hooks/useAccountSession'
 import type { Listing } from './types/listing'
@@ -23,7 +24,7 @@ function App() {
   const [isLocationMapOpen, setIsLocationMapOpen] = useState(false)
   const [isHeaderDark, setIsHeaderDark] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin'>('home')
+  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin' | 'profile'>('home')
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
@@ -79,6 +80,16 @@ function App() {
         accessToken={sessionStorage.getItem('access_token') ?? ''}
         onBack={() => setActivePage('home')}
         onSaved={() => setListingsRevision((revision) => revision + 1)}
+      />
+    )
+  }
+
+  if (activePage === 'profile' && accountInitial && !isLocationMapOpen) {
+    return (
+      <ProfilePage
+        onHome={handleBackHome}
+        onOpenAdmin={() => setActivePage('admin')}
+        onOpenMap={() => setIsLocationMapOpen(true)}
       />
     )
   }
@@ -235,6 +246,10 @@ function App() {
                         <div className="site-header__account-menu" id="user-menu" role="menu">
                           {accountInitial ? (
                             <>
+                              <button type="button" role="menuitem" onClick={() => {
+                                setIsUserMenuOpen(false)
+                                setActivePage('profile')
+                              }}>Профіль</button>
                               {accountRole === 'Admin' && <button type="button" role="menuitem" onClick={() => {
                                 setIsUserMenuOpen(false)
                                 setActivePage('admin')
