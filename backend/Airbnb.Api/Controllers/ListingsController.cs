@@ -19,8 +19,11 @@ public class ListingsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetPage(int page = 1, int pageSize = 24)
     {
+        if (page < 1 || pageSize < 1)
+            return BadRequest("page и pageSize должны быть больше 0");
+        
         List<Listing> listings = await Context.Listings
             .Where(listing => listing.IsPublished)
             .Include(listing => listing.ListingImages)
@@ -30,25 +33,30 @@ public class ListingsController : ControllerBase
             .AsSplitQuery()
             .ToListAsync();
 
-        List<ListingResponseDTO> listingDTOs = listings.Select(listing => new ListingResponseDTO(
-            listing.Id,
-            listing.HostId,
-            listing.Title,
-            listing.Location,
-            listing.Region,
-            listing.Category,
-            listing.Description,
-            listing.IsPublished,
-            listing.PricePerNight,
-            listing.MaxGuests,
-            listing.Latitude,
-            listing.Longtitude,
-            Mapper.Map<List<ListingImageResponseDTO>>(listing.ListingImages),
-            Mapper.Map<List<AmenityResponseDTO>>(listing.Amenities),
-            listing.Reviews.Select(MapReview).ToList(),
-            listing.Reviews.Count == 0 ? null : listing.Reviews.Average(review => review.Rating),
-            listing.Reviews.Count
-        )).ToList();
+        long listingsCount = listings.Count;
+
+        List<ListingResponseDTO> listingDTOs = listings
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(listing => new ListingResponseDTO(
+                listing.Id,
+                listing.HostId,
+                listing.Title,
+                listing.Location,
+                listing.Region,
+                listing.Category,
+                listing.Description,
+                listing.IsPublished,
+                listing.PricePerNight,
+                listing.MaxGuests,
+                listing.Latitude,
+                listing.Longtitude,
+                Mapper.Map<List<ListingImageResponseDTO>>(listing.ListingImages),
+                Mapper.Map<List<AmenityResponseDTO>>(listing.Amenities),
+                listing.Reviews.Select(MapReview).ToList(),
+                listing.Reviews.Count == 0 ? null : listing.Reviews.Average(review => review.Rating),
+                listing.Reviews.Count
+            )).ToList();
         return Ok(listingDTOs);
     }
 
