@@ -18,26 +18,89 @@ public class ListingsController : ControllerBase
         Mapper = mapper;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetPage(int page = 1, int pageSize = 24)
+    [HttpGet("regions")]
+    public async Task<IActionResult> GetRegions(CancellationToken cancellationToken)
     {
-        if (page < 1 || pageSize < 1)
-            return BadRequest("page и pageSize должны быть больше 0");
-        
-        List<Listing> listings = await Context.Listings
-            .Where(listing => listing.IsPublished)
+        var regions = await Context.Listings
+            .Where(listing => listing.IsPublished && listing.Region != null && listing.Region != "")
+            .Select(listing => listing.Region!)
+            .Distinct()
+            .OrderBy(region => region)
+            .ToListAsync(cancellationToken);
+
+        return Ok(regions);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetPage(
+        [FromQuery] ListingSearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.MinPrice > request.MaxPrice)
+            return BadRequest(new { message = "Мінімальна ціна не може перевищувати максимальну." });
+
+        if (request.CheckIn.HasValue != request.CheckOut.HasValue ||
+            (request.CheckIn.HasValue && request.CheckOut <= request.CheckIn))
+        {
+            return BadRequest(new { message = "Вкажіть коректний період заїзду та виїзду." });
+        }
+
+        IQueryable<Listing> query = Context.Listings
+            .Where(listing => listing.IsPublished);
+
+        if (!string.IsNullOrWhiteSpace(request.Region))
+        {
+            var region = request.Region.Trim().ToLowerInvariant();
+            query = query.Where(listing => listing.Region != null && listing.Region.ToLower() == region);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Category))
+        {
+            var category = request.Category.Trim();
+            query = query.Where(listing => listing.Category == category);
+        }
+
+        if (request.MinPrice.HasValue)
+            query = query.Where(listing => listing.PricePerNight >= request.MinPrice.Value);
+
+        if (request.MaxPrice.HasValue)
+            query = query.Where(listing => listing.PricePerNight <= request.MaxPrice.Value);
+
+        if (request.MinimumRating.HasValue)
+        {
+            query = query.Where(listing => listing.Reviews.Any() &&
+                listing.Reviews.Average(review => review.Rating) >= request.MinimumRating.Value);
+        }
+
+        if (request.Guests.HasValue)
+            query = query.Where(listing => listing.MaxGuests >= request.Guests.Value);
+
+        if (request.CheckIn.HasValue && request.CheckOut.HasValue)
+        {
+            var checkIn = new DateTimeOffset(request.CheckIn.Value.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+            var checkOut = new DateTimeOffset(request.CheckOut.Value.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+
+            query = query.Where(listing => !Context.Bookings.Any(booking =>
+                booking.ListingId == listing.Id &&
+                booking.CheckInDate < checkOut &&
+                booking.CheckOutDate > checkIn &&
+                booking.Status.ToLower() != "cancelled" &&
+                booking.Status.ToLower() != "canceled" &&
+                booking.Status.ToLower() != "rejected"));
+        }
+
+        var listings = await query
+            .OrderBy(listing => listing.Id)
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Include(listing => listing.ListingImages)
             .Include(listing => listing.Reviews).ThenInclude(review => review.Author)
             .Include(listing => listing.Amenities)
             .AsNoTracking()
             .AsSplitQuery()
-            .ToListAsync();
-
-        long listingsCount = listings.Count;
+            .ToListAsync(cancellationToken);
 
         List<ListingResponseDTO> listingDTOs = listings
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
             .Select(listing => new ListingResponseDTO(
                 listing.Id,
                 listing.HostId,

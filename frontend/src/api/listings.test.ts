@@ -1,5 +1,32 @@
 import { describe, expect, it } from 'vitest'
-import { mapListingResponse, type ListingResponse } from './listings'
+import { buildListingsUrl, mapListingResponse, type ListingResponse } from './listings'
+
+describe('buildListingsUrl', () => {
+  it('serializes supported filters and skips empty values', () => {
+    const url = new URL(buildListingsUrl({
+      region: 'Київ',
+      category: 'Люкс',
+      minPrice: 50,
+      maxPrice: null,
+      minimumRating: 4.5,
+      guests: 3,
+      checkIn: '2026-11-01',
+      checkOut: '2026-11-05',
+    }), 'http://localhost')
+
+    expect(Object.fromEntries(url.searchParams.entries())).toEqual({
+      page: '1',
+      pageSize: '100',
+      region: 'Київ',
+      category: 'Люкс',
+      minPrice: '50',
+      minimumRating: '4.5',
+      guests: '3',
+      checkIn: '2026-11-01',
+      checkOut: '2026-11-05',
+    })
+  })
+})
 
 describe('mapListingResponse', () => {
   // Проверка преобразования полей API и приоритета обложки.

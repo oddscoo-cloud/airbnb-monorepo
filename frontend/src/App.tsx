@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu } from 'lucide-react'
 import { SearchForm } from './components/SearchForm/SearchForm'
 import { CategoryListings } from './components/CategoryListings/CategoryListings'
@@ -15,6 +15,7 @@ import { useListings } from './hooks/useListings'
 import { useAccountSession } from './hooks/useAccountSession'
 import type { Listing } from './types/listing'
 import './App.css'
+import { getListingRegions, type ListingSearchFilters } from './api/listings'
 
 function App() {
   // Общее состояние экранов приложения.
@@ -27,23 +28,52 @@ function App() {
   const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin' | 'profile'>('home')
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
+  const [guestCount, setGuestCount] = useState(1)
   const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
   // Revision для повторной загрузки каталога через useListings.
   const [listingsRevision, setListingsRevision] = useState(0)
-  const { listings, isLoading: listingsLoading, error: listingsError } = useListings(listingsRevision)
+  const [searchFilters, setSearchFilters] = useState<ListingSearchFilters>({ guests: 1 })
+  const [regions, setRegions] = useState<string[]>([])
+  const { listings, isLoading: listingsLoading, error: listingsError } = useListings(searchFilters, listingsRevision)
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
 
-  // Уникальные регионы из списка объявлений.
-  const regions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
+  useEffect(() => {
+    const controller = new AbortController()
+    void getListingRegions(controller.signal)
+      .then(setRegions)
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) console.error('Failed to load listing regions', error)
+      })
+    return () => controller.abort()
+  }, [])
+
+  function updateSearchFilters(changes: Partial<ListingSearchFilters>) {
+    setSearchFilters((current) => ({ ...current, ...changes }))
+  }
+
+  function formatSearchDate(date: Date | null) {
+    if (!date) return null
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  function updateStayDates(dates: { start: Date | null; end: Date | null }) {
+    setStayDates(dates)
+    updateSearchFilters({
+      checkIn: dates.start && dates.end ? formatSearchDate(dates.start) : null,
+      checkOut: dates.start && dates.end ? formatSearchDate(dates.end) : null,
+    })
+  }
   // Условная длительность по умолчанию: пять ночей.
   const stayNights = stayDates.start && stayDates.end
     ? Math.max(1, Math.round((stayDates.end.getTime() - stayDates.start.getTime()) / 86_400_000))
     : 5
 
   function handleOpenListing(listing: Listing) {
-    // Сброс дат при открытии объявления.
+    // Сохраняем даты поиска для последующего шага бронирования.
     setSelectedListing(listing)
-    setStayDates({ start: null, end: null })
     setActivePage('listing')
   }
 
@@ -51,7 +81,7 @@ function App() {
     // Сброс выбранного объявления и дат при возврате в каталог.
     setActivePage('home')
     setSelectedListing(null)
-    setStayDates({ start: null, end: null })
+    updateStayDates({ start: null, end: null })
   }
 
   function handleStartSearch() {
@@ -100,7 +130,7 @@ function App() {
         <ZhitloPage
           listing={selectedListing}
           stayDates={stayDates}
-          onStayDatesChange={setStayDates}
+          onStayDatesChange={updateStayDates}
           stayNights={stayNights}
           onBack={handleBackHome}
           onStartSearch={handleStartSearch}
@@ -292,7 +322,18 @@ function App() {
               <SearchForm
                 selectedRegion={selectedRegion}
                 regions={regions}
-                onRegionSelect={(region) => setSelectedRegion(region)}
+                guests={guestCount}
+                onGuestsChange={(value) => {
+                  setGuestCount(value)
+                  updateSearchFilters({ guests: value })
+                }}
+                stayDates={stayDates}
+                onStayDatesChange={updateStayDates}
+                onSearch={() => setListingsRevision((revision) => revision + 1)}
+                onRegionSelect={(region) => {
+                  setSelectedRegion(region)
+                  updateSearchFilters({ region })
+                }}
                 onFocusRegion={() => setIsHeaderDark(true)}
                 onFocusDates={() => setIsHeaderDark(true)}
                 onClosePanels={() => setIsHeaderDark(false)}
@@ -305,9 +346,23 @@ function App() {
                 listings={listings}
                 isLoading={listingsLoading}
                 error={listingsError}
+                guestCount={guestCount}
+                onGuestCountChange={(value) => {
+                  setGuestCount(value)
+                  updateSearchFilters({ guests: value })
+                }}
+                searchFilters={searchFilters}
+                onSearchFiltersChange={updateSearchFilters}
+                allRegions={regions}
                 selectedRegion={selectedRegion}
-                onSelectRegion={setSelectedRegion}
-                onClearRegionFilter={() => setSelectedRegion(null)}
+                onSelectRegion={(region) => {
+                  setSelectedRegion(region)
+                  updateSearchFilters({ region })
+                }}
+                onClearRegionFilter={() => {
+                  setSelectedRegion(null)
+                  updateSearchFilters({ region: null })
+                }}
                 onOpenListing={handleOpenListing}
               />
               <Footer onOpenMap={() => setIsLocationMapOpen(true)} />

@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useEffect } from 'react'
+import type { ListingSearchFilters } from '../../api/listings'
 import { CategoryNavigation } from './CategoryNavigation'
 import { CATEGORIES } from './categories'
 import { ListingGrid } from './ListingGrid'
@@ -10,6 +11,11 @@ interface CategoryListingsProps {
   listings: Listing[]
   isLoading: boolean
   error: string
+  guestCount: number
+  onGuestCountChange: (guestCount: number) => void
+  searchFilters: ListingSearchFilters
+  onSearchFiltersChange: (filters: Partial<ListingSearchFilters>) => void
+  allRegions: string[]
   selectedRegion: string | null
   onSelectRegion: (region: string | null) => void
   onClearRegionFilter: () => void
@@ -20,59 +26,49 @@ export function CategoryListings({
   listings,
   isLoading,
   error,
+  guestCount,
+  onGuestCountChange,
+  searchFilters,
+  onSearchFiltersChange,
+  allRegions,
   selectedRegion,
   onSelectRegion,
   onClearRegionFilter,
   onOpenListing,
 }: CategoryListingsProps) {
   // Локальное состояние фильтров каталога.
-  const [activeCategory, setActiveCategory] = useState('all')
+  const [activeCategory, setActiveCategory] = useState(() =>
+    CATEGORIES.find((category) => category.label === searchFilters.category)?.id ?? 'all',
+  )
   const [taxIncluded, setTaxIncluded] = useState(false)
-  const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
-  const [minimumRating, setMinimumRating] = useState('')
-  const [guests, setGuests] = useState('1')
+  const [minPrice, setMinPrice] = useState(searchFilters.minPrice?.toString() ?? '')
+  const [maxPrice, setMaxPrice] = useState(searchFilters.maxPrice?.toString() ?? '')
+  const [minimumRating, setMinimumRating] = useState(searchFilters.minimumRating?.toString() ?? '')
   const [visibleCount, setVisibleCount] = useState(8)
 
-  // Пересчёт фильтров только при изменении входных данных.
-  const filteredListings = useMemo(() => {
-    return listings.filter((listing) => {
-      // Сопоставление id выбранной категории с названием категории объявления.
-      const matchesCategory = activeCategory === 'all' || listing.category === CATEGORIES.find((category) => category.id === activeCategory)?.label
-      const matchesRegion = !selectedRegion || listing.region.toLocaleLowerCase() === selectedRegion.toLocaleLowerCase()
-      const matchesMinPrice = !minPrice || listing.price >= Number(minPrice)
-      const matchesMaxPrice = !maxPrice || listing.price <= Number(maxPrice)
-      const matchesRating = !minimumRating || (listing.rating !== null && listing.rating >= Number(minimumRating))
-      const matchesGuests = listing.maxGuests >= Number(guests || 1)
-      return matchesCategory && matchesRegion && matchesMinPrice && matchesMaxPrice && matchesRating && matchesGuests
-    })
-  }, [activeCategory, guests, listings, maxPrice, minPrice, minimumRating, selectedRegion])
-
   useEffect(() => {
-    // Возврат к первой порции карточек после изменения фильтров.
     setVisibleCount(8)
-  }, [activeCategory, guests, maxPrice, minPrice, minimumRating, selectedRegion])
+  }, [listings])
 
   function clearFilters() {
-    // Сброс региона в App и остальных критериев в локальном состоянии.
     onClearRegionFilter()
     setActiveCategory('all')
     setMinPrice('')
     setMaxPrice('')
     setMinimumRating('')
-    setGuests('1')
+    onGuestCountChange(1)
+    onSearchFiltersChange({ category: null, minPrice: null, maxPrice: null, minimumRating: null })
   }
-  // Клиентский лимит карточек без запроса следующей страницы API.
-  const visibleListings = filteredListings.slice(0, visibleCount)
-
-  // Доступные регионы из текущего списка объявлений.
-  const allRegions = [...new Set(listings.map((listing) => listing.region).filter(Boolean))]
+  const visibleListings = listings.slice(0, visibleCount)
 
   return (
     <section className="category-listings" aria-label="Категорії та помешкання">
       <CategoryNavigation
         activeCategory={activeCategory}
-        onActiveCategoryChange={setActiveCategory}
+        onActiveCategoryChange={(category) => {
+          setActiveCategory(category)
+          onSearchFiltersChange({ category: category === 'all' ? null : CATEGORIES.find((item) => item.id === category)?.label ?? null })
+        }}
         selectedRegion={selectedRegion}
         onSelectRegion={onSelectRegion}
         onClearFilters={clearFilters}
@@ -80,13 +76,22 @@ export function CategoryListings({
         taxIncluded={taxIncluded}
         onTaxIncludedChange={setTaxIncluded}
         minPrice={minPrice}
-        onMinPriceChange={setMinPrice}
+        onMinPriceChange={(value) => {
+          setMinPrice(value)
+          onSearchFiltersChange({ minPrice: value ? Number(value) : null })
+        }}
         maxPrice={maxPrice}
-        onMaxPriceChange={setMaxPrice}
+        onMaxPriceChange={(value) => {
+          setMaxPrice(value)
+          onSearchFiltersChange({ maxPrice: value ? Number(value) : null })
+        }}
         minimumRating={minimumRating}
-        onMinimumRatingChange={setMinimumRating}
-        guests={guests}
-        onGuestsChange={setGuests}
+        onMinimumRatingChange={(value) => {
+          setMinimumRating(value)
+          onSearchFiltersChange({ minimumRating: value ? Number(value) : null })
+        }}
+        guests={String(guestCount)}
+        onGuestsChange={(value) => onGuestCountChange(Math.max(1, Number(value) || 1))}
       />
 
       {/* Пустой список при загрузке или ошибке вместо устаревших карточек. */}
@@ -104,7 +109,7 @@ export function CategoryListings({
             ? `Продовжити огляд регіону «${selectedRegion}»`
             : `Продовжити огляд категорії «${CATEGORIES.find((c) => c.id === activeCategory)?.label}»`}
         </h2>
-        {visibleCount < filteredListings.length && (
+        {visibleCount < listings.length && (
           <button
             type="button"
             className="category-listings__more"

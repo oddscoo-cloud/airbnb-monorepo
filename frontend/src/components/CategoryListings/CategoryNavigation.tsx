@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { ChevronRight, SlidersHorizontal, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react'
 import { CATEGORIES } from './categories'
 
 type CategoryNavigationProps = {
@@ -42,10 +42,74 @@ export function CategoryNavigation({
   // Локальное состояние видимости меню; значения фильтров принадлежат родителю.
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [isRegionPickerOpen, setIsRegionPickerOpen] = useState(false)
+  const categoryNavRef = useRef<HTMLDivElement>(null)
+  const categoryListRef = useRef<HTMLUListElement>(null)
+  const [categoryOverflow, setCategoryOverflow] = useState({ left: false, right: false })
+
+  useEffect(() => {
+    if (!isFilterMenuOpen && !isRegionPickerOpen) return
+
+    function handleOutsideClick(event: MouseEvent) {
+      if (event.target instanceof Node && !categoryNavRef.current?.contains(event.target)) {
+        setIsFilterMenuOpen(false)
+        setIsRegionPickerOpen(false)
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsFilterMenuOpen(false)
+        setIsRegionPickerOpen(false)
+      }
+    }
+
+    document.addEventListener('click', handleOutsideClick)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('click', handleOutsideClick)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isFilterMenuOpen, isRegionPickerOpen])
+
+  useEffect(() => {
+    const list = categoryListRef.current
+    if (!list) return
+
+    const updateOverflow = () => {
+      const hasOverflow = list.scrollWidth > list.clientWidth + 1
+      if (!hasOverflow && list.scrollLeft !== 0) list.scrollLeft = 0
+      const left = hasOverflow && list.scrollLeft > 1
+      const right = hasOverflow && list.scrollLeft + list.clientWidth < list.scrollWidth - 1
+      setCategoryOverflow((current) => current.left === left && current.right === right
+        ? current
+        : { left, right })
+    }
+
+    const resizeObserver = new ResizeObserver(updateOverflow)
+    resizeObserver.observe(list)
+    if (list.parentElement) resizeObserver.observe(list.parentElement)
+    list.querySelectorAll('li').forEach((item) => resizeObserver.observe(item))
+    list.addEventListener('scroll', updateOverflow, { passive: true })
+    window.addEventListener('resize', updateOverflow)
+    updateOverflow()
+
+    return () => {
+      resizeObserver.disconnect()
+      list.removeEventListener('scroll', updateOverflow)
+      window.removeEventListener('resize', updateOverflow)
+    }
+  }, [])
+
+  function scrollCategories() {
+    const list = categoryListRef.current
+    if (!list) return
+    const direction = categoryOverflow.right ? 1 : -1
+    list.scrollBy({ left: direction * list.clientWidth * 0.75, behavior: 'smooth' })
+  }
 
   return (
-    <div className="category-nav">
-      <ul className="category-nav__list">
+    <div className="category-nav" ref={categoryNavRef}>
+      <ul className="category-nav__list" ref={categoryListRef}>
         {/* Иконки категорий из конфигурации categories.ts. */}
         {CATEGORIES.map((category) => {
           const Icon = category.icon
@@ -66,8 +130,15 @@ export function CategoryNavigation({
         })}
       </ul>
 
-      <button type="button" className="category-nav__scroll" aria-label="Прокрутити категорії">
-        <ChevronRight size={16} aria-hidden />
+      <button
+        type="button"
+        className={`category-nav__scroll${categoryOverflow.left || categoryOverflow.right ? ' category-nav__scroll--visible' : ''}`}
+        aria-label={categoryOverflow.right ? 'Показати наступні категорії' : 'Повернутися до попередніх категорій'}
+        aria-hidden={!categoryOverflow.left && !categoryOverflow.right}
+        tabIndex={categoryOverflow.left || categoryOverflow.right ? 0 : -1}
+        onClick={scrollCategories}
+      >
+        {categoryOverflow.right ? <ChevronRight size={16} aria-hidden /> : <ChevronLeft size={16} aria-hidden />}
       </button>
 
       <div className="category-nav__filters-wrap">

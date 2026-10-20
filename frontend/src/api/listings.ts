@@ -20,6 +20,31 @@ export interface ListingResponse {
   reviewCount: number
 }
 
+export interface ListingSearchFilters {
+  region?: string | null
+  category?: string | null
+  minPrice?: number | null
+  maxPrice?: number | null
+  minimumRating?: number | null
+  guests?: number | null
+  checkIn?: string | null
+  checkOut?: string | null
+}
+
+export function buildListingsUrl(filters: ListingSearchFilters = {}): string {
+  const params = new URLSearchParams({ page: '1', pageSize: '100' })
+  for (const [key, value] of Object.entries(filters)) {
+    if (value !== undefined && value !== null && value !== '') {
+      params.set(key, String(value))
+    }
+  }
+  return `/api/listings?${params.toString()}`
+}
+
+export function getListingRegions(signal?: AbortSignal): Promise<string[]> {
+  return apiRequest<string[]>('/api/listings/regions', { signal })
+}
+
 // Преобразование ответа backend в общую UI-модель Listing.
 export function mapListingResponse(item: ListingResponse): Listing {
   // Значения по умолчанию для отсутствующих списков.
@@ -48,9 +73,10 @@ export function mapListingResponse(item: ListingResponse): Listing {
   }
 }
 
-export async function getListings(): Promise<Listing[]> {
+export async function getListings(filters: ListingSearchFilters = {}, signal?: AbortSignal): Promise<Listing[]> {
   // Загрузка DTO и преобразование каждой записи для UI.
-  const data = await apiRequest<ListingResponse[]>('/api/listings', {
+  const data = await apiRequest<ListingResponse[]>(buildListingsUrl(filters), {
+    signal,
     fallbackError: (status) => `Не вдалося завантажити помешкання (${status})`,
   })
   return data.map(mapListingResponse)
