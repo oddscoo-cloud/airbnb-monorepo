@@ -265,6 +265,20 @@
   flex-direction: column;
   gap: 8px;
   cursor: pointer;
+  animation: card-enter 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition: transform 180ms ease;
+}
+
+.listing-card:nth-child(2) { animation-delay: 35ms; }
+.listing-card:nth-child(3) { animation-delay: 70ms; }
+.listing-card:nth-child(4) { animation-delay: 105ms; }
+.listing-card:nth-child(5) { animation-delay: 140ms; }
+.listing-card:nth-child(6) { animation-delay: 175ms; }
+.listing-card:nth-child(7) { animation-delay: 210ms; }
+.listing-card:nth-child(8) { animation-delay: 245ms; }
+
+.listing-card:hover {
+  transform: translateY(-3px);
 }
 
 .listing-card__image-wrap {
@@ -279,6 +293,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.listing-card:hover .listing-card__image {
+  transform: scale(1.035);
 }
 
 .listing-card__like {

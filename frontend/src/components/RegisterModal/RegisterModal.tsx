@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import './RegisterModal.css'
 import { useGoogleLogin } from '@react-oauth/google'
@@ -66,7 +67,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
   }
 
   // Закрытие по клику на overlay; изоляция кликов внутри диалога.
-  return (
+  return createPortal(
     <div className="register-modal__overlay" role="presentation" onClick={onClose}>
       <div
         className="register-modal"
@@ -196,6 +197,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

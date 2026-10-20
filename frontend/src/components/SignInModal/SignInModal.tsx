@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import './SignInModal.css'
 import { useGoogleLogin } from '@react-oauth/google'
@@ -57,7 +58,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
   }
 
   // Закрытие по клику на фон; изоляция кликов внутри окна.
-  return (
+  return createPortal(
     <div className="sign-in-modal__overlay" role="presentation" onClick={onClose}>
       <div
         className="sign-in-modal"
@@ -165,6 +166,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
