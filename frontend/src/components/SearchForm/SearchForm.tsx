@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react'
+﻿import { type FormEvent, useEffect, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
 import { RegionPickerPanel } from '../RegionPickerPanel/RegionPickerPanel'
 import { DatePickerPanel } from '../DatePickerPanel/DatePickerPanel'

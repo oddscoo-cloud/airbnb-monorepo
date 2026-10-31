@@ -1,13 +1,15 @@
-import { Heart, Star } from 'lucide-react'
+﻿import { Heart, Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
 
 type ListingCardProps = {
   listing: Listing
   taxIncluded: boolean
+  isSaved?: boolean
   onOpenListing: (listing: Listing) => void
+  onToggleSave?: (listingId: number) => void
 }
 
-export function ListingCard({ listing, taxIncluded, onOpenListing }: ListingCardProps) {
+export function ListingCard({ listing, taxIncluded, isSaved = false, onOpenListing, onToggleSave }: ListingCardProps) {
   // Клавиатурное управление карточкой и изоляция клика вложенной кнопки.
   return (
     <article
@@ -33,11 +35,15 @@ export function ListingCard({ listing, taxIncluded, onOpenListing }: ListingCard
         />}
         <button
           type="button"
-          className="listing-card__like"
-          aria-label="Додати до збережених"
-          onClick={(event) => event.stopPropagation()}
+          className={`listing-card__like${isSaved ? ' listing-card__like--saved' : ''}`}
+          aria-label={isSaved ? 'Видалити зі збережених' : 'Додати до збережених'}
+          aria-pressed={isSaved}
+          onClick={(event) => {
+            event.stopPropagation()
+            onToggleSave?.(Number(listing.id))
+          }}
         >
-          <Heart size={18} aria-hidden />
+          <Heart size={18} aria-hidden fill={isSaved ? 'currentColor' : 'none'} />
         </button>
       </div>
 

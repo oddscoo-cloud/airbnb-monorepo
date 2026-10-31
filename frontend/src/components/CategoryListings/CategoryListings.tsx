@@ -20,6 +20,8 @@ interface CategoryListingsProps {
   onSelectRegion: (region: string | null) => void
   onClearRegionFilter: () => void
   onOpenListing: (listing: Listing) => void
+  savedIds?: Set<number>
+  onToggleSave?: (listingId: number) => void
 }
 
 export function CategoryListings({
@@ -35,6 +37,8 @@ export function CategoryListings({
   onSelectRegion,
   onClearRegionFilter,
   onOpenListing,
+  savedIds,
+  onToggleSave,
 }: CategoryListingsProps) {
   // Локальное состояние фильтров каталога.
   const [activeCategory, setActiveCategory] = useState(() =>
@@ -100,7 +104,9 @@ export function CategoryListings({
         isLoading={isLoading}
         error={error}
         taxIncluded={taxIncluded}
+        savedIds={savedIds}
         onOpenListing={onOpenListing}
+        onToggleSave={onToggleSave}
       />
 
       <div className="category-listings__continue">

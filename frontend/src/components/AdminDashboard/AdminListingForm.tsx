@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+﻿import type { FormEvent } from 'react'
 import { Save, Trash2, Upload } from 'lucide-react'
 import type { AdminAmenity, AdminImage, ListingForm } from './adminTypes'
 

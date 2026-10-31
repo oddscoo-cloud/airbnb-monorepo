@@ -120,9 +120,11 @@ type BuildingpageProps = {
   onReviewAdded: () => void
   onBook: () => void
   onOpenSignIn: () => void
+  isSaved?: boolean
+  onToggleSave?: (listingId: number) => void
 }
 
-export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn }: BuildingpageProps) {
+export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn, isSaved = false, onToggleSave }: BuildingpageProps) {
   // Локальное состояние навигации страницы объявления.
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
@@ -195,8 +197,12 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
               <button type="button">
                 <Share size={14} aria-hidden /> Поділитися
               </button>
-              <button type="button">
-                <Heart size={14} aria-hidden /> Зберегти
+              <button
+                type="button"
+                className={`property__save-btn${isSaved ? ' property__save-btn--saved' : ''}`}
+                onClick={() => onToggleSave?.(Number(listing.id))}
+              >
+                <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} aria-hidden /> {isSaved ? 'Збережено' : 'Зберегти'}
               </button>
             </div>
           </div>

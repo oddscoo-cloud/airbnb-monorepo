@@ -434,3 +434,185 @@
     align-items: flex-start;
   }
 }
+
+/* ── Збережені: заголовок з кнопкою-тоглом ── */
+.profile__saved-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.profile__section-title--no-margin {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile__saved-toggle {
+  padding: 6px 16px;
+  border: 1.5px solid #211e1a;
+  border-radius: 999px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #211e1a;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.profile__saved-toggle:hover {
+  background: #211e1a;
+  color: #dddbd7;
+}
+
+/* ── Секція збережених ── */
+.profile__saved {
+  animation: profile-saved-in 0.2s ease;
+}
+
+@keyframes profile-saved-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.profile__saved-empty {
+  padding: 24px 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #48433d;
+}
+
+.profile__saved-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+/* ── Картка збереженого ── */
+.profile__saved-card {
+  border: 1.5px solid #c9c5bf;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.12s;
+}
+
+.profile__saved-card:hover {
+  box-shadow: 0 6px 20px rgba(33, 30, 26, 0.14);
+  transform: translateY(-2px);
+}
+
+.profile__saved-card-img {
+  position: relative;
+  height: 130px;
+  background: #d9d4cb;
+  overflow: hidden;
+}
+
+.profile__saved-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile__saved-card-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #d9d4cb 0%, #c5bfb5 100%);
+}
+
+/* Кнопка видалення поверх картинки */
+.profile__saved-card-unsave {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  color: #e0524a;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.profile__saved-card-unsave:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.profile__saved-card-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile__saved-card-location {
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #211e1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile__saved-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  color: #48433d;
+}
+
+.profile__saved-card-price {
+  margin: 0;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 12px;
+  color: #48433d;
+}
+
+/* ── Пункт "Збереженi" в меню ── */
+.profile__menu-saved-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #222;
+  cursor: pointer;
+  text-align: left;
+}
+
+.profile__menu-saved-btn:hover {
+  background: #f7f7f7;
+}
+
+.profile__menu-saved-badge {
+  margin-left: auto;
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e05246;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}

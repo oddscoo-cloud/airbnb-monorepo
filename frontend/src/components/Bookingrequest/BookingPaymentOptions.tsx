@@ -1,4 +1,4 @@
-type PaymentOption = 'full' | 'split'
+﻿type PaymentOption = 'full' | 'split'
 
 type BookingPaymentOptionsProps = {
   paymentOption: PaymentOption

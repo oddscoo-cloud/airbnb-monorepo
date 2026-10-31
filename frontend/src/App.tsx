@@ -13,6 +13,7 @@ import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
 import { ProfilePage } from './components/ProfilePage/ProfilePage'
 import { useListings } from './hooks/useListings'
 import { useAccountSession } from './hooks/useAccountSession'
+import { useSavedListings } from './hooks/useSavedListings'
 import type { Listing } from './types/listing'
 import './App.css'
 import { getListingRegions, type ListingSearchFilters } from './api/listings'
@@ -36,6 +37,16 @@ function App() {
   const [regions, setRegions] = useState<string[]>([])
   const { listings, isLoading: listingsLoading, error: listingsError } = useListings(searchFilters, listingsRevision)
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
+  const accessToken = sessionStorage.getItem('access_token')
+  const { savedIds, toggle: toggleSave } = useSavedListings(accessToken)
+
+  function handleToggleSave(listingId: number) {
+    if (!accountInitial || !sessionStorage.getItem('access_token')) {
+      setIsSignInModalOpen(true)
+      return
+    }
+    void toggleSave(listingId)
+  }
 
   useEffect(() => {
     const controller = new AbortController()
@@ -120,6 +131,10 @@ function App() {
         onHome={handleBackHome}
         onOpenAdmin={() => setActivePage('admin')}
         onOpenMap={() => setIsLocationMapOpen(true)}
+        onOpenListing={(listing) => {
+          setSelectedListing(listing)
+          setActivePage('listing')
+        }}
       />
     )
   }
@@ -137,6 +152,8 @@ function App() {
           onHome={handleBackHome}
           onReviewAdded={() => setListingsRevision((revision) => revision + 1)}
           onBook={() => setActivePage('booking')}
+          isSaved={savedIds.has(Number(selectedListing.id))}
+          onToggleSave={handleToggleSave}
           onOpenSignIn={() => {
             setIsUserMenuOpen(false)
             setIsSignInModalOpen(true)
@@ -280,6 +297,10 @@ function App() {
                                 setIsUserMenuOpen(false)
                                 setActivePage('profile')
                               }}>Профіль</button>
+                              {/* <button type="button" role="menuitem" onClick={() => {
+                                setIsUserMenuOpen(false)
+                                setActivePage('profile')
+                              }}>Збереженi</button> */}
                               {accountRole === 'Admin' && <button type="button" role="menuitem" onClick={() => {
                                 setIsUserMenuOpen(false)
                                 setActivePage('admin')
@@ -364,6 +385,8 @@ function App() {
                   updateSearchFilters({ region: null })
                 }}
                 onOpenListing={handleOpenListing}
+                savedIds={savedIds}
+                onToggleSave={handleToggleSave}
               />
               <Footer onOpenMap={() => setIsLocationMapOpen(true)} />
             </main>

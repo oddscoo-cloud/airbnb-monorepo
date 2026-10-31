@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent, type ComponentType } from 'react'
+﻿import { useRef, useState, type ChangeEvent, type ComponentType } from 'react'
 import {
   Briefcase,
   Camera,
@@ -17,7 +17,10 @@ import {
   Plus,
   Sparkles,
   BookOpen,
+  Star,
 } from 'lucide-react'
+import { useSavedListings } from '../../hooks/useSavedListings'
+import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
 
 export interface ProfileUser {
@@ -69,6 +72,7 @@ export interface ProfilePageProps {
   onHome?: () => void
   onOpenAdmin?: () => void
   onOpenMap?: () => void
+  onOpenListing?: (listing: Listing) => void
 }
 
 interface ProfileField {
@@ -123,7 +127,7 @@ function FieldRow({
   )
 }
 
-export function ProfilePage({ onHome, onOpenAdmin, onOpenMap }: ProfilePageProps) {
+export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: ProfilePageProps) {
   const [values, setValues] = useState<Record<string, string>>({})
   const [bio, setBio] = useState('')
   const [editingBio, setEditingBio] = useState(false)
@@ -131,10 +135,14 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap }: ProfilePageProps
   const [editingInterest, setEditingInterest] = useState<number | null>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showSaved, setShowSaved] = useState(false)
   const accountEmail = sessionStorage.getItem('account_email') ?? ''
   const accountInitial = accountEmail.charAt(0).toUpperCase()
   const accountRole = sessionStorage.getItem('account_role') ?? ''
+  const accessToken = sessionStorage.getItem('access_token')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const { savedListings, savedIds, isLoading: savedLoading, error: savedError, toggle } = useSavedListings(accessToken)
 
   function handleLogout() {
     sessionStorage.removeItem('account_email')
@@ -190,6 +198,21 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap }: ProfilePageProps
                 {accountInitial ? (
                   <>
                     <a href="/profile" onClick={() => setIsMenuOpen(false)}>Головна</a>
+                    <button
+                      type="button"
+                      className="profile__menu-saved-btn"
+                      onClick={() => {
+                        setIsMenuOpen(false)
+                        setShowSaved((s) => !s)
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+                      }}
+                    >
+                      <Heart size={14} aria-hidden />
+                      Збереженi
+                      {savedIds.size > 0 && (
+                        <span className="profile__menu-saved-badge">{savedIds.size}</span>
+                      )}
+                    </button>
                     {accountRole === 'Admin' && (
                       <a href="/admin" onClick={(event) => { event.preventDefault(); setIsMenuOpen(false); onOpenAdmin?.() }}>Адмін-панель</a>
                     )}
@@ -334,6 +357,88 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap }: ProfilePageProps
               ),
             )}
           </div>
+
+          {/* ── Збережені оголошення ── */}
+          <div className="profile__divider" />
+
+          <div className="profile__saved-header">
+            <h2 className="profile__section-title profile__section-title--no-margin">
+              <Heart size={20} aria-hidden />
+              Збереженi
+            </h2>
+            <button
+              type="button"
+              className="profile__saved-toggle"
+              aria-expanded={showSaved}
+              onClick={() => setShowSaved((s) => !s)}
+            >
+              {showSaved ? 'Сховати' : `Показати${savedIds.size > 0 ? ` (${savedIds.size})` : ''}`}
+            </button>
+          </div>
+
+          {showSaved && (
+            <section className="profile__saved" aria-label="Збережені оголошення">
+              {savedLoading ? (
+                <p className="profile__saved-empty">Завантаження…</p>
+              ) : savedError ? (
+                <p className="profile__saved-empty" role="alert">{savedError}</p>
+              ) : savedListings.length === 0 ? (
+                <p className="profile__saved-empty">
+                  Ви ще не зберегли жодного помешкання.{' '}
+                  Натисніть ❤️ на картці, щоб додати сюди.
+                </p>
+              ) : (
+                <div className="profile__saved-grid">
+                  {savedListings.map((listing) => (
+                    <article
+                      key={listing.id}
+                      className="profile__saved-card"
+                      onClick={() => onOpenListing?.(listing)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          onOpenListing?.(listing)
+                        }
+                      }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Відкрити ${listing.title}`}
+                    >
+                      <div className="profile__saved-card-img">
+                        {listing.image
+                          ? <img src={listing.image} alt={listing.title} loading="lazy" />
+                          : <span className="profile__saved-card-placeholder" />
+                        }
+                        <button
+                          type="button"
+                          className="profile__saved-card-unsave"
+                          aria-label="Видалити зі збережених"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            void toggle(Number(listing.id))
+                          }}
+                        >
+                          <Heart size={16} fill="currentColor" aria-hidden />
+                        </button>
+                      </div>
+                      <div className="profile__saved-card-body">
+                        <span className="profile__saved-card-location">{listing.location}</span>
+                        {listing.rating !== null && (
+                          <span className="profile__saved-card-rating">
+                            <Star size={12} fill="currentColor" aria-hidden />
+                            {listing.rating.toFixed(2)}
+                          </span>
+                        )}
+                        <p className="profile__saved-card-price">
+                          <strong>${listing.price},00</strong> за ніч
+                        </p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </main>
 

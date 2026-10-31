@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Globe, DollarSign } from 'lucide-react'
 import './Footer.css'
 

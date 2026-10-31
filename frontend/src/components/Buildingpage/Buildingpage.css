@@ -960,3 +960,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+.property__meta-actions .property__save-btn--saved {
+  color: #e05246;
+}

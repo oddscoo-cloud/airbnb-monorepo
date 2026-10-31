@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer } from 'react-leaflet'
+﻿import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
 // Координати центру та рівень зуму для кожного регіону України.

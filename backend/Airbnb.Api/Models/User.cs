@@ -36,5 +36,6 @@ public class User
     public List<Listing> Listings { get; set; } = new();
     public List<Review> Reviews { get; set; } = new();
     public List<Booking> Bookings { get; set; } = new();
+    public List<SavedListing> SavedListings { get; set; } = new();
     
 }

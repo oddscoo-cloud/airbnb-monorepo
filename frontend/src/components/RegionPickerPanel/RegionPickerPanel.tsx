@@ -1,4 +1,4 @@
-import { RegionMap } from './RegionMap'
+﻿import { RegionMap } from './RegionMap'
 import './RegionPickerPanel.css'
 
 interface RegionPickerPanelProps {

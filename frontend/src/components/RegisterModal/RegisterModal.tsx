@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import './RegisterModal.css'

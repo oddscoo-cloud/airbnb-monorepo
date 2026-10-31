@@ -51,4 +51,5 @@ public class Listing
     public List<Amenity> Amenities { get; set; } = new();
     public List<Review> Reviews { get; set; } = new();
     public List<Booking> Bookings { get; set; } = new();
+    public List<SavedListing> SavedByUsers { get; set; } = new();
 }

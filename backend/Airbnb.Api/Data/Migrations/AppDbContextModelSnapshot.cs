@@ -274,6 +274,37 @@ namespace Airbnb.Api.Data.Migrations
                     b.ToTable("reviews");
                 });
 
+            modelBuilder.Entity("SavedListing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ListingId")
+                        .HasColumnType("integer")
+                        .HasColumnName("listing_id");
+
+                    b.Property<DateTimeOffset>("SavedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("saved_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ListingId");
+
+                    b.HasIndex("UserId", "ListingId")
+                        .IsUnique();
+
+                    b.ToTable("saved_listings", (string)null);
+                });
+
             modelBuilder.Entity("User", b =>
                 {
                     b.Property<int>("Id")
@@ -407,6 +438,25 @@ namespace Airbnb.Api.Data.Migrations
                     b.Navigation("Listing");
                 });
 
+            modelBuilder.Entity("SavedListing", b =>
+                {
+                    b.HasOne("Listing", "Listing")
+                        .WithMany("SavedByUsers")
+                        .HasForeignKey("ListingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("User", "User")
+                        .WithMany("SavedListings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Listing");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Listing", b =>
                 {
                     b.Navigation("Bookings");
@@ -414,6 +464,8 @@ namespace Airbnb.Api.Data.Migrations
                     b.Navigation("ListingImages");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("SavedByUsers");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -425,6 +477,8 @@ namespace Airbnb.Api.Data.Migrations
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("SavedListings");
                 });
 #pragma warning restore 612, 618
         }

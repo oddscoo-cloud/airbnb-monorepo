@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { CreditCard } from 'lucide-react'
 
 type PaymentMethodSectionProps = {

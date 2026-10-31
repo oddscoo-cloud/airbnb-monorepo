@@ -1,4 +1,4 @@
-export type PaymentOption = 'full' | 'split'
+﻿export type PaymentOption = 'full' | 'split'
 
 type PaymentOptionSelectorProps = {
   totalPrice: number

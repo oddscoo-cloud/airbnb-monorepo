@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react'
+﻿import { Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
 
 type BookingSummaryProps = {

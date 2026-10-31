@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<Review> Reviews { get; set; } = null!;
     public DbSet<Booking> Bookings { get; set; } = null!;
+    public DbSet<SavedListing> SavedListings { get; set; } = null!;
 
     public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
     {
@@ -56,6 +57,25 @@ public class AppDbContext : DbContext
             .HasOne(review => review.Author)
             .WithMany(user => user.Reviews)
             .HasForeignKey(review => review.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SavedListing>()
+            .ToTable("saved_listings");
+
+        modelBuilder.Entity<SavedListing>()
+            .HasIndex(s => new { s.UserId, s.ListingId })
+            .IsUnique();
+
+        modelBuilder.Entity<SavedListing>()
+            .HasOne(s => s.User)
+            .WithMany(u => u.SavedListings)
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SavedListing>()
+            .HasOne(s => s.Listing)
+            .WithMany(l => l.SavedByUsers)
+            .HasForeignKey(s => s.ListingId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

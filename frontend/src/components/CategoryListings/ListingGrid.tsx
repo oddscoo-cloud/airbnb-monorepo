@@ -1,4 +1,4 @@
-import type { Listing } from '../../types/listing'
+﻿import type { Listing } from '../../types/listing'
 import { ListingCard } from './ListingCard'
 
 type ListingGridProps = {
@@ -6,10 +6,12 @@ type ListingGridProps = {
   isLoading: boolean
   error: string
   taxIncluded: boolean
+  savedIds?: Set<number>
   onOpenListing: (listing: Listing) => void
+  onToggleSave?: (listingId: number) => void
 }
 
-export function ListingGrid({ listings, isLoading, error, taxIncluded, onOpenListing }: ListingGridProps) {
+export function ListingGrid({ listings, isLoading, error, taxIncluded, savedIds, onOpenListing, onToggleSave }: ListingGridProps) {
   return (
     <div className="listings__grid">
       {/* Приоритет состояний: загрузка, ошибка, пустой список, карточки. */}
@@ -18,7 +20,9 @@ export function ListingGrid({ listings, isLoading, error, taxIncluded, onOpenLis
           key={listing.id}
           listing={listing}
           taxIncluded={taxIncluded}
+          isSaved={savedIds?.has(Number(listing.id)) ?? false}
           onOpenListing={onOpenListing}
+          onToggleSave={onToggleSave}
         />
       ))}
     </div>

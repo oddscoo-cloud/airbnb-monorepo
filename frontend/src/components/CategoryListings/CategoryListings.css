@@ -435,3 +435,12 @@
     gap: 16px 12px;
   }
 }
+
+.listing-card__like--saved {
+  color: #ff385c;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.listing-card__like--saved:hover {
+  background: #ffffff;
+}

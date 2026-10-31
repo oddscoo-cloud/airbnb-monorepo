@@ -1,4 +1,4 @@
-import type { Listing } from '../../types/listing'
+﻿import type { Listing } from '../../types/listing'
 
 type PaymentTripSectionProps = {
   listing: Listing
