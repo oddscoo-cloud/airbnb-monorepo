@@ -4,8 +4,6 @@ import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
 import {
   Search,
-  Menu,
-  User,
   Share,
   Heart,
   Star,
@@ -13,6 +11,7 @@ import {
 } from 'lucide-react'
 import type { Listing } from '../../types/listing'
 import { LocationMap } from '../Map/LocationMap'
+import { UserMenu } from '../UserMenu/UserMenu'
 import { PropertyCalendar } from './PropertyCalendar'
 import { PropertyReviews } from './PropertyReviews'
 import './Buildingpage.css'
@@ -120,11 +119,34 @@ type BuildingpageProps = {
   onReviewAdded: () => void
   onBook: () => void
   onOpenSignIn: () => void
+  onOpenRegister?: () => void
+  onOpenProfile?: () => void
+  onOpenAdmin?: () => void
+  onLogout?: () => void
   isSaved?: boolean
   onToggleSave?: (listingId: number) => void
+  savedCount?: number
 }
 
-export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNights, onBack, onStartSearch, onHome, onReviewAdded, onBook, onOpenSignIn, isSaved = false, onToggleSave }: BuildingpageProps) {
+export function PropertyDetail({
+  listing,
+  stayDates,
+  onStayDatesChange,
+  stayNights,
+  onBack,
+  onStartSearch,
+  onHome,
+  onReviewAdded,
+  onBook,
+  onOpenSignIn,
+  onOpenRegister,
+  onOpenProfile,
+  onOpenAdmin,
+  onLogout,
+  isSaved = false,
+  onToggleSave,
+  savedCount,
+}: BuildingpageProps) {
   // Локальное состояние навигации страницы объявления.
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
@@ -177,10 +199,15 @@ export function PropertyDetail({ listing, stayDates, onStayDatesChange, stayNigh
 
         <div className="property__header-actions">
           <a href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
-          <button type="button" className="property__menu" aria-label="Меню" onClick={onOpenSignIn}>
-            <Menu size={16} aria-hidden />
-            <User size={20} aria-hidden />
-          </button>
+          <UserMenu
+            savedCount={savedCount}
+            onOpenProfile={onOpenProfile}
+            onOpenSaved={onOpenProfile}
+            onOpenAdmin={onOpenAdmin}
+            onSignIn={onOpenSignIn}
+            onRegister={onOpenRegister}
+            onLogout={onLogout}
+          />
         </div>
       </header>
 

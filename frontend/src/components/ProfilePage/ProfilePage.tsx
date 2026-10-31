@@ -1,4 +1,4 @@
-﻿import { useRef, useState, type ChangeEvent, type ComponentType } from 'react'
+import { useRef, useState, type ChangeEvent, type ComponentType } from 'react'
 import {
   Briefcase,
   Camera,
@@ -11,7 +11,6 @@ import {
   Home,
   Languages,
   Lightbulb,
-  Menu,
   Music,
   PawPrint,
   Plus,
@@ -20,6 +19,7 @@ import {
   Star,
 } from 'lucide-react'
 import { useSavedListings } from '../../hooks/useSavedListings'
+import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
 
@@ -134,7 +134,6 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
   const [interests, setInterests] = useState<string[]>(Array(INTEREST_SLOTS).fill(''))
   const [editingInterest, setEditingInterest] = useState<number | null>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
   const accountEmail = sessionStorage.getItem('account_email') ?? ''
   const accountInitial = accountEmail.charAt(0).toUpperCase()
@@ -176,56 +175,23 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
             Запропонувати помешкання на HomeFU
           </a>
           <div className="profile__account">
-            <button
-              type="button"
-              className="profile__menu"
-              aria-label="User menu"
-              aria-expanded={isMenuOpen}
-              aria-controls="profile-menu"
-              onClick={() => setIsMenuOpen((open) => !open)}
-            >
-              <Menu size={16} aria-hidden />
-              {accountInitial ? (
-                <span className="profile__account-avatar" aria-hidden="true">
-                  {accountInitial}
-                </span>
-              ) : (
-                <span className="profile__account-avatar profile__account-avatar--empty" aria-hidden="true" />
-              )}
-            </button>
-            {isMenuOpen && (
-              <nav className="profile__account-menu" id="profile-menu" aria-label="Profile navigation">
-                {accountInitial ? (
-                  <>
-                    <a href="/profile" onClick={() => setIsMenuOpen(false)}>Головна</a>
-                    <button
-                      type="button"
-                      className="profile__menu-saved-btn"
-                      onClick={() => {
-                        setIsMenuOpen(false)
-                        setShowSaved((s) => !s)
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-                      }}
-                    >
-                      <Heart size={14} aria-hidden />
-                      Збереженi
-                      {savedIds.size > 0 && (
-                        <span className="profile__menu-saved-badge">{savedIds.size}</span>
-                      )}
-                    </button>
-                    {accountRole === 'Admin' && (
-                      <a href="/admin" onClick={(event) => { event.preventDefault(); setIsMenuOpen(false); onOpenAdmin?.() }}>Адмін-панель</a>
-                    )}
-                    <a href="/" onClick={handleLogout}>Вийти</a>
-                  </>
-                ) : (
-                  <>
-                    <a href="#signin" onClick={() => setIsMenuOpen(false)}>Вхід</a>
-                    <a href="#register" onClick={() => setIsMenuOpen(false)}>Реєстрація</a>
-                  </>
-                )}
-              </nav>
-            )}
+            <UserMenu
+              accountInitial={accountInitial}
+              accountRole={accountRole}
+              savedCount={savedIds.size}
+              onOpenProfile={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }}
+              onOpenSaved={() => {
+                setShowSaved(true)
+                setTimeout(() => {
+                  const el = document.querySelector('.profile__saved-header')
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }, 50)
+              }}
+              onOpenAdmin={onOpenAdmin}
+              onLogout={handleLogout}
+            />
           </div>
         </div>
       </header>

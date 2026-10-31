@@ -1,5 +1,6 @@
-﻿import { ChevronLeft, Info, Globe, DollarSign } from 'lucide-react'
+import { ChevronLeft, Info, Globe, DollarSign } from 'lucide-react'
 import type { Listing } from '../../types/listing'
+import { UserMenu } from '../UserMenu/UserMenu'
 import { BookingLoginSection } from './BookingLoginSection'
 import { BookingPaymentOptions } from './BookingPaymentOptions'
 import { BookingSummary } from './BookingSummary'
@@ -19,6 +20,11 @@ export function BookingRequest({
   onAuthenticated,
   onEditDates,
   onEditGuests,
+  onOpenProfile,
+  onOpenAdmin,
+  onOpenSignIn,
+  onOpenRegister,
+  onLogout,
 }: {
   listing: Listing
   stayDates: { start: Date | null; end: Date | null }
@@ -31,6 +37,11 @@ export function BookingRequest({
   onAuthenticated?: (email: string, role: string) => void
   onEditDates?: () => void
   onEditGuests?: () => void
+  onOpenProfile?: () => void
+  onOpenAdmin?: () => void
+  onOpenSignIn?: () => void
+  onOpenRegister?: () => void
+  onLogout?: () => void
 }) {
   // Общая сумма с фиксированной платой за уборку, без отдельного расчёта налогов.
   const totalPrice = listing.price * stayNights + 20
@@ -48,7 +59,17 @@ export function BookingRequest({
 
       <header className="booking__header">
         <span className="booking__logo">HomeFU</span>
-        <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+        <div className="booking__header-actions">
+          <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+          <UserMenu
+            onOpenProfile={onOpenProfile}
+            onOpenSaved={onOpenProfile}
+            onOpenAdmin={onOpenAdmin}
+            onSignIn={onOpenSignIn}
+            onRegister={onOpenRegister}
+            onLogout={onLogout}
+          />
+        </div>
       </header>
 
       <div className="booking__layout">

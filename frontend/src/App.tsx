@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Menu } from 'lucide-react'
 import { SearchForm } from './components/SearchForm/SearchForm'
 import { CategoryListings } from './components/CategoryListings/CategoryListings'
 import { Footer } from './components/Footer/Footer'
@@ -11,6 +10,7 @@ import { BookingRequest } from './components/Bookingrequest/BookingRequest'
 import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
 import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
 import { ProfilePage } from './components/ProfilePage/ProfilePage'
+import { UserMenu } from './components/UserMenu/UserMenu'
 import { useListings } from './hooks/useListings'
 import { useAccountSession } from './hooks/useAccountSession'
 import { useSavedListings } from './hooks/useSavedListings'
@@ -20,7 +20,6 @@ import { getListingRegions, type ListingSearchFilters } from './api/listings'
 
 function App() {
   // Общее состояние экранов приложения.
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false)
   const [isLocationMapOpen, setIsLocationMapOpen] = useState(false)
@@ -154,10 +153,12 @@ function App() {
           onBook={() => setActivePage('booking')}
           isSaved={savedIds.has(Number(selectedListing.id))}
           onToggleSave={handleToggleSave}
-          onOpenSignIn={() => {
-            setIsUserMenuOpen(false)
-            setIsSignInModalOpen(true)
-          }}
+          savedCount={savedIds.size}
+          onOpenSignIn={() => setIsSignInModalOpen(true)}
+          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onOpenProfile={() => setActivePage('profile')}
+          onOpenAdmin={() => setActivePage('admin')}
+          onLogout={() => void logout()}
         />
 
         {!isLocationMapOpen && isRegisterModalOpen && (
@@ -192,6 +193,11 @@ function App() {
           onAuthenticated={handleAuthenticated}
           onEditDates={handleJumpToListingCalendar}
           onEditGuests={handleJumpToListingCalendar}
+          onOpenProfile={() => setActivePage('profile')}
+          onOpenAdmin={() => setActivePage('admin')}
+          onOpenSignIn={() => setIsSignInModalOpen(true)}
+          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onLogout={() => void logout()}
         />
 
         {!isLocationMapOpen && isRegisterModalOpen && (
@@ -223,6 +229,11 @@ function App() {
           onBack={() => setActivePage('booking')}
           onHome={handleBackHome}
           onPaid={handleBackHome}
+          onOpenProfile={() => setActivePage('profile')}
+          onOpenAdmin={() => setActivePage('admin')}
+          onOpenSignIn={() => setIsSignInModalOpen(true)}
+          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onLogout={() => void logout()}
         />
 
         {!isLocationMapOpen && isRegisterModalOpen && (
@@ -271,70 +282,17 @@ function App() {
                       Запропонувати помешкання на HomeFU
                     </a>
                     <div className="site-header__account">
-                      <button
-                        className="site-header__menu"
-                        type="button"
-                        aria-label="Меню користувача"
-                        aria-expanded={isUserMenuOpen}
-                        aria-controls="user-menu"
-                        onClick={() => setIsUserMenuOpen((isOpen) => !isOpen)}
-                      >
-                        <Menu size={16} aria-hidden="true" />
-                        {accountInitial ? (
-                          <span className="site-header__avatar" aria-hidden="true">
-                            {accountInitial}
-                          </span>
-                        ) : (
-                          <span className="site-header__avatar site-header__avatar--empty" aria-hidden="true" />
-                        )}
-                      </button>
-
-                      {isUserMenuOpen && (
-                        <div className="site-header__account-menu" id="user-menu" role="menu">
-                          {accountInitial ? (
-                            <>
-                              <button type="button" role="menuitem" onClick={() => {
-                                setIsUserMenuOpen(false)
-                                setActivePage('profile')
-                              }}>Профіль</button>
-                              {/* <button type="button" role="menuitem" onClick={() => {
-                                setIsUserMenuOpen(false)
-                                setActivePage('profile')
-                              }}>Збереженi</button> */}
-                              {accountRole === 'Admin' && <button type="button" role="menuitem" onClick={() => {
-                                setIsUserMenuOpen(false)
-                                setActivePage('admin')
-                              }}>Админ-панель</button>}
-                              <button type="button" role="menuitem" onClick={() => {
-                                void logout().finally(() => setIsUserMenuOpen(false))
-                              }}>Выйти</button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                role="menuitem"
-                                onClick={() => {
-                                  setIsUserMenuOpen(false)
-                                  setIsSignInModalOpen(true)
-                                }}
-                              >
-                                Войти
-                              </button>
-                              <button
-                                type="button"
-                                role="menuitem"
-                                onClick={() => {
-                                  setIsUserMenuOpen(false)
-                                  setIsRegisterModalOpen(true)
-                                }}
-                              >
-                                Регистрация
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      )}
+                      <UserMenu
+                        accountInitial={accountInitial}
+                        accountRole={accountRole}
+                        savedCount={savedIds.size}
+                        onOpenProfile={() => setActivePage('profile')}
+                        onOpenSaved={() => setActivePage('profile')}
+                        onOpenAdmin={() => setActivePage('admin')}
+                        onSignIn={() => setIsSignInModalOpen(true)}
+                        onRegister={() => setIsRegisterModalOpen(true)}
+                        onLogout={() => void logout()}
+                      />
                     </div>
                   </div>
                 </div>

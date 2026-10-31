@@ -1,5 +1,6 @@
-﻿import { ChevronLeft, Info, Globe, DollarSign } from 'lucide-react'
+import { ChevronLeft, Info, Globe, DollarSign } from 'lucide-react'
 import type { Listing } from '../../types/listing'
+import { UserMenu } from '../UserMenu/UserMenu'
 import { PaymentMethodSection } from './PaymentMethodSection'
 import { PaymentOptionSelector, type PaymentOption } from './PaymentOptionSelector'
 import { PaymentSummary } from './PaymentSummary'
@@ -15,6 +16,11 @@ export function PaymentConfirmation({
   onBack,
   onHome,
   onPaid,
+  onOpenProfile,
+  onOpenAdmin,
+  onOpenSignIn,
+  onOpenRegister,
+  onLogout,
 }: {
   listing: Listing
   stayDates: { start: Date | null; end: Date | null }
@@ -24,6 +30,11 @@ export function PaymentConfirmation({
   onBack: () => void
   onHome: () => void
   onPaid: () => void
+  onOpenProfile?: () => void
+  onOpenAdmin?: () => void
+  onOpenSignIn?: () => void
+  onOpenRegister?: () => void
+  onLogout?: () => void
 }) {
   // Итоговая цена по той же формуле, что и на шаге бронирования.
   const totalPrice = listing.price * stayNights + 20
@@ -37,7 +48,17 @@ export function PaymentConfirmation({
 
       <header className="payment__header">
         <span className="payment__logo">HomeFU</span>
-        <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+        <div className="payment__header-actions">
+          <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+          <UserMenu
+            onOpenProfile={onOpenProfile}
+            onOpenSaved={onOpenProfile}
+            onOpenAdmin={onOpenAdmin}
+            onSignIn={onOpenSignIn}
+            onRegister={onOpenRegister}
+            onLogout={onLogout}
+          />
+        </div>
       </header>
 
       <div className="payment__layout">
