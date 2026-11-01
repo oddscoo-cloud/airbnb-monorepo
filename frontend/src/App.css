@@ -6,8 +6,8 @@
   flex-direction: column;
   gap: 20px;
   padding: 20px 40px 28px;
-  background: var(--bg-header);               /* #eae9e7 — Figma warm-0.5 */
-  border-bottom: 1px solid rgba(33, 30, 26, 0.08);
+  background: var(--bg-header);               /* #dddbd7 — точный фон макета Figma */
+  border-bottom: 1px solid var(--border-divider);
   transition: background-color 0.2s ease;
 }
 
@@ -49,9 +49,14 @@
 .site-header__nav a,
 .site-header__host {
   color: var(--text-primary);                 /* #211e1a */
-  font-size: 14px;
+  font-family: var(--font-serif);
+  font-size: 12px;
   font-weight: 500;
   text-decoration: none;
+}
+
+.site-header__host {
+  text-decoration: underline;
 }
 
 .site-header__nav a:hover,
@@ -70,7 +75,7 @@
 .site-header__bar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .site-header__account {
@@ -80,22 +85,26 @@
 .site-header__menu {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  padding: 6px 8px 6px 12px;
-  border: 1px solid var(--border-default);    /* #dddddd */
-  border-radius: var(--radius-pill);
-  background: #fff;
+  min-height: 47px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-strong);     /* #211e1a — Figma Rectangle 18 */
+  border-radius: var(--radius-button);        /* 26px */
+  background: transparent;
   color: var(--text-primary);                 /* #211e1a */
   cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .site-header--dark .site-header__menu {
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .site-header__menu:hover {
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-button);
+  transform: translateY(-1px);
 }
 
 .site-header__avatar {
@@ -104,14 +113,14 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--accent-avatar);           /* #df7058 */
+  background: var(--color-warm-5);            /* #6f6558 */
   color: #fff;
   font-size: 14px;
   font-weight: 800;
 }
 
 .site-header__avatar--empty {
-  background: var(--color-warm-15);           /* #cfccc7 */
+  background: var(--color-warm-3);            /* #a6a098 */
 }
 
 .site-header__account-menu {
@@ -121,16 +130,16 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  min-width: 160px;
+  min-width: 170px;
   padding: 8px;
-  border: 1px solid var(--border-default);    /* #dddddd */
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  background: #fff;
-  box-shadow: var(--shadow-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .site-header--dark .site-header__account-menu {
-  background: var(--color-warm-6);            /* #595146 */
+  background: var(--color-warm-6);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -139,14 +148,15 @@
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--text-primary);                 /* #211e1a */
+  color: var(--text-primary);
   font: inherit;
+  font-size: 13px;
   text-align: left;
   cursor: pointer;
 }
 
 .site-header__account-menu button:hover {
-  background: var(--bg-surface);             /* #f8f8f7 */
+  background: var(--color-warm-05);
 }
 
 .site-header--dark .site-header__account-menu button:hover {
@@ -174,17 +184,10 @@
 
 .page {
   width: 100%;
+  background: var(--bg-page);
   animation: page-enter 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 .site-header {
   animation: page-enter 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-
-.site-header__menu {
-  transition: transform 160ms ease, box-shadow 160ms ease;
-}
-
-.site-header__menu:hover {
-  transform: translateY(-1px);
 }

@@ -4,8 +4,9 @@
 .location-map {
   width: 100%;
   min-height: 100vh;
-  background: #f3f2f0;
-  font-family: 'Nunito Sans', Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
 }
 
 .location-map__back {
@@ -45,7 +46,7 @@
 .location-map__sidebar section {
   margin-bottom: 24px;
   padding-top: 20px;
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid var(--border-divider);
 }
 
 .location-map__sidebar section:first-of-type {

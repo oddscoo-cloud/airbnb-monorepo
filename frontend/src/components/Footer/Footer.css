@@ -4,7 +4,8 @@
 
 .destinations {
   padding: 40px 40px 24px;
-  border-top: 1px solid var(--border-default);
+  background: var(--bg-page);
+  border-top: 1px solid var(--border-divider);
 }
 
 .destinations__title {
@@ -21,7 +22,7 @@
   gap: 24px;
   padding-bottom: 16px;
   margin-bottom: 24px;
-  border-bottom: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-divider);
 }
 
 .destinations__tab {
@@ -89,9 +90,8 @@
 
 .site-footer {
   padding: 40px;
-  /* Фон футера согласован с оттенком шапки из App.css. */
-  background: var(--bg-surface);
-  border-top: 1px solid var(--border-default);
+  background: var(--bg-page);
+  border-top: 1px solid var(--border-divider);
 }
 
 .site-footer__columns {
@@ -103,10 +103,10 @@
 
 .site-footer__column h3 {
   margin: 0 0 16px;
-  font-family: 'Inknut Antiqua', Georgia, serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--text-primary);
+  font-family: var(--font-inder);
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--accent-dark);
 }
 
 .site-footer__column ul {
@@ -136,7 +136,7 @@
   flex-wrap: wrap;
   gap: 16px;
   padding-top: 24px;
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid var(--border-divider);
 }
 
 .site-footer__legal {

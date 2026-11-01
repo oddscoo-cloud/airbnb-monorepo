@@ -88,13 +88,14 @@
   width: 432px;
   height: 56px;
   border: 0;
-  border-radius: 64px;
-  background: var(--accent-dark);
-  color: #fff;
-  font-family: 'Nunito Sans', Arial, sans-serif;
-  font-weight: 800;
+  border-radius: var(--radius-pill);
+  background: var(--btn-submit-bg);
+  color: var(--color-warm-3);
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .sign-in-modal__submit:hover {

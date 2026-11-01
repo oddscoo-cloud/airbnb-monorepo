@@ -7,10 +7,11 @@
   z-index: 40;
   width: min(620px, calc(100% - 32px));
   padding: 18px 18px 12px;
-  border: 1px solid #e5e5e5;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid var(--border-divider);
+  border-radius: var(--radius-button);
+  background: var(--bg-modal);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.12);
+  font-family: var(--font-sans);
 }
 
 .date-picker__months {
@@ -26,8 +27,10 @@
 .date-picker__month-title {
   margin-bottom: 10px;
   text-align: center;
+  font-family: var(--font-serif);
   font-size: 13px;
-  color: #636363;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .date-picker__weekdays,
