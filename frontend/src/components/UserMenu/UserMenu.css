@@ -1,4 +1,4 @@
-.user-menu {
+﻿.user-menu {
   position: relative;
   display: inline-block;
 }
@@ -8,7 +8,7 @@
   align-items: center;
   gap: 10px;
   padding: 5px 6px 5px 12px;
-  border: 1px solid #dddddd;
+  border: 1px solid var(--border-default);
   border-radius: 999px;
   background: #ffffff;
   color: #222222;
@@ -49,7 +49,7 @@
 
 .user-menu__avatar--empty {
   background: #d9d4cb;
-  color: #717171;
+  color: var(--text-placeholder);
 }
 
 .user-menu__dropdown {
@@ -99,7 +99,7 @@
 }
 
 .user-menu__item:hover {
-  background: #f7f7f7;
+  background: var(--bg-surface);
 }
 
 .user-menu__item--danger {

@@ -1,13 +1,13 @@
-/* Значения из Figma (узел 91:10 "Профіль"): фон #dddbd7, текст #211e1a,
-   подписи #48433d, акцент #6f6558, шрифты Nunito Sans / Inknut Antiqua / Inder. */
+﻿/* Значения из Figma (узел 91:10 "Профіль"): фон var(--bg-muted), текст var(--text-primary),
+   подписи #48433d, акцент var(--accent-primary), шрифты Nunito Sans / Inknut Antiqua / Inder. */
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Inknut+Antiqua:wght@500&family=Inder&display=swap');
 
 .profile {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #dddbd7;
-  color: #211e1a;
+  background: var(--bg-muted);
+  color: var(--text-primary);
 }
 
 /* Header */
@@ -24,7 +24,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 20px;
-  color: #211e1a;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -38,7 +38,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 12px;
-  color: #211e1a;
+  color: var(--text-primary);
   text-decoration: underline;
 }
 
@@ -51,7 +51,7 @@
   align-items: center;
   gap: 10px;
   padding: 6px 8px 6px 12px;
-  border: 1px solid #dddddd;
+  border: 1px solid var(--border-default);
   border-radius: 999px;
   background: #fff;
   color: #222222;
@@ -88,7 +88,7 @@
   flex-direction: column;
   min-width: 160px;
   padding: 8px;
-  border: 1px solid #dddddd;
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
@@ -104,7 +104,7 @@
 }
 
 .profile__account-menu a:hover {
-  background: #f7f7f7;
+  background: var(--bg-surface);
 }
 /* Content */
 
@@ -133,7 +133,7 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: #6f6558;
+  background: var(--accent-primary);
   color: #fff;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 700;
@@ -159,11 +159,11 @@
   padding: 0 14px;
   border: 0;
   border-radius: 9px;
-  background: #dddbd7;
+  background: var(--bg-muted);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 12px;
-  color: #211e1a;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -215,7 +215,7 @@
   gap: 6px;
   height: 65px;
   padding-top: 4px;
-  border-bottom: 1px solid #211e1a;
+  border-bottom: 1px solid var(--text-primary);
 }
 
 .profile__field-label {
@@ -229,7 +229,7 @@
 
 .profile__field-label svg {
   flex-shrink: 0;
-  color: #211e1a;
+  color: var(--text-primary);
 }
 
 .profile__field-input {
@@ -239,7 +239,7 @@
   background: transparent;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 14px;
-  color: #211e1a;
+  color: var(--text-primary);
   outline: none;
 }
 
@@ -280,7 +280,7 @@
   background: transparent;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 14px;
-  color: #211e1a;
+  color: var(--text-primary);
   outline: none;
 }
 
@@ -292,7 +292,7 @@
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 600;
   font-size: 14px;
-  color: #211e1a;
+  color: var(--text-primary);
   text-decoration: underline;
   cursor: pointer;
 }
@@ -300,7 +300,7 @@
 .profile__divider {
   height: 1px;
   margin: 36px 0;
-  background: #211e1a;
+  background: var(--text-primary);
 }
 
 /* Interests */
@@ -333,12 +333,12 @@
   min-width: 84px;
   height: 36px;
   padding: 0 14px;
-  border: 1px dashed #211e1a;
+  border: 1px dashed var(--text-primary);
   border-radius: 16px;
   background: transparent;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 14px;
-  color: #211e1a;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -361,7 +361,7 @@
   flex-wrap: wrap;
   gap: 16px;
   padding: 14px 40px;
-  border-top: 1px solid #211e1a;
+  border-top: 1px solid var(--text-primary);
 }
 
 .profile__footer-legal {
@@ -371,11 +371,11 @@
   gap: 8px 24px;
   font-family: 'Inder', Arial, sans-serif;
   font-size: 12px;
-  color: #6f6558;
+  color: var(--accent-primary);
 }
 
 .profile__footer-legal a {
-  color: #6f6558;
+  color: var(--accent-primary);
   text-decoration: underline;
 }
 
@@ -393,14 +393,14 @@
   background: transparent;
   font-family: 'Inder', Arial, sans-serif;
   font-size: 14px;
-  color: #2c2823;
+  color: var(--accent-dark);
   cursor: pointer;
 }
 
 .profile__footer-locale a {
   display: grid;
   place-items: center;
-  color: #2c2823;
+  color: var(--accent-dark);
 }
 
 @media (max-width: 1000px) {
@@ -453,20 +453,20 @@
 
 .profile__saved-toggle {
   padding: 6px 16px;
-  border: 1.5px solid #211e1a;
+  border: 1.5px solid var(--text-primary);
   border-radius: 999px;
   background: transparent;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #211e1a;
+  color: var(--text-primary);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 
 .profile__saved-toggle:hover {
-  background: #211e1a;
-  color: #dddbd7;
+  background: var(--text-primary);
+  color: var(--bg-muted);
 }
 
 /* ── Секція збережених ── */
@@ -560,7 +560,7 @@
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #211e1a;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -600,7 +600,7 @@
 }
 
 .profile__menu-saved-btn:hover {
-  background: #f7f7f7;
+  background: var(--bg-surface);
 }
 
 .profile__menu-saved-badge {

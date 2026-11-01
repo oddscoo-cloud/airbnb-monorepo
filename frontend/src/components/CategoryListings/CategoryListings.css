@@ -1,4 +1,4 @@
-/* Шрифт Inknut Antiqua для навигации, подписей, цен и кнопок. */
+﻿/* Шрифт Inknut Antiqua для навигации, подписей, цен и кнопок. */
 @import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
 
 .category-listings {
@@ -13,7 +13,7 @@
   align-items: center;
   gap: 16px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .category-nav__list {
@@ -40,7 +40,7 @@
   padding: 4px 0;
   border: 0;
   background: transparent;
-  color: #211e1a;
+  color: var(--text-primary);
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 12px;
@@ -61,7 +61,7 @@
 
 .category-nav__item--active {
   opacity: 1;
-  border-bottom-color: #211e1a;
+  border-bottom-color: var(--text-primary);
 }
 
 .category-nav__scroll {
@@ -74,7 +74,7 @@
   border: 0 solid #dddddd;
   border-radius: 50%;
   background: #fff;
-  color: #211e1a;
+  color: var(--text-primary);
   cursor: pointer;
   opacity: 0;
   overflow: hidden;
@@ -102,10 +102,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  border: 1px solid #6f6558;
+  border: 1px solid var(--accent-primary);
   border-radius: 26px;
   background: #fff;
-  color: #211e1a;
+  color: var(--text-primary);
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 16px;
@@ -121,7 +121,7 @@
   flex-direction: column;
   min-width: 180px;
   padding: 8px;
-  border: 1px solid #e5e1dc;
+  border: 1px solid var(--color-warm-05);
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 12px 28px rgba(34, 34, 34, 0.08);
@@ -132,21 +132,21 @@
   border: 0;
   border-radius: 10px;
   background: transparent;
-  color: #211e1a;
+  color: var(--text-primary);
   text-align: left;
   font: inherit;
   cursor: pointer;
 }
 
 .category-nav__filter-item:hover {
-  background: #f6f2ee;
+  background: var(--bg-subtle);
 }
 
 .category-nav__filter-field {
   display: grid;
   gap: 5px;
   padding: 8px 10px;
-  color: #433d35;
+  color: var(--color-warm-7);
   font-size: 12px;
 }
 
@@ -155,10 +155,10 @@
   width: 100%;
   min-height: 38px;
   padding: 7px 9px;
-  border: 1px solid #ddd7d1;
+  border: 1px solid var(--border-medium);
   border-radius: 8px;
   background: #fff;
-  color: #211e1a;
+  color: var(--text-primary);
   font: inherit;
 }
 
@@ -180,7 +180,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
-  color: #211e1a;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
 }
@@ -192,8 +192,8 @@
   height: 28px;
   border: 0;
   border-radius: 50%;
-  background: #f3efe9;
-  color: #211e1a;
+  background: var(--bg-surface);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -205,22 +205,22 @@
 
 .category-nav__region-option {
   padding: 8px 12px;
-  border: 1px solid #ddd7d1;
+  border: 1px solid var(--border-medium);
   border-radius: 999px;
   background: #fff;
-  color: #211e1a;
+  color: var(--text-primary);
   font: inherit;
   cursor: pointer;
 }
 
 .category-nav__region-option--active {
-  border-color: #433d35;
-  background: #433d35;
+  border-color: var(--color-warm-7);
+  background: var(--color-warm-7);
   color: #fff;
 }
 
 .category-nav__region-option--clear {
-  background: #f8f4f1;
+  background: var(--bg-surface);
 }
 
 .category-nav__toggle {
@@ -229,12 +229,12 @@
   align-items: center;
   gap: 10px;
   padding: 6px 20px;
-  border: 1px solid #6f6558;
+  border: 1px solid var(--accent-primary);
   border-radius: 26px;
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 16px;
-  color: #211e1a;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -243,13 +243,13 @@
   width: 42px;
   height: 23px;
   border-radius: 26px;
-  background: #6f6558;
+  background: var(--accent-primary);
   transition: background 0.15s ease;
   flex-shrink: 0;
 }
 
 .category-nav__switch--on {
-  background: #2c2823;
+  background: var(--accent-dark);
 }
 
 .category-nav__switch-knob {
@@ -301,7 +301,7 @@
   aspect-ratio: 1 / 1;
   border-radius: 16px;
   overflow: hidden;
-  background: #ebebeb;
+  background: var(--border-default);
 }
 
 .listing-card__image {
@@ -351,7 +351,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 16px;
-  color: #433d35;
+  color: var(--color-warm-7);
 }
 
 .listing-card__rating {
@@ -361,7 +361,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 12px;
-  color: #433d35;
+  color: var(--color-warm-7);
 }
 
 .listing-card__meta {
@@ -369,7 +369,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 12px;
-  color: #433d35;
+  color: var(--color-warm-7);
 }
 
 .listing-card__price {
@@ -377,7 +377,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 500;
   font-size: 12px;
-  color: #433d35;
+  color: var(--color-warm-7);
 }
 
 .listing-card__price strong {
@@ -400,14 +400,14 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
   font-size: 20px;
-  color: #6f6558;
+  color: var(--accent-primary);
 }
 
 .category-listings__more {
   padding: 14px 28px;
   border: 0;
   border-radius: 16px;
-  background: #2c2823;
+  background: var(--accent-dark);
   color: #fff;
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
@@ -416,7 +416,7 @@
 }
 
 .category-listings__more:hover {
-  background: #211e1a;
+  background: var(--text-primary);
 }
 
 @media (max-width: 1100px) {
@@ -437,7 +437,7 @@
 }
 
 .listing-card__like--saved {
-  color: #ff385c;
+  color: var(--accent-like);
   background: rgba(255, 255, 255, 0.9);
 }
 

@@ -1,10 +1,10 @@
-/* Шрифты: Inknut Antiqua для заголовков и вкладок, Inder для городов и ссылок. */
+﻿/* Шрифты: Inknut Antiqua для заголовков и вкладок, Inder для городов и ссылок. */
 @import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
 
 
 .destinations {
   padding: 40px 40px 24px;
-  border-top: 1px solid #ebebeb;
+  border-top: 1px solid var(--border-default);
 }
 
 .destinations__title {
@@ -12,7 +12,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
   font-size: 20px;
-  color: #6f6558;
+  color: var(--accent-primary);
 }
 
 .destinations__tabs {
@@ -21,7 +21,7 @@
   gap: 24px;
   padding-bottom: 16px;
   margin-bottom: 24px;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .destinations__tab {
@@ -37,13 +37,13 @@
 }
 
 .destinations__tab:hover {
-  color: #211e1a;
+  color: var(--text-primary);
 }
 
 .destinations__tab--active {
-  color: #211e1a;
+  color: var(--text-primary);
   font-weight: 600;
-  border-bottom-color: #211e1a;
+  border-bottom-color: var(--text-primary);
 }
 
 .destinations__grid {
@@ -62,7 +62,7 @@
 .destinations__city {
   font-family: 'Inder', Arial, sans-serif;
   font-size: 14px;
-  color: #2c2823;
+  color: var(--accent-dark);
 }
 
 .destinations__type {
@@ -78,7 +78,7 @@
   border: 0;
   background: transparent;
   font-family: 'Inder', Arial, sans-serif;
-  color: #2c2823;
+  color: var(--accent-dark);
   font-size: 14px;
   font-weight: 700;
   text-decoration: underline;
@@ -90,8 +90,8 @@
 .site-footer {
   padding: 40px;
   /* Фон футера согласован с оттенком шапки из App.css. */
-  background: #f7f7f7;
-  border-top: 1px solid #ebebeb;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-default);
 }
 
 .site-footer__columns {
@@ -106,7 +106,7 @@
   font-family: 'Inknut Antiqua', Georgia, serif;
   font-weight: 600;
   font-size: 16px;
-  color: #211e1a;
+  color: var(--text-primary);
 }
 
 .site-footer__column ul {
@@ -121,7 +121,7 @@
 .site-footer__column a {
   font-family: 'Inder', Arial, sans-serif;
   font-size: 13px;
-  color: #433d35;
+  color: var(--color-warm-7);
   text-decoration: none;
 }
 
@@ -146,11 +146,11 @@
   gap: 8px 16px;
   font-family: 'Inder', Arial, sans-serif;
   font-size: 13px;
-  color: #433d35;
+  color: var(--color-warm-7);
 }
 
 .site-footer__legal a {
-  color: #433d35;
+  color: var(--color-warm-7);
   text-decoration: underline;
 }
 
@@ -167,7 +167,7 @@
   border: 0;
   background: transparent;
   font-family: 'Inder', Arial, sans-serif;
-  color: #433d35;
+  color: var(--color-warm-7);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -180,7 +180,7 @@
 .site-footer__social {
   display: grid;
   place-items: center;
-  color: #433d35;
+  color: var(--color-warm-7);
 }
 
 @media (max-width: 900px) {

@@ -1,0 +1,103 @@
+/*
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  Design Tokens — sourced from Figma «airbnb-clon--Copy-»        ║
+  ║  Palette #6F6558 (warm brown) + Neutral #4C4D4D                 ║
+  ╚══════════════════════════════════════════════════════════════════╝
+*/
+
+:root {
+  /* ── Warm Brown Palette (#6F6558 series) ── */
+  --color-warm-0:    #f8f8f7;  /* lightest, near white */
+  --color-warm-05:   #eae9e7;
+  --color-warm-1:    #dddbd7;
+  --color-warm-15:   #cfccc7;
+  --color-warm-2:    #c1bdb7;
+  --color-warm-3:    #a6a098;
+  --color-warm-4:    #8a8278;
+  --color-warm-5:    #6f6558;  /* base accent */
+  --color-warm-6:    #595146;
+  --color-warm-7:    #433d35;
+  --color-warm-8:    #2c2823;
+  --color-warm-85:   #211e1a;  /* primary text */
+  --color-warm-9:    #161412;
+  --color-warm-95:   #0b0a09;
+  --color-warm-10:   #000000;
+
+  /* ── Neutral Grey Palette (#4C4D4D series) ── */
+  --color-grey-0:    #e0e1e1;
+  --color-grey-05:   #d1d2d2;
+  --color-grey-1:    #c2c3c3;
+  --color-grey-15:   #b4b5b5;
+  --color-grey-2:    #a5a6a6;
+  --color-grey-3:    #878888;
+  --color-grey-4:    #6a6b6b;
+  --color-grey-5:    #4c4d4d;  /* base neutral */
+  --color-grey-6:    #3d3e3e;
+  --color-grey-7:    #2e2e2e;
+  --color-grey-8:    #1e1f1f;
+  --color-grey-85:   #171717;
+  --color-grey-9:    #0f0f0f;
+  --color-grey-95:   #080808;
+  --color-grey-10:   #000000;
+
+  /* ── Semantic Aliases ── */
+
+  /* Backgrounds */
+  --bg-page:        #ffffff;
+  --bg-surface:     var(--color-warm-0);    /* #f8f8f7 – cards, dropdowns */
+  --bg-header:      var(--color-warm-05);   /* #eae9e7 – site header light */
+  --bg-header-dark: var(--color-warm-7);    /* #433d35 – site header dark mode */
+  --bg-muted:       var(--color-warm-1);    /* #dddbd7 – property page bg */
+  --bg-subtle:      #f6f2ee;               /* hover tint */
+
+  /* Text */
+  --text-primary:   var(--color-warm-85);   /* #211e1a – main body text */
+  --text-secondary: var(--color-warm-8);    /* #2c2823 */
+  --text-tertiary:  var(--color-warm-5);    /* #6f6558 – muted / labels */
+  --text-on-dark:   var(--color-warm-0);    /* #f8f8f7 – text on dark surfaces */
+  --text-disabled:  var(--color-warm-3);    /* #a6a098 */
+  --text-placeholder: #717171;
+
+  /* Borders */
+  --border-default: #dddddd;
+  --border-medium:  var(--color-warm-1);    /* #dddbd7 */
+  --border-strong:  var(--color-warm-85);   /* #211e1a */
+  --border-accent:  var(--color-warm-5);    /* #6f6558 – filter buttons etc. */
+
+  /* Accents / interactive */
+  --accent-primary:       var(--color-warm-5);   /* #6f6558 */
+  --accent-primary-hover: var(--color-warm-6);   /* #595146 */
+  --accent-dark:          var(--color-warm-8);   /* #2c2823 – CTAs, submit buttons */
+  --accent-dark-hover:    var(--color-warm-85);  /* #211e1a */
+  --accent-avatar:        #df7058;               /* avatar initial background */
+  --accent-like:          #ff385c;               /* saved/liked heart */
+
+  /* Search form submit button */
+  --btn-search-bg:       #5c5248;
+  --btn-search-bg-hover: #4a423a;
+
+  /* ── Typography ── */
+  --font-serif:  'Inknut Antiqua', Georgia, serif;
+  --font-sans:   'Nunito Sans', Arial, sans-serif;
+  --font-inder:  'Inder', Arial, sans-serif;
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg:  0 12px 28px rgba(33, 30, 26, 0.08);
+  --shadow-xl:  0 18px 34px rgba(0, 0, 0, 0.12);
+
+  /* ── Radii ── */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-pill: 999px;
+
+  /* ── Spacing ── */
+  --space-xs:  8px;
+  --space-sm:  12px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+}

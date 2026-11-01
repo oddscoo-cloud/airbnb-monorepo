@@ -1,11 +1,12 @@
-
+﻿@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Nunito+Sans:wght@400;600;700;800&family=Inder&display=swap');
+@import './tokens.css';
 /* Глобальная база: типографика, box sizing и минимальная высота React-контейнера. */
 :root {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-serif);
   line-height: 1.4;
   font-weight: 400;
-  color: #222222;
-  background: #f7f7f7;
+  color: var(--text-primary);
+  background: var(--bg-page);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
