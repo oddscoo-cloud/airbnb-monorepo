@@ -53,7 +53,7 @@ public sealed class AdminListingsController(
             HostId = hostId,
             Title = request.Title.Trim(),
             Location = request.Location.Trim(),
-            Region = request.Region.Trim(),
+            RegionId = request.RegionId,
             Category = request.Category.Trim(),
             Description = request.Description?.Trim(),
             PricePerNight = request.PricePerNight,
@@ -85,7 +85,7 @@ public sealed class AdminListingsController(
 
         listing.Title = request.Title.Trim();
         listing.Location = request.Location.Trim();
-        listing.Region = request.Region.Trim();
+        listing.RegionId = request.RegionId;
         listing.Category = request.Category.Trim();
         listing.Description = request.Description?.Trim();
         listing.PricePerNight = request.PricePerNight;
@@ -110,10 +110,9 @@ public sealed class AdminListingsController(
 
         if (request.IsPublished &&
             (string.IsNullOrWhiteSpace(listing.Location) ||
-             string.IsNullOrWhiteSpace(listing.Region) ||
              string.IsNullOrWhiteSpace(listing.Category)))
         {
-            return BadRequest(new { message = "Перед публікацією вкажіть адресу, регіон і категорію." });
+            return BadRequest(new { message = "Перед публікацією вкажіть адресу і категорію." });
         }
 
         listing.IsPublished = request.IsPublished;
@@ -202,7 +201,7 @@ public sealed class AdminListingsController(
         listing.HostId,
         listing.Title,
         listing.Location,
-        listing.Region,
+        listing.Region?.Name,
         listing.Category,
         listing.Description,
         listing.IsPublished,

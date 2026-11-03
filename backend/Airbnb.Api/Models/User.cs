@@ -30,6 +30,7 @@ public class User
     public DateTimeOffset CreatedAt { get; set; }
 
 
+    public ProfileFacts? Facts { get; set; }
 
 
     public List<RefreshToken> RefreshTokens { get; set; } = new();

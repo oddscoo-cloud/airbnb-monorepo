@@ -8,8 +8,8 @@ public sealed class AdminListingRequestDTO
     [Required, MaxLength(160)]
     public string Location { get; set; } = string.Empty;
 
-    [Required, MaxLength(120)]
-    public string Region { get; set; } = string.Empty;
+    [Required]
+    public int RegionId { get; set; }
 
     [Required, MaxLength(80)]
     public string Category { get; set; } = string.Empty;

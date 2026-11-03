@@ -148,9 +148,9 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("real")
                         .HasColumnName("price_per_night");
 
-                    b.Property<string>("Region")
-                        .HasColumnType("text")
-                        .HasColumnName("region");
+                    b.Property<int>("RegionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("region_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -160,6 +160,8 @@ namespace Airbnb.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HostId");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("listings");
                 });
@@ -191,6 +193,83 @@ namespace Airbnb.Api.Data.Migrations
                     b.HasIndex("ListingId");
 
                     b.ToTable("listing_images");
+                });
+
+            modelBuilder.Entity("ProfileFacts", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AboutMe")
+                        .HasColumnType("text")
+                        .HasColumnName("about_me");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text")
+                        .HasColumnName("address");
+
+                    b.Property<string>("BiographyTitle")
+                        .HasColumnType("text")
+                        .HasColumnName("biography_title");
+
+                    b.Property<string>("BirthdayDecade")
+                        .HasColumnType("text")
+                        .HasColumnName("birthday_decade");
+
+                    b.Property<string>("Education")
+                        .HasColumnType("text")
+                        .HasColumnName("education");
+
+                    b.Property<string>("Excitement")
+                        .HasColumnType("text")
+                        .HasColumnName("excitement");
+
+                    b.Property<string>("Fact")
+                        .HasColumnType("text")
+                        .HasColumnName("fact");
+
+                    b.Property<string>("Favorite")
+                        .HasColumnType("text")
+                        .HasColumnName("favorite");
+
+                    b.Property<string>("Languages")
+                        .HasColumnType("text")
+                        .HasColumnName("languages");
+
+                    b.Property<string>("Pets")
+                        .HasColumnType("text")
+                        .HasColumnName("pets");
+
+                    b.Property<string>("Profession")
+                        .HasColumnType("text")
+                        .HasColumnName("profession");
+
+                    b.Property<string>("Song")
+                        .HasColumnType("text")
+                        .HasColumnName("song");
+
+                    b.Property<string>("TimeAbsorber")
+                        .HasColumnType("text")
+                        .HasColumnName("time_absorber");
+
+                    b.Property<string>("UselessSkills")
+                        .HasColumnType("text")
+                        .HasColumnName("useless_skills");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("profile_facts");
                 });
 
             modelBuilder.Entity("RefreshToken", b =>
@@ -233,6 +312,30 @@ namespace Airbnb.Api.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("refresh_tokens", (string)null);
+                });
+
+            modelBuilder.Entity("Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("region");
                 });
 
             modelBuilder.Entity("Review", b =>
@@ -395,7 +498,15 @@ namespace Airbnb.Api.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Region", "Region")
+                        .WithMany("Listings")
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Host");
+
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("ListingImage", b =>
@@ -407,6 +518,17 @@ namespace Airbnb.Api.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Listing");
+                });
+
+            modelBuilder.Entity("ProfileFacts", b =>
+                {
+                    b.HasOne("User", "User")
+                        .WithOne("Facts")
+                        .HasForeignKey("ProfileFacts", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RefreshToken", b =>
@@ -468,9 +590,16 @@ namespace Airbnb.Api.Data.Migrations
                     b.Navigation("SavedByUsers");
                 });
 
+            modelBuilder.Entity("Region", b =>
+                {
+                    b.Navigation("Listings");
+                });
+
             modelBuilder.Entity("User", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("Facts");
 
                     b.Navigation("Listings");
 

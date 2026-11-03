@@ -21,10 +21,8 @@ public class ListingsController : ControllerBase
     [HttpGet("regions")]
     public async Task<IActionResult> GetRegions(CancellationToken cancellationToken)
     {
-        var regions = await Context.Listings
-            .Where(listing => listing.IsPublished && listing.Region != null && listing.Region != "")
-            .Select(listing => listing.Region!)
-            .Distinct()
+        var regions = await Context.Regions
+            .Where(region => region.Listings.Any(listing => listing.IsPublished))
             .OrderBy(region => region)
             .ToListAsync(cancellationToken);
 
@@ -51,7 +49,7 @@ public class ListingsController : ControllerBase
         if (!string.IsNullOrWhiteSpace(request.Region))
         {
             var region = request.Region.Trim().ToLowerInvariant();
-            query = query.Where(listing => listing.Region != null && listing.Region.ToLower() == region);
+            query = query.Where(listing => listing.Region != null && listing.Region.Name.ToLower() == region);
         }
 
         if (!string.IsNullOrWhiteSpace(request.Category))
@@ -106,7 +104,7 @@ public class ListingsController : ControllerBase
                 listing.HostId,
                 listing.Title,
                 listing.Location,
-                listing.Region,
+                listing.Region?.Name,
                 listing.Category,
                 listing.Description,
                 listing.IsPublished,
@@ -141,7 +139,7 @@ public class ListingsController : ControllerBase
             listing.HostId,
             listing.Title,
             listing.Location,
-            listing.Region,
+            listing.Region?.Name,
             listing.Category,
             listing.Description,
             listing.IsPublished,
@@ -194,23 +192,38 @@ public class ListingsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = listing.Id }, MapReview(review));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody]ListingRequestDTO listingDTO)
+    public async Task<ActionResult<ListingResponseDTO>> Create(
+        ListingRequestDTO request,
+        CancellationToken cancellationToken)
     {
-        if(listingDTO == null)
-            return BadRequest(new { message = "Incorrect listing data" });
-        
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!int.TryParse(userId, out var hostId))
             return Unauthorized();
 
-        Listing listing = Mapper.Map<Listing>(listingDTO);
-        listing.HostId = hostId;
-        listing.IsPublished = false;
-        Context.Add(listing);
-        await Context.SaveChangesAsync();
+        var user = await Context.Users.FindAsync(hostId);
+        if (user == null)
+            return Unauthorized();
+        
+        var listing = new Listing
+        {
+            HostId = hostId,
+            Title = request.Title.Trim(),
+            Location = request.Location?.Trim(),
+            RegionId = request.RegionId,
+            Category = request.Category?.Trim(),
+            Description = request.Description?.Trim(),
+            PricePerNight = request.PricePerNight,
+            MaxGuests = request.MaxGuests,
+            Latitude = request.Latitude,
+            Longtitude = request.Longtitude,
+            IsPublished = false,
+            Amenities = await GetAmenities(request.AmenityIds, cancellationToken)
+        };
 
+        Context.Listings.Add(listing);
+        await Context.SaveChangesAsync(cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = listing.Id }, listing);
     }
 
@@ -227,4 +240,16 @@ public class ListingsController : ControllerBase
 
         return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, authorName, avatarUrl);
     }
+
+    private async Task<List<Amenity>> GetAmenities(List<int> ids, CancellationToken cancellationToken)
+    {
+        if (ids.Count == 0)
+            return [];
+
+        return await Context.Amenities
+            .Where(amenity => ids.Contains(amenity.Id))
+            .ToListAsync(cancellationToken);
+    }
+
+    
 }

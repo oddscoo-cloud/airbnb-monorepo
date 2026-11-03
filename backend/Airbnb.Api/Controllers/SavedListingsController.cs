@@ -127,7 +127,7 @@ public class SavedListingsController : ControllerBase
             listing.HostId,
             listing.Title,
             listing.Location,
-            listing.Region,
+            listing.Region?.Name,
             listing.Category,
             listing.Description,
             listing.IsPublished,

@@ -10,6 +10,8 @@ public class AppDbContext : DbContext
     public DbSet<Review> Reviews { get; set; } = null!;
     public DbSet<Booking> Bookings { get; set; } = null!;
     public DbSet<SavedListing> SavedListings { get; set; } = null!;
+    public DbSet<ProfileFacts> Facts { get; set; } = null!;
+    public DbSet<Region> Regions { get; set; } = null!;
 
     public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
     {
@@ -76,6 +78,12 @@ public class AppDbContext : DbContext
             .HasOne(s => s.Listing)
             .WithMany(l => l.SavedByUsers)
             .HasForeignKey(s => s.ListingId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(user => user.Facts)
+            .WithOne(facts => facts.User)
+            .HasForeignKey<ProfileFacts>(facts => facts.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
