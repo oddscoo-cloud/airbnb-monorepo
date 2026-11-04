@@ -8,6 +8,7 @@ export interface UserMenuProps {
   savedCount?: number
   onOpenProfile?: () => void
   onOpenSaved?: () => void
+  onOpenAccount?: () => void
   onOpenAdmin?: () => void
   onSignIn?: () => void
   onRegister?: () => void
@@ -21,6 +22,7 @@ export function UserMenu({
   savedCount,
   onOpenProfile,
   onOpenSaved,
+  onOpenAccount,
   onOpenAdmin,
   onSignIn,
   onRegister,
@@ -112,6 +114,17 @@ export function UserMenu({
                   <span className="user-menu__badge">{savedCount}</span>
                 )}
               </button>
+
+              {onOpenAccount && (
+                <button
+                  type="button"
+                  className="user-menu__item"
+                  role="menuitem"
+                  onClick={() => handleAction(onOpenAccount)}
+                >
+                  <span>Акаунт</span>
+                </button>
+              )}
 
               {role === 'Admin' && (
                 <button

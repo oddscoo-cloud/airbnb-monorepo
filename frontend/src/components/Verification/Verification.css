@@ -1,0 +1,374 @@
+/* Значения из Figma (узлы 91:7, 91:8, 91:9 "Верефікація"): фон #dddbd7,
+   кнопки #6f6558, радиусы 6px (кнопки) и 16px (карточки), шрифт Nunito Sans. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Inknut+Antiqua:wght@500&display=swap');
+
+.verify {
+  min-height: 100vh;
+  background: #dddbd7;
+  color: #211e1a;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+/* Header */
+
+.verify__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 109px;
+  padding: 0 90px 0 70px;
+  border-bottom: 1px solid #211e1a;
+}
+
+.verify__logo {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #211e1a;
+  text-decoration: none;
+}
+
+.verify__nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 12px;
+}
+
+.verify__nav a {
+  color: #211e1a;
+  text-decoration: none;
+}
+
+.verify__nav a:hover {
+  text-decoration: underline;
+}
+
+.verify__avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-left: 18px;
+  border-radius: 50%;
+  background: #6f6558;
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Layout: колонка 432px + карточка приватности 279px */
+
+.verify__body {
+  display: grid;
+  grid-template-columns: 432px 279px;
+  column-gap: 88px;
+  align-items: start;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 50px 20px 80px;
+}
+
+.verify__col {
+  width: 432px;
+  max-width: 100%;
+}
+
+.verify__title {
+  margin: 0 0 12px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.verify__text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+/* Step 1 */
+
+.verify__options {
+  margin-top: 37px;
+}
+
+.verify__option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #211e1a;
+  cursor: pointer;
+}
+
+.verify__option--first {
+  padding: 0 0 20px;
+}
+
+.verify__option--second {
+  padding: 25px 0 50px;
+}
+
+.verify__option h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.verify__option p {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.verify__radio {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1px solid #211e1a;
+  border-radius: 50%;
+}
+
+.verify__radio::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #211e1a;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.verify__radio--checked::after {
+  transform: scale(1);
+}
+
+.verify__radio input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.verify__radio:focus-within {
+  outline: 2px solid #211e1a;
+  outline-offset: 2px;
+}
+
+/* Buttons */
+
+.verify__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 19px;
+}
+
+.verify__actions--end {
+  justify-content: flex-end;
+}
+
+.verify__primary {
+  width: 132px;
+  height: 39px;
+  border: 0;
+  border-radius: 6px;
+  background: #6f6558;
+  color: #fff;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.verify__primary:hover:not(:disabled) {
+  background: #5f564a;
+}
+
+.verify__primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.verify__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 16px;
+  color: #211e1a;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Privacy card */
+
+.verify__privacy {
+  padding: 34px 23px 0;
+  height: 305px;
+  border: 1px solid #000;
+  border-radius: 16px;
+}
+
+.verify__privacy h2 {
+  margin: 0 0 19px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.verify__privacy p {
+  margin: 0 0 40px;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.verify__privacy a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.verify__privacy-link {
+  font-size: 12px;
+  line-height: 17px;
+}
+
+/* Step 2 */
+
+.verify__select {
+  width: 100%;
+  height: 47px;
+  padding: 0 16px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: #211e1a;
+}
+
+.verify__types {
+  margin-top: 33px;
+}
+
+.verify__type {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 70px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.verify__type:not(:last-child) {
+  border-bottom: 1px solid #211e1a;
+}
+
+.verify__note {
+  margin: 22px 0 0 13px;
+  padding-bottom: 52px;
+  font-size: 12px;
+  line-height: 17px;
+  border-bottom: 1px solid #211e1a;
+  margin-right: 0;
+}
+
+.verify__note a {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Step 3 */
+
+.verify__tiles {
+  display: grid;
+  grid-template-columns: 208px 208px;
+  gap: 13px;
+  margin-top: 23px;
+  padding-bottom: 142px;
+  border-bottom: 1px solid #211e1a;
+}
+
+.verify__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 132px;
+  border: 1px dashed #211e1a;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.verify__tile--filled {
+  border-style: solid;
+}
+
+.verify__tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.verify__tile input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.verify__tile-label {
+  margin-top: 12px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.verify__tile-hint {
+  margin-top: -6px;
+  font-weight: 300;
+  font-size: 10px;
+  line-height: 17px;
+}
+
+.verify__actions--tiles {
+  margin-top: 17px;
+}
+
+@media (max-width: 900px) {
+  .verify__header {
+    padding: 0 16px;
+  }
+
+  .verify__nav a {
+    display: none;
+  }
+
+  .verify__body {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+    width: 100%;
+  }
+
+  .verify__col {
+    width: 100%;
+  }
+
+  .verify__tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+}

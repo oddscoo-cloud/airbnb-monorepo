@@ -26,6 +26,12 @@ public class User
     [Column("role")]
     public string Role { get; set; } = "Guest";
 
+    [Column("is_verified")]
+    public bool IsVerified { get; set; }
+
+    [Column("verified_at")]
+    public DateTimeOffset? VerifiedAt { get; set; }
+
     [Column("created_at")]
     public DateTimeOffset CreatedAt { get; set; }
 

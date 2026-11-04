@@ -5,5 +5,7 @@ public record UserResponseDTO(
     string? LastName,
     string AvatarUrl,
     DateTimeOffset CreatedAt,
-    ProfileFactsResponseDTO? Facts
+    ProfileFactsResponseDTO? Facts,
+    string Role,
+    bool IsVerified
 );

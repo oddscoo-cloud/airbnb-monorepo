@@ -10,6 +10,8 @@ import { BookingRequest } from './components/Bookingrequest/BookingRequest'
 import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
 import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
 import { ProfilePage } from './components/ProfilePage/ProfilePage'
+import { AccountPage } from './components/AccountPage/AccountPage'
+import { Verification } from './components/Verification/Verification'
 import { UserMenu } from './components/UserMenu/UserMenu'
 import { useListings } from './hooks/useListings'
 import { useAccountSession } from './hooks/useAccountSession'
@@ -25,7 +27,7 @@ function App() {
   const [isLocationMapOpen, setIsLocationMapOpen] = useState(false)
   const [isHeaderDark, setIsHeaderDark] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin' | 'profile'>('home')
+  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin' | 'profile' | 'account' | 'verification'>('home')
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [guestCount, setGuestCount] = useState(1)
@@ -120,6 +122,39 @@ function App() {
         accessToken={sessionStorage.getItem('access_token') ?? ''}
         onBack={() => setActivePage('home')}
         onSaved={() => setListingsRevision((revision) => revision + 1)}
+      />
+    )
+  }
+
+  if ((activePage === 'account' || activePage === 'verification') && accountInitial && accessToken) {
+    const menu = {
+      accountInitial,
+      accountRole,
+      savedCount: savedIds.size,
+      onOpenProfile: () => setActivePage('profile'),
+      onOpenSaved: () => setActivePage('profile'),
+      onOpenAccount: () => setActivePage('account'),
+      onOpenAdmin: () => setActivePage('admin'),
+      onLogout: () => {
+        setActivePage('home')
+        void logout()
+      },
+    }
+    return activePage === 'account' ? (
+      <AccountPage
+        accessToken={accessToken}
+        menu={menu}
+        onHome={handleBackHome}
+        onVerify={() => setActivePage('verification')}
+        onCreateProfile={() => setActivePage('profile')}
+      />
+    ) : (
+      <Verification
+        accessToken={accessToken}
+        menu={menu}
+        onHome={handleBackHome}
+        onOpenSaved={() => setActivePage('profile')}
+        onComplete={() => setActivePage('account')}
       />
     )
   }
@@ -288,6 +323,7 @@ function App() {
                         savedCount={savedIds.size}
                         onOpenProfile={() => setActivePage('profile')}
                         onOpenSaved={() => setActivePage('profile')}
+                        onOpenAccount={() => setActivePage('account')}
                         onOpenAdmin={() => setActivePage('admin')}
                         onSignIn={() => setIsSignInModalOpen(true)}
                         onRegister={() => setIsRegisterModalOpen(true)}

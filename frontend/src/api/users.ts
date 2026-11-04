@@ -26,6 +26,34 @@ export interface UserResponse {
   avatarUrl: string | null
   createdAt: string
   facts: ProfileFacts | null
+  role: string
+  isVerified: boolean
+}
+
+export interface VerificationInput {
+  documentType: string
+  country: string
+  front: File
+  back: File
+}
+
+export async function submitVerification(
+  accessToken: string,
+  input: VerificationInput,
+  signal?: AbortSignal,
+): Promise<void> {
+  const form = new FormData()
+  form.append('documentType', input.documentType)
+  form.append('country', input.country)
+  form.append('front', input.front)
+  form.append('back', input.back)
+  await apiRequest<{ isVerified: boolean }>('/api/users/me/verification', {
+    method: 'POST',
+    accessToken,
+    signal,
+    body: form,
+    fallbackError: (status) => `Не вдалося надіслати документи (${status})`,
+  })
 }
 
 interface CurrentAccount {
