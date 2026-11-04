@@ -1,0 +1,381 @@
+/* Стиль узгоджено зі сторінками «Верифікація» та «Акаунт»:
+   фон #dddbd7, акцент #6f6558, шрифти Inknut Antiqua / Nunito Sans. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Inknut+Antiqua:wght@500&display=swap');
+
+.host {
+  min-height: 100vh;
+  background: #dddbd7;
+  color: #211e1a;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.host__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(1160px, 100%);
+  height: 87px;
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  box-sizing: border-box;
+}
+
+.host__logo {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #211e1a;
+  text-decoration: none;
+}
+
+.host__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.host__host-link {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.host__brand {
+  font-family: 'Inknut Antiqua', Georgia, serif;
+}
+
+.host__status {
+  text-align: center;
+  margin-top: 80px;
+  font-size: 14px;
+}
+
+.host__body {
+  display: grid;
+  grid-template-columns: 520px 279px;
+  column-gap: 88px;
+  align-items: start;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+  box-sizing: border-box;
+}
+
+.host__col {
+  width: 520px;
+  max-width: 100%;
+}
+
+.host__gate {
+  width: min(560px, 100% - 40px);
+  margin: 0 auto;
+  padding: 50px 0 80px;
+}
+
+.host__step {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.host__title {
+  margin: 0 0 12px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.host__subtitle {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.host__text {
+  margin: 0 0 24px;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.host__field {
+  display: block;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.host__field span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.host__field input,
+.host__field select,
+.host__field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
+  height: 47px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  color: #211e1a;
+}
+
+.host__field textarea {
+  height: auto;
+  padding: 12px 16px;
+  resize: vertical;
+}
+
+.host__row {
+  display: flex;
+  gap: 16px;
+}
+
+.host__amenities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid #000;
+  border-radius: 16px;
+  font-size: 12px;
+}
+
+.host__amenities legend {
+  padding: 0 6px;
+  font-weight: 600;
+}
+
+.host__amenities label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.host__photos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #211e1a;
+}
+
+.host__photo,
+.host__tile {
+  position: relative;
+  height: 120px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.host__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.host__photo button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(33, 30, 26, 0.8);
+  color: #fff;
+  cursor: pointer;
+}
+
+.host__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed #211e1a;
+  cursor: pointer;
+}
+
+.host__tile input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.host__tile-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.host__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 19px;
+}
+
+.host__actions--end {
+  justify-content: flex-end;
+}
+
+.host__actions--start {
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.host__primary {
+  min-width: 132px;
+  height: 39px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 6px;
+  background: #6f6558;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.host__primary:hover:not(:disabled) {
+  background: #5f564a;
+}
+
+.host__primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.host__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  color: #211e1a;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.host__error {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: #8b2a1d;
+}
+
+.host__aside {
+  padding: 34px 23px 10px;
+  border: 1px solid #000;
+  border-radius: 16px;
+}
+
+.host__aside h2 {
+  margin: 0 0 19px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.host__aside p {
+  margin: 0 0 24px;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.host__below {
+  width: min(1160px, 100% - 40px);
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+.host__mine {
+  margin-top: 40px;
+}
+
+.host__mine ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.host__mine-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #211e1a;
+  font-size: 12px;
+}
+
+.host__mine-thumb {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #c9c5be;
+  overflow: hidden;
+}
+
+.host__mine-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.host__mine-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.host__mine-reason {
+  color: #8b2a1d;
+}
+
+.host__badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #c9c5be;
+}
+
+.host__badge--approved {
+  background: #cfdcc4;
+}
+
+.host__badge--rejected {
+  background: #ecc9c2;
+}
+
+@media (max-width: 900px) {
+  .host__body {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+    width: 100%;
+  }
+
+  .host__col {
+    width: 100%;
+  }
+
+  .host__host-link {
+    display: none;
+  }
+}

@@ -22,6 +22,7 @@ export function BookingRequest({
   onEditGuests,
   onOpenProfile,
   onOpenAdmin,
+  onHost,
   onOpenSignIn,
   onOpenRegister,
   onLogout,
@@ -39,6 +40,7 @@ export function BookingRequest({
   onEditGuests?: () => void
   onOpenProfile?: () => void
   onOpenAdmin?: () => void
+  onHost?: () => void
   onOpenSignIn?: () => void
   onOpenRegister?: () => void
   onLogout?: () => void
@@ -60,7 +62,7 @@ export function BookingRequest({
       <header className="booking__header">
         <span className="booking__logo">HomeFU</span>
         <div className="booking__header-actions">
-          <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+          <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>Запропонувати помешкання на HomeFU</a>
           <UserMenu
             onOpenProfile={onOpenProfile}
             onOpenSaved={onOpenProfile}

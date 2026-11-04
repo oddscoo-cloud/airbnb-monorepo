@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,11 +5,47 @@ services:
     environment:
       POSTGRES_DB: airbnb_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespassword}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d airbnb_db"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    container_name: airbnb_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Development включает автоприменение миграций и сидеров при старте.
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=airbnb_db;Username=postgres;Password=${POSTGRES_PASSWORD:-postgrespassword}
+      Jwt__Key: ${JWT_KEY:-development-only-key-replace-with-a-random-secret-32-chars}
+      Admin__Email: ${ADMIN_EMAIL:-admin@homefu.local}
+      Admin__Password: ${ADMIN_PASSWORD:-Admin12345!}
+    ports:
+      - "5189:8080"
+    volumes:
+      - listing_images:/app/wwwroot/listing-images
+      - avatars:/app/wwwroot/avatars
+      - verification_docs:/app/App_Data
+
+  web:
+    build: ./frontend
+    container_name: airbnb_web
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
 
 volumes:
   postgres_data:
+  listing_images:
+  avatars:
+  verification_docs:

@@ -1,0 +1,98 @@
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  max-width: 1440px;
+  margin: 0 auto 20px;
+}
+
+.admin-tab {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid #d4d9cf;
+  border-radius: 7px;
+  background: #fff;
+  color: #34402e;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-tab--active {
+  border-color: #475843;
+  background: #475843;
+  color: #fff;
+}
+
+.admin-tab__count {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: #d9534f;
+  color: #fff;
+  font-size: 11px;
+}
+
+.admin-filters {
+  display: flex;
+  gap: 6px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #e6e9e2;
+}
+
+.admin-filter {
+  padding: 5px 11px;
+  border: 1px solid #d4d9cf;
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-filter--active {
+  border-color: #475843;
+  background: #edf1e9;
+  font-weight: 600;
+}
+
+.admin-submission {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+
+.admin-submission dl {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 8px 14px;
+  margin: 0;
+}
+
+.admin-submission dt {
+  color: #68735f;
+  font-size: 12px;
+}
+
+.admin-submission dd {
+  margin: 0;
+}
+
+.admin-submission__description {
+  white-space: pre-wrap;
+}
+
+.admin-submission__review {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-submission-status {
+  width: auto !important;
+  padding: 0 10px;
+  border-radius: 13px !important;
+  font-size: 12px;
+}
+
+.admin-danger-button {
+  border-color: #a5392b;
+  background: #a5392b;
+}

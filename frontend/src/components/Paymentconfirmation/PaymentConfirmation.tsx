@@ -18,6 +18,7 @@ export function PaymentConfirmation({
   onPaid,
   onOpenProfile,
   onOpenAdmin,
+  onHost,
   onOpenSignIn,
   onOpenRegister,
   onLogout,
@@ -32,6 +33,7 @@ export function PaymentConfirmation({
   onPaid: () => void
   onOpenProfile?: () => void
   onOpenAdmin?: () => void
+  onHost?: () => void
   onOpenSignIn?: () => void
   onOpenRegister?: () => void
   onLogout?: () => void
@@ -49,7 +51,7 @@ export function PaymentConfirmation({
       <header className="payment__header">
         <span className="payment__logo">HomeFU</span>
         <div className="payment__header-actions">
-          <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+          <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>Запропонувати помешкання на HomeFU</a>
           <UserMenu
             onOpenProfile={onOpenProfile}
             onOpenSaved={onOpenProfile}

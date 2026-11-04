@@ -72,6 +72,7 @@ export async function updateUserProfile(
 export interface ProfilePageProps {
   onHome?: () => void
   onOpenAdmin?: () => void
+  onHost?: () => void
   onOpenMap?: () => void
   onOpenListing?: (listing: Listing) => void
 }
@@ -159,7 +160,7 @@ function FieldRow({
   )
 }
 
-export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: ProfilePageProps) {
+export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenListing }: ProfilePageProps) {
   const [values, setValues] = useState<Record<string, string>>({})
   const [bio, setBio] = useState('')
   const [editingBio, setEditingBio] = useState(false)
@@ -228,7 +229,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
         </a>
 
         <div className="profile__header-actions">
-          <a href="#host" className="profile__host-link">
+          <a href="#host" className="profile__host-link" onClick={(event) => { event.preventDefault(); onHost?.() }}>
             Запропонувати помешкання на HomeFU
           </a>
           <div className="profile__account">

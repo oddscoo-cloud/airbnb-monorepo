@@ -2,6 +2,7 @@
 import { ArrowLeft, Plus } from 'lucide-react'
 import { AdminListingForm } from './AdminListingForm'
 import { AdminListingList } from './AdminListingList'
+import { AdminSubmissions } from './AdminSubmissions'
 import type { AdminAmenity, AdminImage, AdminListing, ListingForm } from './adminTypes'
 import { apiRequest } from '../../api/http'
 import { getRegions, type Region } from '../../api/regions'
@@ -49,6 +50,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [tab, setTab] = useState<'listings' | 'submissions'>('listings')
 
   const loadData = useCallback(async () => {
     // Параллельная загрузка объявлений и справочников удобств и регионов.
@@ -210,13 +212,27 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
         </button>
         <div>
           <p className="admin-eyebrow">HOMEFU · КЕРУВАННЯ</p>
-          <h1>Оголошення</h1>
+          <h1>{tab === 'listings' ? 'Оголошення' : 'Заявки на помешкання'}</h1>
         </div>
-        <button type="button" className="admin-primary-button" onClick={startNew}>
-          <Plus size={16} aria-hidden /> Нове оголошення
-        </button>
+        {tab === 'listings' ? (
+          <button type="button" className="admin-primary-button" onClick={startNew}>
+            <Plus size={16} aria-hidden /> Нове оголошення
+          </button>
+        ) : <span />}
       </header>
 
+      <nav className="admin-tabs" aria-label="Розділи адмінки">
+        <button type="button" className={`admin-tab${tab === 'listings' ? ' admin-tab--active' : ''}`} onClick={() => setTab('listings')}>
+          Оголошення
+        </button>
+        <button type="button" className={`admin-tab${tab === 'submissions' ? ' admin-tab--active' : ''}`} onClick={() => setTab('submissions')}>
+          Заявки
+        </button>
+      </nav>
+
+      {tab === 'submissions' ? (
+        <AdminSubmissions accessToken={accessToken} onChanged={() => { onSaved(); void loadData() }} />
+      ) : (<>
       {(error || notice) && <p className={`admin-message${error ? ' admin-message--error' : ''}`} role={error ? 'alert' : 'status'}>{error || notice}</p>}
 
       <div className="admin-layout">
@@ -242,6 +258,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
           onSubmit={handleSubmit}
         />
       </div>
+      </>)}
     </main>
   )
 }

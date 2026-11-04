@@ -20,6 +20,10 @@ public class AppDbContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        // Строка подключения из DI (Program.cs, включая переменные окружения) имеет приоритет.
+        if (optionsBuilder.IsConfigured)
+            return;
+
         var config = new ConfigurationBuilder()
                         .AddJsonFile("appsettings.json")
                         .SetBasePath(Directory.GetCurrentDirectory())

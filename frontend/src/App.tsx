@@ -11,6 +11,7 @@ import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentCon
 import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
 import { ProfilePage } from './components/ProfilePage/ProfilePage'
 import { AccountPage } from './components/AccountPage/AccountPage'
+import { HostListing } from './components/HostListing/HostListing'
 import { Verification } from './components/Verification/Verification'
 import { UserMenu } from './components/UserMenu/UserMenu'
 import { useListings } from './hooks/useListings'
@@ -27,7 +28,8 @@ function App() {
   const [isLocationMapOpen, setIsLocationMapOpen] = useState(false)
   const [isHeaderDark, setIsHeaderDark] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin' | 'profile' | 'account' | 'verification'>('home')
+  const [activePage, setActivePage] = useState<'home' | 'listing' | 'booking' | 'payment' | 'admin' | 'profile' | 'account' | 'verification' | 'host'>('home')
+  const [pendingHost, setPendingHost] = useState(false)
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [guestCount, setGuestCount] = useState(1)
@@ -40,6 +42,25 @@ function App() {
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
   const accessToken = sessionStorage.getItem('access_token')
   const { savedIds, toggle: toggleSave } = useSavedListings(accessToken)
+
+  function handleOpenHost() {
+    // Страница доступна только авторизованным; верификация проверяется на самой странице.
+    if (!accountInitial || !sessionStorage.getItem('access_token')) {
+      setPendingHost(true)
+      setIsSignInModalOpen(true)
+      return
+    }
+    setActivePage('host')
+  }
+
+  useEffect(() => {
+    if (pendingHost && accountInitial && sessionStorage.getItem('access_token')) {
+      setPendingHost(false)
+      setIsSignInModalOpen(false)
+      setIsRegisterModalOpen(false)
+      setActivePage('host')
+    }
+  }, [pendingHost, accountInitial])
 
   function handleToggleSave(listingId: number) {
     if (!accountInitial || !sessionStorage.getItem('access_token')) {
@@ -126,7 +147,7 @@ function App() {
     )
   }
 
-  if ((activePage === 'account' || activePage === 'verification') && accountInitial && accessToken) {
+  if ((activePage === 'account' || activePage === 'verification' || activePage === 'host') && accountInitial && accessToken) {
     const menu = {
       accountInitial,
       accountRole,
@@ -140,6 +161,16 @@ function App() {
         void logout()
       },
     }
+    if (activePage === 'host') {
+      return (
+        <HostListing
+          accessToken={accessToken}
+          menu={menu}
+          onHome={handleBackHome}
+          onVerify={() => setActivePage('verification')}
+        />
+      )
+    }
     return activePage === 'account' ? (
       <AccountPage
         accessToken={accessToken}
@@ -147,6 +178,7 @@ function App() {
         onHome={handleBackHome}
         onVerify={() => setActivePage('verification')}
         onCreateProfile={() => setActivePage('profile')}
+        onHost={handleOpenHost}
       />
     ) : (
       <Verification
@@ -164,6 +196,7 @@ function App() {
       <ProfilePage
         onHome={handleBackHome}
         onOpenAdmin={() => setActivePage('admin')}
+        onHost={handleOpenHost}
         onOpenMap={() => setIsLocationMapOpen(true)}
         onOpenListing={(listing) => {
           setSelectedListing(listing)
@@ -193,6 +226,7 @@ function App() {
           onOpenRegister={() => setIsRegisterModalOpen(true)}
           onOpenProfile={() => setActivePage('profile')}
           onOpenAdmin={() => setActivePage('admin')}
+          onHost={handleOpenHost}
           onLogout={() => void logout()}
         />
 
@@ -230,6 +264,7 @@ function App() {
           onEditGuests={handleJumpToListingCalendar}
           onOpenProfile={() => setActivePage('profile')}
           onOpenAdmin={() => setActivePage('admin')}
+          onHost={handleOpenHost}
           onOpenSignIn={() => setIsSignInModalOpen(true)}
           onOpenRegister={() => setIsRegisterModalOpen(true)}
           onLogout={() => void logout()}
@@ -266,6 +301,7 @@ function App() {
           onPaid={handleBackHome}
           onOpenProfile={() => setActivePage('profile')}
           onOpenAdmin={() => setActivePage('admin')}
+          onHost={handleOpenHost}
           onOpenSignIn={() => setIsSignInModalOpen(true)}
           onOpenRegister={() => setIsRegisterModalOpen(true)}
           onLogout={() => void logout()}
@@ -312,7 +348,7 @@ function App() {
                   <div className="site-header__bar">
                     <a className="site-header__host" href="/" onClick={(event) => {
                       event.preventDefault()
-                      handleBackHome()
+                      handleOpenHost()
                     }}>
                       Запропонувати помешкання на HomeFU
                     </a>

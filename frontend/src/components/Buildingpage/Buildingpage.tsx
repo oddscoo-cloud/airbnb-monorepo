@@ -122,6 +122,7 @@ type BuildingpageProps = {
   onOpenRegister?: () => void
   onOpenProfile?: () => void
   onOpenAdmin?: () => void
+  onHost?: () => void
   onLogout?: () => void
   isSaved?: boolean
   onToggleSave?: (listingId: number) => void
@@ -142,6 +143,7 @@ export function PropertyDetail({
   onOpenRegister,
   onOpenProfile,
   onOpenAdmin,
+  onHost,
   onLogout,
   isSaved = false,
   onToggleSave,
@@ -198,7 +200,7 @@ export function PropertyDetail({
         </div>
 
         <div className="property__header-actions">
-          <a href="/" onClick={(event) => { event.preventDefault(); onHome() }}>Запропонувати помешкання на HomeFU</a>
+          <a href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>Запропонувати помешкання на HomeFU</a>
           <UserMenu
             savedCount={savedCount}
             onOpenProfile={onOpenProfile}

@@ -152,6 +152,23 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("region_id");
 
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("text")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<string>("ReviewStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("review_status");
+
+                    b.Property<DateTimeOffset?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_at");
+
+                    b.Property<DateTimeOffset?>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text")

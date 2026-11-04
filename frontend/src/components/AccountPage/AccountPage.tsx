@@ -10,6 +10,7 @@ interface AccountPageProps {
   onHome?: () => void
   onVerify?: () => void
   onCreateProfile?: () => void
+  onHost?: () => void
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -17,7 +18,7 @@ const ROLE_LABELS: Record<string, string> = {
   Admin: 'Адміністратор',
 }
 
-export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfile }: AccountPageProps) {
+export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfile, onHost }: AccountPageProps) {
   const [user, setUser] = useState<UserResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -60,7 +61,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
         </a>
 
         <div className="account__header-actions">
-          <a href="#host" className="account__host-link">
+          <a href="#host" className="account__host-link" onClick={(event) => { event.preventDefault(); onHost?.() }}>
             Запропонувати помешкання на HomeFU
           </a>
           <UserMenu {...menu} />

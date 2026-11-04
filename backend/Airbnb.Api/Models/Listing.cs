@@ -41,8 +41,18 @@ public class Listing
     [Column("longtitude")]
     public required float Longtitude { get; set; }
 
+    // Approved | Pending | Rejected. Заявки пользователей проходят модерацию.
+    [Column("review_status")]
+    public string ReviewStatus { get; set; } = ListingReviewStatus.Approved;
 
+    [Column("rejection_reason")]
+    public string? RejectionReason { get; set; }
 
+    [Column("submitted_at")]
+    public DateTimeOffset? SubmittedAt { get; set; }
+
+    [Column("reviewed_at")]
+    public DateTimeOffset? ReviewedAt { get; set; }
 
     [ForeignKey("HostId")]
     public User? Host { get; set; }
