@@ -1,7 +1,7 @@
 public record ListingRequestDTO(
     string Title,
     string? Location,
-    int RegionId,
+    int? RegionId,
     string? Category,
     string? Description,
     float PricePerNight,

@@ -148,7 +148,7 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("real")
                         .HasColumnName("price_per_night");
 
-                    b.Property<int>("RegionId")
+                    b.Property<int?>("RegionId")
                         .HasColumnType("integer")
                         .HasColumnName("region_id");
 
@@ -500,9 +500,7 @@ namespace Airbnb.Api.Data.Migrations
 
                     b.HasOne("Region", "Region")
                         .WithMany("Listings")
-                        .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RegionId");
 
                     b.Navigation("Host");
 

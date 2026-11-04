@@ -12,7 +12,7 @@ public class Listing
     public required int HostId { get; set; }
 
     [Column("region_id")]
-    public required int RegionId { get; set; }
+    public int? RegionId { get; set; }
 
     [Column("title")]
     public required string Title { get; set; }
