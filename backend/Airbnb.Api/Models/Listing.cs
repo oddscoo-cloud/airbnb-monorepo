@@ -11,14 +11,14 @@ public class Listing
     [Column("host_id")]
     public required int HostId { get; set; }
 
+    [Column("region_id")]
+    public int? RegionId { get; set; }
+
     [Column("title")]
     public required string Title { get; set; }
 
     [Column("location")]
     public string? Location { get; set; }
-
-    [Column("region")]
-    public string? Region { get; set; }
 
     [Column("category")]
     public string? Category { get; set; }
@@ -46,6 +46,8 @@ public class Listing
 
     [ForeignKey("HostId")]
     public User? Host { get; set; }
+    [ForeignKey("RegionId")]
+    public Region? Region { get; set; }
 
     public List<ListingImage> ListingImages { get; set; } = new();
     public List<Amenity> Amenities { get; set; } = new();
