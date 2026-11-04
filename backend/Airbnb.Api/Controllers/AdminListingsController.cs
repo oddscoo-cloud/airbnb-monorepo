@@ -18,6 +18,7 @@ public sealed class AdminListingsController(
     public async Task<ActionResult<List<ListingResponseDTO>>> GetAll(CancellationToken cancellationToken)
     {
         var listings = await context.Listings
+            .Include(listing => listing.Region)
             .Include(listing => listing.ListingImages)
             .Include(listing => listing.Amenities)
             .Include(listing => listing.Reviews).ThenInclude(review => review.Author)
@@ -66,6 +67,7 @@ public sealed class AdminListingsController(
 
         context.Listings.Add(listing);
         await context.SaveChangesAsync(cancellationToken);
+        await context.Entry(listing).Reference(item => item.Region).LoadAsync(cancellationToken);
         return CreatedAtAction(nameof(GetAll), ToResponse(listing));
     }
 
@@ -95,6 +97,7 @@ public sealed class AdminListingsController(
         listing.Amenities = await GetAmenities(request.AmenityIds, cancellationToken);
 
         await context.SaveChangesAsync(cancellationToken);
+        await context.Entry(listing).Reference(item => item.Region).LoadAsync(cancellationToken);
         return Ok(ToResponse(listing));
     }
 

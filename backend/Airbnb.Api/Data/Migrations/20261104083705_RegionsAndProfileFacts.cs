@@ -6,21 +6,16 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Airbnb.Api.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ProfileFacts : Migration
+    public partial class RegionsAndProfileFacts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "region",
-                table: "listings");
-
             migrationBuilder.AddColumn<int>(
                 name: "region_id",
                 table: "listings",
                 type: "integer",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "profile_facts",
@@ -74,6 +69,22 @@ namespace Airbnb.Api.Data.Migrations
                 table: "listings",
                 column: "region_id");
 
+            // Переносим существующие текстовые регионы в справочник до удаления колонки.
+            migrationBuilder.Sql(@"
+                INSERT INTO region (name, image_url)
+                SELECT DISTINCT TRIM(region), ''
+                FROM listings
+                WHERE region IS NOT NULL AND TRIM(region) <> '';
+
+                UPDATE listings
+                SET region_id = r.id
+                FROM region r
+                WHERE listings.region IS NOT NULL AND r.name = TRIM(listings.region);");
+
+            migrationBuilder.DropColumn(
+                name: "region",
+                table: "listings");
+
             migrationBuilder.CreateIndex(
                 name: "IX_profile_facts_user_id",
                 table: "profile_facts",
@@ -85,8 +96,7 @@ namespace Airbnb.Api.Data.Migrations
                 table: "listings",
                 column: "region_id",
                 principalTable: "region",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "id");
         }
 
         /// <inheritdoc />

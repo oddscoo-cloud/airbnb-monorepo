@@ -30,6 +30,8 @@ public class SavedListingsController : ControllerBase
         var saved = await _context.SavedListings
             .Where(s => s.UserId == userId.Value)
             .Include(s => s.Listing)
+                .ThenInclude(l => l!.Region)
+            .Include(s => s.Listing)
                 .ThenInclude(l => l!.ListingImages)
             .Include(s => s.Listing)
                 .ThenInclude(l => l!.Reviews)

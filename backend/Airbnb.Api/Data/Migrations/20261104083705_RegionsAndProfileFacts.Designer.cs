@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Airbnb.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261104060113_NulableRegionId")]
-    partial class NulableRegionId
+    [Migration("20261104083705_RegionsAndProfileFacts")]
+    partial class RegionsAndProfileFacts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -151,7 +151,7 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("real")
                         .HasColumnName("price_per_night");
 
-                    b.Property<int>("RegionId")
+                    b.Property<int?>("RegionId")
                         .HasColumnType("integer")
                         .HasColumnName("region_id");
 
@@ -503,9 +503,7 @@ namespace Airbnb.Api.Data.Migrations
 
                     b.HasOne("Region", "Region")
                         .WithMany("Listings")
-                        .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RegionId");
 
                     b.Navigation("Host");
 

@@ -91,6 +91,7 @@ public class ListingsController : ControllerBase
             .OrderBy(listing => listing.Id)
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
+            .Include(listing => listing.Region)
             .Include(listing => listing.ListingImages)
             .Include(listing => listing.Reviews).ThenInclude(review => review.Author)
             .Include(listing => listing.Amenities)
@@ -126,6 +127,7 @@ public class ListingsController : ControllerBase
     {
         Listing? listing = await Context.Listings
             .Where(item => item.IsPublished)
+            .Include(item => item.Region)
             .Include(item => item.ListingImages)
             .Include(item => item.Reviews).ThenInclude(review => review.Author)
             .Include(item => item.Amenities)

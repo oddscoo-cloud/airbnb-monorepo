@@ -4,6 +4,7 @@ import { AdminListingForm } from './AdminListingForm'
 import { AdminListingList } from './AdminListingList'
 import type { AdminAmenity, AdminImage, AdminListing, ListingForm } from './adminTypes'
 import { apiRequest } from '../../api/http'
+import { getRegions, type Region } from '../../api/regions'
 import './AdminDashboard.css'
 
 interface AdminDashboardProps {
@@ -15,7 +16,7 @@ interface AdminDashboardProps {
 const EMPTY_FORM: ListingForm = {
   title: '',
   location: '',
-  region: '',
+  regionId: '',
   category: '',
   description: '',
   pricePerNight: '',
@@ -39,6 +40,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   // Состояние списка, редактора и запросов админки.
   const [listings, setListings] = useState<AdminListing[]>([])
   const [amenities, setAmenities] = useState<AdminAmenity[]>([])
+  const [regions, setRegions] = useState<Region[]>([])
   const [form, setForm] = useState<ListingForm>(EMPTY_FORM)
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [selectedImages, setSelectedImages] = useState<AdminImage[]>([])
@@ -49,16 +51,18 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
   const [notice, setNotice] = useState('')
 
   const loadData = useCallback(async () => {
-    // Параллельная загрузка объявлений и справочника удобств.
+    // Параллельная загрузка объявлений и справочников удобств и регионов.
     setIsLoading(true)
     setError('')
     try {
-      const [listingData, amenityData] = await Promise.all([
+      const [listingData, amenityData, regionData] = await Promise.all([
         adminRequest<AdminListing[]>(accessToken, '/api/admin/listings'),
         adminRequest<AdminAmenity[]>(accessToken, '/api/admin/listings/amenities'),
+        getRegions(),
       ])
       setListings(listingData)
       setAmenities(amenityData)
+      setRegions(regionData)
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Не вдалося завантажити адмін-дані')
     } finally {
@@ -90,7 +94,8 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
     setForm({
       title: listing.title,
       location: listing.location ?? '',
-      region: listing.region ?? '',
+      // API возвращает только название региона, id ищется по справочнику.
+      regionId: String(regions.find((region) => region.name === listing.region)?.id ?? ''),
       category: listing.category ?? '',
       description: listing.description ?? '',
       pricePerNight: String(listing.pricePerNight),
@@ -118,7 +123,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
       const payload = {
         title: form.title,
         location: form.location,
-        region: form.region,
+        regionId: form.regionId === '' ? null : Number(form.regionId),
         category: form.category,
         description: form.description,
         pricePerNight: Number(form.pricePerNight),
@@ -227,6 +232,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
           selectedId={selectedId}
           form={form}
           amenities={amenities}
+          regions={regions}
           selectedImages={selectedImages}
           files={files}
           isSaving={isSaving}

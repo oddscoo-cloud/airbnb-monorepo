@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent, type ComponentType } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent, type ComponentType } from 'react'
 import {
   Briefcase,
   Camera,
@@ -19,6 +19,7 @@ import {
   Star,
 } from 'lucide-react'
 import { useSavedListings } from '../../hooks/useSavedListings'
+import { getCurrentUser, type ProfileFacts } from '../../api/users'
 import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
@@ -101,6 +102,37 @@ const RIGHT_FIELDS: ProfileField[] = [
 
 const INTEREST_SLOTS = 3
 
+// Соответствие id полей формы полям ProfileFacts из backend.
+const FACT_FIELD_KEYS: Record<string, keyof ProfileFacts> = {
+  school: 'education',
+  city: 'address',
+  decade: 'birthdayDecade',
+  hobby: 'excitement',
+  useless: 'uselessSkills',
+  time: 'timeAbsorber',
+  job: 'profession',
+  languages: 'languages',
+  song: 'song',
+  fact: 'fact',
+  bioTitle: 'biographyTitle',
+  pets: 'pets',
+}
+
+function factsToFieldValues(facts: ProfileFacts): Record<string, string> {
+  const result: Record<string, string> = {}
+  for (const [fieldId, factKey] of Object.entries(FACT_FIELD_KEYS)) {
+    const value = facts[factKey]
+    if (typeof value === 'string') result[fieldId] = value
+  }
+  return result
+}
+
+// Поле favorite хранит интересы одной строкой через запятую.
+function favoriteToInterests(favorite: string | null): string[] {
+  const items = (favorite ?? '').split(',').map((item) => item.trim()).filter(Boolean)
+  return Array.from({ length: INTEREST_SLOTS }, (_, index) => items[index] ?? '')
+}
+
 function FieldRow({
   field,
   value,
@@ -142,6 +174,23 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { savedListings, savedIds, isLoading: savedLoading, error: savedError, toggle } = useSavedListings(accessToken)
+
+  useEffect(() => {
+    if (!accessToken) return
+    const controller = new AbortController()
+    void getCurrentUser(accessToken, controller.signal)
+      .then((user) => {
+        if (user.avatarUrl) setAvatarUrl(user.avatarUrl)
+        if (!user.facts) return
+        setValues(factsToFieldValues(user.facts))
+        setBio(user.facts.aboutMe ?? '')
+        setInterests(favoriteToInterests(user.facts.favorite))
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) console.error('Failed to load user profile', error)
+      })
+    return () => controller.abort()
+  }, [accessToken])
 
   function handleLogout() {
     sessionStorage.removeItem('account_email')

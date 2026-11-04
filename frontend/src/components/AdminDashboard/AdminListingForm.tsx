@@ -1,6 +1,7 @@
 ﻿import type { FormEvent } from 'react'
 import { Save, Trash2, Upload } from 'lucide-react'
 import type { AdminAmenity, AdminImage, ListingForm } from './adminTypes'
+import type { Region } from '../../api/regions'
 
 const CATEGORIES = [
   'Гарні краєвиди',
@@ -21,6 +22,7 @@ type AdminListingFormProps = {
   selectedId: number | null
   form: ListingForm
   amenities: AdminAmenity[]
+  regions: Region[]
   selectedImages: AdminImage[]
   files: File[]
   isSaving: boolean
@@ -34,6 +36,7 @@ export function AdminListingForm({
   selectedId,
   form,
   amenities,
+  regions,
   selectedImages,
   files,
   isSaving,
@@ -59,7 +62,10 @@ export function AdminListingForm({
         </label>
         <label className="admin-field">
           <span>Регион</span>
-          <input required maxLength={120} value={form.region} onChange={(event) => onUpdate('region', event.target.value)} />
+          <select value={form.regionId} onChange={(event) => onUpdate('regionId', event.target.value)}>
+            <option value="">Без региона</option>
+            {regions.map((region) => <option key={region.id} value={region.id}>{region.name}</option>)}
+          </select>
         </label>
         <label className="admin-field">
           <span>Категория</span>

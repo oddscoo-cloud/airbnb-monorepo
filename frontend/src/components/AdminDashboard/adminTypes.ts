@@ -32,7 +32,8 @@ export interface AdminListing {
 export interface ListingForm {
   title: string
   location: string
-  region: string
+  // id региона в виде строки для select; пустая строка — регион не выбран.
+  regionId: string
   category: string
   description: string
   pricePerNight: string
