@@ -68,6 +68,7 @@ export function useAccountSession() {
       sessionStorage.removeItem('account_email')
       sessionStorage.removeItem('access_token')
       sessionStorage.removeItem('account_role')
+      sessionStorage.removeItem('account_avatar')
       document.cookie = 'refresh_token=; Max-Age=0; path=/; SameSite=Lax'
       setAccountInitial('')
       setAccountRole('')

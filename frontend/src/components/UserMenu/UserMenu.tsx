@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Menu, User as UserIcon } from 'lucide-react'
+import { AVATAR_EVENT, AVATAR_STORAGE_KEY, getCurrentUser } from '../../api/users'
 import './UserMenu.css'
 
 export interface UserMenuProps {
@@ -39,6 +40,22 @@ export function UserMenu({
   const initial = propInitial !== undefined ? propInitial : (sessionEmail?.trim().charAt(0).toUpperCase() ?? '')
   const role = propRole !== undefined ? propRole : (sessionRole ?? '')
   const isAuthenticated = Boolean(initial)
+  const [avatarUrl, setAvatarUrl] = useState(() => sessionStorage.getItem(AVATAR_STORAGE_KEY) || null)
+
+  useEffect(() => {
+    const sync = () => setAvatarUrl(sessionStorage.getItem(AVATAR_STORAGE_KEY) || null)
+    window.addEventListener(AVATAR_EVENT, sync)
+    return () => window.removeEventListener(AVATAR_EVENT, sync)
+  }, [])
+
+  // Аватар ещё не загружен в эту сессию — запрашиваем один раз.
+  useEffect(() => {
+    const token = sessionStorage.getItem('access_token')
+    if (!isAuthenticated || !token || sessionStorage.getItem(AVATAR_STORAGE_KEY) !== null) return
+    const controller = new AbortController()
+    getCurrentUser(token, controller.signal).catch(() => {})
+    return () => controller.abort()
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (!isOpen) return
@@ -81,7 +98,7 @@ export function UserMenu({
         <Menu size={16} aria-hidden="true" className="user-menu__icon" />
         {isAuthenticated ? (
           <span className="user-menu__avatar" aria-hidden="true">
-            {initial}
+            {avatarUrl ? <img src={avatarUrl} alt="" /> : initial}
           </span>
         ) : (
           <span className="user-menu__avatar user-menu__avatar--empty" aria-hidden="true">

@@ -4,6 +4,24 @@ export type ApiRequestOptions = RequestInit & {
   fallbackError?: (status: number) => string
 }
 
+async function refreshAccessToken(): Promise<string | null> {
+  try {
+    const response = await fetch('/api/auth/refresh', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    })
+    if (!response.ok) return null
+    const data = (await response.json()) as { access_token?: string }
+    if (!data.access_token) return null
+    sessionStorage.setItem('access_token', data.access_token)
+    return data.access_token
+  } catch {
+    return null
+  }
+}
+
 // Общий запрос: заголовки, разбор JSON и обработка HTTP-ошибок.
 export async function apiRequest<T>(url: string, options: ApiRequestOptions = {}): Promise<T> {
   const { accessToken, fallbackError, ...requestOptions } = options
@@ -16,7 +34,15 @@ export async function apiRequest<T>(url: string, options: ApiRequestOptions = {}
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(url, { ...requestOptions, headers })
+  let response = await fetch(url, { ...requestOptions, headers })
+  // Access token живёт 30 минут: при 401 обновляем его по refresh-cookie и повторяем запрос один раз.
+  if (response.status === 401 && accessToken) {
+    const fresh = await refreshAccessToken()
+    if (fresh) {
+      headers.set('Authorization', ['Bearer', fresh].join(' '))
+      response = await fetch(url, { ...requestOptions, headers })
+    }
+  }
   // Обработка пустого ответа 204 и невалидного JSON.
   const body: unknown = response.status === 204
     ? null

@@ -109,6 +109,36 @@ public class UsersController : ControllerBase
         return Ok(new { isVerified = true });
     }
 
+    [Authorize]
+    [HttpPost("me/avatar")]
+    [RequestSizeLimit(MaxDocumentBytes + 1024 * 1024)]
+    public async Task<IActionResult> UploadAvatar(
+        IFormFile avatar,
+        [FromServices] IWebHostEnvironment environment,
+        CancellationToken cancellationToken)
+    {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+            return Unauthorized();
+
+        User? user = await Context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (user == null)
+            return NotFound(new { message = "Користувача не знайдено." });
+
+        string? extension = await GetImageExtensionAsync(avatar, cancellationToken);
+        if (extension == null)
+            return BadRequest(new { message = "Дозволені лише JPEG або PNG до 5 МБ." });
+
+        string directory = Path.Combine(environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot"), "avatars");
+        Directory.CreateDirectory(directory);
+        foreach (string old in Directory.GetFiles(directory, $"{userId}.*"))
+            System.IO.File.Delete(old);
+        await SaveFileAsync(avatar, Path.Combine(directory, userId + extension), cancellationToken);
+
+        user.AvatarUrl = $"/avatars/{userId}{extension}?v={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+        await Context.SaveChangesAsync(cancellationToken);
+        return Ok(new { avatarUrl = user.AvatarUrl });
+    }
+
     private static async Task<string?> GetImageExtensionAsync(IFormFile file, CancellationToken cancellationToken)
     {
         if (file == null || file.Length == 0 || file.Length > MaxDocumentBytes)

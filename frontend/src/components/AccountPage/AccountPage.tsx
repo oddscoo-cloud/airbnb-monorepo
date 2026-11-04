@@ -71,7 +71,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
         <div className="account__left">
           <section className="account__user-card" aria-label="Користувач">
             <div className="account__avatar" aria-hidden>
-              {name.charAt(0)}
+              {user.avatarUrl ? <img src={user.avatarUrl} alt="" /> : name.charAt(0)}
             </div>
             <h1 className="account__name">{name}</h1>
             <p className="account__role">{ROLE_LABELS[user.role] ?? user.role}</p>

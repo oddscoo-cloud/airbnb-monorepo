@@ -19,7 +19,7 @@ import {
   Star,
 } from 'lucide-react'
 import { useSavedListings } from '../../hooks/useSavedListings'
-import { getCurrentUser, type ProfileFacts } from '../../api/users'
+import { getCurrentUser, uploadAvatar, type ProfileFacts } from '../../api/users'
 import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
@@ -166,6 +166,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
   const [interests, setInterests] = useState<string[]>(Array(INTEREST_SLOTS).fill(''))
   const [editingInterest, setEditingInterest] = useState<number | null>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
   const [showSaved, setShowSaved] = useState(false)
   const accountEmail = sessionStorage.getItem('account_email') ?? ''
   const accountInitial = accountEmail.charAt(0).toUpperCase()
@@ -196,6 +197,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
     sessionStorage.removeItem('account_email')
     sessionStorage.removeItem('access_token')
     sessionStorage.removeItem('account_role')
+    sessionStorage.removeItem('account_avatar')
     window.location.href = '/'
   }
   function setField(id: string, value: string) {
@@ -204,8 +206,14 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
 
   function handleAvatarChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
-    if (!file) return
-    setAvatarUrl(URL.createObjectURL(file))
+    event.target.value = ''
+    if (!file || !accessToken) return
+    setAvatarError(null)
+    uploadAvatar(accessToken, file)
+      .then(setAvatarUrl)
+      .catch((error: unknown) => {
+        setAvatarError(error instanceof Error ? error.message : 'Не вдалося завантажити фото')
+      })
   }
 
   function setInterest(index: number, value: string) {
@@ -265,6 +273,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onOpenMap, onOpenListing }: P
             className="profile__file-input"
             onChange={handleAvatarChange}
           />
+          {avatarError && <p role="alert">{avatarError}</p>}
         </div>
 
         <div className="profile__main">

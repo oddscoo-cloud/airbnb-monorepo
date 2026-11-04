@@ -56,6 +56,29 @@ export async function submitVerification(
   })
 }
 
+export const AVATAR_STORAGE_KEY = 'account_avatar'
+export const AVATAR_EVENT = 'account-avatar-changed'
+
+// Хранит аватар в sessionStorage и уведомляет UserMenu.
+export function cacheAvatar(url: string | null) {
+  sessionStorage.setItem(AVATAR_STORAGE_KEY, url ?? '')
+  window.dispatchEvent(new Event(AVATAR_EVENT))
+}
+
+export async function uploadAvatar(accessToken: string, file: File, signal?: AbortSignal): Promise<string> {
+  const form = new FormData()
+  form.append('avatar', file)
+  const result = await apiRequest<{ avatarUrl: string }>('/api/users/me/avatar', {
+    method: 'POST',
+    accessToken,
+    signal,
+    body: form,
+    fallbackError: (status) => `Не вдалося завантажити фото (${status})`,
+  })
+  cacheAvatar(result.avatarUrl)
+  return result.avatarUrl
+}
+
 interface CurrentAccount {
   id: string
 }
@@ -63,9 +86,12 @@ interface CurrentAccount {
 // id текущего пользователя берётся из access token через /api/auth/me.
 export async function getCurrentUser(accessToken: string, signal?: AbortSignal): Promise<UserResponse> {
   const account = await apiRequest<CurrentAccount>('/api/auth/me', { accessToken, signal })
-  return apiRequest<UserResponse>(`/api/users/${account.id}`, {
+  const user = await apiRequest<UserResponse>(`/api/users/${account.id}`, {
     accessToken,
     signal,
     fallbackError: (status) => `Не вдалося завантажити профіль (${status})`,
   })
+  const avatar = user.avatarUrl || null
+  if ((sessionStorage.getItem(AVATAR_STORAGE_KEY) || null) !== avatar) cacheAvatar(avatar)
+  return user
 }
