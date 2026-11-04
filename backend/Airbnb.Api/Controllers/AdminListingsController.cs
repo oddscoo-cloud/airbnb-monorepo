@@ -55,7 +55,7 @@ public sealed class AdminListingsController(
             HostId = hostId,
             Title = request.Title.Trim(),
             Location = request.Location.Trim(),
-            RegionId = request.RegionId,
+            RegionId = await RegionResolver.ResolveAsync(context, request.RegionName, request.RegionId, cancellationToken),
             Category = request.Category.Trim(),
             Description = request.Description?.Trim(),
             PricePerNight = request.PricePerNight,
@@ -88,7 +88,7 @@ public sealed class AdminListingsController(
 
         listing.Title = request.Title.Trim();
         listing.Location = request.Location.Trim();
-        listing.RegionId = request.RegionId;
+        listing.RegionId = await RegionResolver.ResolveAsync(context, request.RegionName, request.RegionId, cancellationToken);
         listing.Category = request.Category.Trim();
         listing.Description = request.Description?.Trim();
         listing.PricePerNight = request.PricePerNight;

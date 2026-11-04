@@ -62,10 +62,10 @@ export function AdminListingForm({
         </label>
         <label className="admin-field">
           <span>Регион</span>
-          <select value={form.regionId} onChange={(event) => onUpdate('regionId', event.target.value)}>
-            <option value="">Без региона</option>
-            {regions.map((region) => <option key={region.id} value={region.id}>{region.name}</option>)}
-          </select>
+          <input list="admin-regions" maxLength={100} placeholder="Выберите или впишите новый" value={form.region} onChange={(event) => onUpdate('region', event.target.value)} />
+          <datalist id="admin-regions">
+            {regions.map((region) => <option key={region.id} value={region.name} />)}
+          </datalist>
         </label>
         <label className="admin-field">
           <span>Категория</span>

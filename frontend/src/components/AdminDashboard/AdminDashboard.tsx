@@ -5,7 +5,7 @@ import { AdminListingList } from './AdminListingList'
 import { AdminSubmissions } from './AdminSubmissions'
 import type { AdminAmenity, AdminImage, AdminListing, ListingForm } from './adminTypes'
 import { apiRequest } from '../../api/http'
-import { getRegions, type Region } from '../../api/regions'
+import { getAllRegions, type Region } from '../../api/regions'
 import './AdminDashboard.css'
 
 interface AdminDashboardProps {
@@ -17,7 +17,7 @@ interface AdminDashboardProps {
 const EMPTY_FORM: ListingForm = {
   title: '',
   location: '',
-  regionId: '',
+  region: '',
   category: '',
   description: '',
   pricePerNight: '',
@@ -60,7 +60,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
       const [listingData, amenityData, regionData] = await Promise.all([
         adminRequest<AdminListing[]>(accessToken, '/api/admin/listings'),
         adminRequest<AdminAmenity[]>(accessToken, '/api/admin/listings/amenities'),
-        getRegions(),
+        getAllRegions(accessToken),
       ])
       setListings(listingData)
       setAmenities(amenityData)
@@ -96,8 +96,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
     setForm({
       title: listing.title,
       location: listing.location ?? '',
-      // API возвращает только название региона, id ищется по справочнику.
-      regionId: String(regions.find((region) => region.name === listing.region)?.id ?? ''),
+      region: listing.region ?? '',
       category: listing.category ?? '',
       description: listing.description ?? '',
       pricePerNight: String(listing.pricePerNight),
@@ -125,7 +124,7 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
       const payload = {
         title: form.title,
         location: form.location,
-        regionId: form.regionId === '' ? null : Number(form.regionId),
+        regionName: form.region.trim(),
         category: form.category,
         description: form.description,
         pricePerNight: Number(form.pricePerNight),

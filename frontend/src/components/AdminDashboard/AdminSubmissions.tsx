@@ -3,11 +3,16 @@ import { Check, X } from 'lucide-react'
 import {
   STATUS_LABELS,
   approveSubmission,
+  getHostAmenities,
   getSubmissions,
   rejectSubmission,
+  updateSubmission,
+  type HostAmenity,
   type ListingSubmission,
+  type SubmissionEdit,
   type SubmissionStatus,
 } from '../../api/hostListings'
+import { getAllRegions, type Region } from '../../api/regions'
 import './AdminSubmissions.css'
 
 interface AdminSubmissionsProps {
@@ -43,6 +48,65 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
   }, [load])
 
   const selected = items.find((item) => item.id === selectedId) ?? null
+  const [edit, setEdit] = useState<(Omit<SubmissionEdit, 'pricePerNight' | 'maxGuests' | 'latitude' | 'longtitude'> & {
+    pricePerNight: string
+    maxGuests: string
+    latitude: string
+    longtitude: string
+  }) | null>(null)
+  const [amenities, setAmenities] = useState<HostAmenity[]>([])
+  const [regions, setRegions] = useState<Region[]>([])
+
+  useEffect(() => {
+    void Promise.all([getHostAmenities(accessToken), getAllRegions(accessToken)])
+      .then(([a, r]) => { setAmenities(a); setRegions(r) })
+      .catch(() => undefined)
+  }, [accessToken])
+
+  function startEdit(item: ListingSubmission) {
+    setEdit({
+      title: item.title,
+      location: item.location ?? '',
+      regionName: item.region ?? '',
+      category: item.category ?? '',
+      description: item.description ?? '',
+      pricePerNight: String(item.pricePerNight),
+      maxGuests: String(item.maxGuests),
+      latitude: String(item.latitude),
+      longtitude: String(item.longtitude),
+      amenityIds: item.amenities.map((a) => a.id),
+    })
+  }
+
+  function setField(key: string, value: string) {
+    setEdit((current) => (current ? { ...current, [key]: value } : current))
+  }
+
+  async function saveEdit() {
+    if (!selected || !edit) return
+    setIsBusy(true)
+    setError('')
+    setNotice('')
+    try {
+      await updateSubmission(accessToken, selected.id, {
+        ...edit,
+        title: edit.title.trim(),
+        regionName: edit.regionName.trim(),
+        pricePerNight: Number(edit.pricePerNight),
+        maxGuests: Number(edit.maxGuests),
+        latitude: Number(edit.latitude),
+        longtitude: Number(edit.longtitude),
+      })
+      setNotice('Зміни збережено.')
+      setEdit(null)
+      await load()
+      getAllRegions(accessToken).then(setRegions).catch(() => undefined)
+    } catch (reasonError) {
+      setError(reasonError instanceof Error ? reasonError.message : 'Не вдалося зберегти зміни')
+    } finally {
+      setIsBusy(false)
+    }
+  }
 
   async function review(action: () => Promise<void>, doneMessage: string) {
     setIsBusy(true)
@@ -94,7 +158,7 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                   <button
                     type="button"
                     className={`admin-list-item${selectedId === item.id ? ' admin-list-item--active' : ''}`}
-                    onClick={() => { setSelectedId(item.id); setReason('') }}
+                    onClick={() => { setSelectedId(item.id); setReason(''); setEdit(null) }}
                   >
                     <span className="admin-list-item__image">
                       {item.images[0] && <img src={item.images[0].imageUrl} alt="" />}
@@ -123,6 +187,64 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                 <span className="admin-submission-status">{STATUS_LABELS[selected.status]}</span>
               </div>
               <div className="admin-submission">
+                {edit && selected.status === 'Pending' ? (
+                  <form className="admin-submission__edit" onSubmit={(e) => { e.preventDefault(); void saveEdit() }}>
+                    <label className="admin-field"><span>Назва</span>
+                      <input required maxLength={200} value={edit.title} onChange={(e) => setField('title', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Адреса</span>
+                      <input maxLength={200} value={edit.location} onChange={(e) => setField('location', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Регіон (оберіть або впишіть новий)</span>
+                      <input list="submission-regions" maxLength={100} value={edit.regionName} onChange={(e) => setField('regionName', e.target.value)} />
+                      <datalist id="submission-regions">
+                        {regions.map((r) => <option key={r.id} value={r.name} />)}
+                      </datalist>
+                    </label>
+                    <label className="admin-field"><span>Категорія</span>
+                      <input maxLength={100} value={edit.category} onChange={(e) => setField('category', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Ціна за ніч</span>
+                      <input type="number" min="0" step="any" required value={edit.pricePerNight} onChange={(e) => setField('pricePerNight', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Гостей</span>
+                      <input type="number" min="1" required value={edit.maxGuests} onChange={(e) => setField('maxGuests', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Широта</span>
+                      <input type="number" step="any" value={edit.latitude} onChange={(e) => setField('latitude', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Довгота</span>
+                      <input type="number" step="any" value={edit.longtitude} onChange={(e) => setField('longtitude', e.target.value)} />
+                    </label>
+                    <label className="admin-field"><span>Опис</span>
+                      <textarea rows={5} value={edit.description} onChange={(e) => setField('description', e.target.value)} />
+                    </label>
+                    <fieldset className="admin-field">
+                      <legend>Зручності</legend>
+                      {amenities.map((a) => (
+                        <label key={a.id} style={{ display: 'inline-flex', gap: 4, marginRight: 12 }}>
+                          <input
+                            type="checkbox"
+                            checked={edit.amenityIds.includes(a.id)}
+                            onChange={(e) => setEdit({
+                              ...edit,
+                              amenityIds: e.target.checked ? [...edit.amenityIds, a.id] : edit.amenityIds.filter((id) => id !== a.id),
+                            })}
+                          />
+                          {a.name}
+                        </label>
+                      ))}
+                    </fieldset>
+                    <div className="admin-form-actions">
+                      <button type="submit" className="admin-primary-button" disabled={isBusy}>Зберегти</button>
+                      <button type="button" className="admin-primary-button admin-danger-button" disabled={isBusy} onClick={() => setEdit(null)}>Скасувати</button>
+                    </div>
+                  </form>
+                ) : (
+                <>
+                {selected.status === 'Pending' && (
+                  <button type="button" className="admin-primary-button" onClick={() => startEdit(selected)}>Редагувати заявку</button>
+                )}
                 <dl>
                   <dt>Господар</dt>
                   <dd>{selected.hostName ? `${selected.hostName} · ` : ''}{selected.hostEmail}</dd>
@@ -175,6 +297,8 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                   </div>
                 ) : selected.rejectionReason && (
                   <p className="admin-message admin-message--error">Причина відхилення: {selected.rejectionReason}</p>
+                )}
+                </>
                 )}
               </div>
             </>

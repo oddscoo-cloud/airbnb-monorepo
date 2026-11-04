@@ -29,6 +29,19 @@ public class RegionController : ControllerBase
         return Ok(regions);
     }
 
+    [Authorize]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllRegions(CancellationToken cancellationToken)
+    {
+        var regions = await Context.Regions
+            .AsNoTracking()
+            .OrderBy(region => region.Name)
+            .Select(region => new { region.Id, region.Name, region.ImageUrl })
+            .ToListAsync(cancellationToken);
+
+        return Ok(regions);
+    }
+
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody]RegionRequestDTO regionDTO)

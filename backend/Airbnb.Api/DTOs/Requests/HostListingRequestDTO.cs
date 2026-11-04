@@ -10,6 +10,9 @@ public sealed class HostListingRequestDTO
 
     public int? RegionId { get; set; }
 
+    [MaxLength(100)]
+    public string? RegionName { get; set; }
+
     [Required, MaxLength(80)]
     public string Category { get; set; } = string.Empty;
 
@@ -33,4 +36,4 @@ public sealed class HostListingRequestDTO
     public List<IFormFile> Photos { get; set; } = [];
 }
 
-public sealed record RejectListingRequest([property: Required, MaxLength(1000)] string Reason);
+public sealed record RejectListingRequest([Required, MaxLength(1000)] string Reason);

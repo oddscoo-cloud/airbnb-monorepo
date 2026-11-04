@@ -39,7 +39,7 @@ export interface ListingSubmission {
 export interface SubmissionInput {
   title: string
   location: string
-  regionId: number | null
+  regionName: string
   category: string
   description: string
   pricePerNight: number
@@ -83,7 +83,7 @@ export function submitListing(accessToken: string, input: SubmissionInput, signa
   const form = new FormData()
   form.append('title', input.title)
   form.append('location', input.location)
-  if (input.regionId !== null) form.append('regionId', String(input.regionId))
+  form.append('regionName', input.regionName)
   form.append('category', input.category)
   form.append('description', input.description)
   form.append('pricePerNight', String(input.pricePerNight))
@@ -104,6 +104,27 @@ export function submitListing(accessToken: string, input: SubmissionInput, signa
 export function getSubmissions(accessToken: string, status?: SubmissionStatus, signal?: AbortSignal) {
   const query = status ? `?status=${status}` : ''
   return apiRequest<ListingSubmission[]>(`/api/admin/submissions${query}`, { accessToken, signal })
+}
+
+export interface SubmissionEdit {
+  title: string
+  location: string
+  regionName: string
+  category: string
+  description: string
+  pricePerNight: number
+  maxGuests: number
+  latitude: number
+  longtitude: number
+  amenityIds: number[]
+}
+
+export function updateSubmission(accessToken: string, id: number, input: SubmissionEdit) {
+  return apiRequest<ListingSubmission>(`/api/admin/submissions/${id}`, {
+    method: 'PUT',
+    accessToken,
+    body: JSON.stringify(input),
+  })
 }
 
 export function approveSubmission(accessToken: string, id: number) {

@@ -6,6 +6,10 @@ export interface Region {
   imageUrl: string
 }
 
+export function getAllRegions(accessToken: string, signal?: AbortSignal): Promise<Region[]> {
+  return apiRequest<Region[]>('/api/region/all', { accessToken, signal })
+}
+
 export function getRegions(signal?: AbortSignal): Promise<Region[]> {
   return apiRequest<Region[]>('/api/region', {
     signal,

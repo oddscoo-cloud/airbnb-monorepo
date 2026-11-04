@@ -10,6 +10,9 @@ public sealed class AdminListingRequestDTO
 
     public int? RegionId { get; set; }
 
+    [MaxLength(100)]
+    public string? RegionName { get; set; }
+
     [Required, MaxLength(80)]
     public string Category { get; set; } = string.Empty;
 

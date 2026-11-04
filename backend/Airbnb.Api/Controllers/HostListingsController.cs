@@ -84,7 +84,7 @@ public sealed class HostListingsController(
             HostId = userId,
             Title = request.Title.Trim(),
             Location = request.Location.Trim(),
-            RegionId = request.RegionId,
+            RegionId = await RegionResolver.ResolveAsync(context, request.RegionName, request.RegionId, cancellationToken),
             Category = request.Category.Trim(),
             Description = request.Description?.Trim(),
             PricePerNight = request.PricePerNight,

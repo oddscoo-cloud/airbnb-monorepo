@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
 import { ArrowLeft, ImagePlus, X } from 'lucide-react'
 import { getCurrentUser, type UserResponse } from '../../api/users'
-import { getRegions, type Region } from '../../api/regions'
+import { getAllRegions, type Region } from '../../api/regions'
 import {
   LISTING_CATEGORIES,
   STATUS_LABELS,
@@ -26,7 +26,7 @@ type Step = 1 | 2 | 3
 interface FormState {
   title: string
   category: string
-  regionId: string
+  regionName: string
   location: string
   latitude: string
   longtitude: string
@@ -39,7 +39,7 @@ interface FormState {
 const EMPTY_FORM: FormState = {
   title: '',
   category: '',
-  regionId: '',
+  regionName: '',
   location: '',
   latitude: '50.4501',
   longtitude: '30.5234',
@@ -86,7 +86,7 @@ export function HostListing({ accessToken, menu, onHome, onVerify }: HostListing
         setUser(current)
         if (!current.isVerified) return
         const [regionData, amenityData, mine] = await Promise.all([
-          getRegions(controller.signal),
+          getAllRegions(accessToken, controller.signal),
           getHostAmenities(accessToken, controller.signal),
           getMySubmissions(accessToken, controller.signal),
         ])
@@ -126,7 +126,7 @@ export function HostListing({ accessToken, menu, onHome, onVerify }: HostListing
       await submitListing(accessToken, {
         title: form.title.trim(),
         location: form.location.trim(),
-        regionId: form.regionId === '' ? null : Number(form.regionId),
+        regionName: form.regionName.trim(),
         category: form.category,
         description: form.description.trim(),
         pricePerNight: Number(form.pricePerNight),
@@ -267,11 +267,17 @@ export function HostListing({ accessToken, menu, onHome, onVerify }: HostListing
                 </select>
               </label>
               <label className="host__field">
-                <span>Регіон</span>
-                <select value={form.regionId} onChange={(e) => update('regionId', e.target.value)}>
-                  <option value="">Не вказано</option>
-                  {regions.map((region) => <option key={region.id} value={region.id}>{region.name}</option>)}
-                </select>
+                <span>Регіон (оберіть зі списку або впишіть свій)</span>
+                <input
+                  list="host-regions"
+                  maxLength={100}
+                  placeholder="Наприклад, Київська область"
+                  value={form.regionName}
+                  onChange={(e) => update('regionName', e.target.value)}
+                />
+                <datalist id="host-regions">
+                  {regions.map((region) => <option key={region.id} value={region.name} />)}
+                </datalist>
               </label>
               <label className="host__field">
                 <span>Адреса / місто</span>
