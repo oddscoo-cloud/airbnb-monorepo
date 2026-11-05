@@ -75,6 +75,14 @@ export function getHostAmenities(accessToken: string, signal?: AbortSignal) {
   return apiRequest<HostAmenity[]>('/api/host/listings/amenities', { accessToken, signal })
 }
 
+export function createHostAmenity(accessToken: string, name: string, icon: string) {
+  return apiRequest<HostAmenity>('/api/host/listings/amenities', {
+    accessToken,
+    method: 'POST',
+    body: JSON.stringify({ name, icon }),
+  })
+}
+
 export function getMySubmissions(accessToken: string, signal?: AbortSignal) {
   return apiRequest<ListingSubmission[]>('/api/host/listings/mine', { accessToken, signal })
 }

@@ -284,6 +284,9 @@
 
 .property__description {
   margin: 0 0 16px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-line;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
@@ -360,6 +363,53 @@
   font-size: 16px;
   color: var(--text-primary);
   cursor: pointer;
+}
+
+.property__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.property__modal-card {
+  position: relative;
+  width: min(640px, 92vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 32px;
+  border-radius: 16px;
+  background: var(--bg, #fff);
+}
+
+.property__modal-card h3 {
+  margin: 0 0 24px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__modal-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+}
+
+.property__modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: 0;
+  background: transparent;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .property__modal-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Календарь */

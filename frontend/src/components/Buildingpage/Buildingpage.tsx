@@ -14,7 +14,10 @@ import { LocationMap } from '../Map/LocationMap'
 import { UserMenu } from '../UserMenu/UserMenu'
 import { PropertyCalendar } from './PropertyCalendar'
 import { PropertyReviews } from './PropertyReviews'
+import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
 import './Buildingpage.css'
+
+const AMENITIES_PREVIEW = 6
 
 const SECTIONS = [
   { id: 'photos', label: 'Фотографії' },
@@ -152,6 +155,7 @@ export function PropertyDetail({
   // Локальное состояние навигации страницы объявления.
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
+  const [showAllAmenities, setShowAllAmenities] = useState(false)
 
   function formatDate(date: Date | null) {
     return date
@@ -279,10 +283,47 @@ export function PropertyDetail({
           <section id="amenities" className="property__section">
             <h2 className="property__section-title">Які тут зручності</h2>
             {listing.amenities.length > 0 ? (
-              <div className="property__amenities">
-                {listing.amenities.map((amenity) => <span key={amenity.id}>{amenity.name}</span>)}
-              </div>
+              <>
+                <div className="property__amenities">
+                  {listing.amenities.slice(0, AMENITIES_PREVIEW).map((amenity) => (
+                    <div key={amenity.id} className="property__amenity">
+                      <AmenityIcon icon={amenity.icon} />
+                      <span>{amenity.name}</span>
+                    </div>
+                  ))}
+                </div>
+                {listing.amenities.length > AMENITIES_PREVIEW && (
+                  <button
+                    type="button"
+                    className="property__outline-button"
+                    onClick={() => setShowAllAmenities(true)}
+                  >
+                    Показати всі зручності({listing.amenities.length})
+                  </button>
+                )}
+              </>
             ) : <p>Інформація про зручності ще не додана.</p>}
+            {showAllAmenities && (
+              <div className="property__modal" role="dialog" aria-modal="true" onClick={() => setShowAllAmenities(false)}>
+                <div className="property__modal-card" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    type="button"
+                    className="property__modal-close"
+                    aria-label="Закрити"
+                    onClick={() => setShowAllAmenities(false)}
+                  >×</button>
+                  <h3>Які тут зручності</h3>
+                  <div className="property__modal-list">
+                    {listing.amenities.map((amenity) => (
+                      <div key={amenity.id} className="property__amenity">
+                        <AmenityIcon icon={amenity.icon} />
+                        <span>{amenity.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
 
           <div className="property__divider" />

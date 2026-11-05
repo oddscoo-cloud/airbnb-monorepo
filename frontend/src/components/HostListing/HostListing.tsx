@@ -5,6 +5,7 @@ import { getAllRegions, type Region } from '../../api/regions'
 import {
   LISTING_CATEGORIES,
   STATUS_LABELS,
+  createHostAmenity,
   getHostAmenities,
   getMySubmissions,
   submitListing,
@@ -12,6 +13,8 @@ import {
   type ListingSubmission,
 } from '../../api/hostListings'
 import { UserMenu, type UserMenuProps } from '../UserMenu/UserMenu'
+import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
+import { AmenityCreate } from '../AmenityIcon/AmenityCreate'
 import './HostListing.css'
 
 interface HostListingProps {
@@ -319,7 +322,7 @@ export function HostListing({ accessToken, menu, onHome, onVerify }: HostListing
                 <span>Опис</span>
                 <textarea rows={5} maxLength={5000} value={form.description} onChange={(e) => update('description', e.target.value)} />
               </label>
-              {amenities.length > 0 && (
+              {(
                 <fieldset className="host__amenities">
                   <legend>Зручності</legend>
                   {amenities.map((amenity) => (
@@ -331,9 +334,19 @@ export function HostListing({ accessToken, menu, onHome, onVerify }: HostListing
                           ? [...form.amenityIds, amenity.id]
                           : form.amenityIds.filter((id) => id !== amenity.id))}
                       />
+                      <AmenityIcon icon={amenity.icon} size={16} />
                       {amenity.name}
                     </label>
                   ))}
+                  <AmenityCreate
+                    onCreate={async (name, icon) => {
+                      const created = await createHostAmenity(accessToken, name, icon)
+                      setAmenities((prev) => prev.some((a) => a.id === created.id) ? prev : [...prev, created])
+                      setForm((prev) => prev.amenityIds.includes(created.id)
+                        ? prev
+                        : { ...prev, amenityIds: [...prev.amenityIds, created.id] })
+                    }}
+                  />
                 </fieldset>
               )}
               <div className="host__actions">

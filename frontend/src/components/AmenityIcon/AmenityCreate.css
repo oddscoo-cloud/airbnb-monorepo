@@ -1,0 +1,62 @@
+.amenity-create {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.amenity-create__row {
+  display: flex;
+  gap: 8px;
+}
+
+.amenity-create__row input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+.amenity-create__row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.amenity-create__row button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.amenity-create__icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.amenity-create__icons button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #999;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.amenity-create__icons button.is-active {
+  border-color: #000;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.amenity-create__error {
+  margin: 0;
+  color: #b00020;
+  font-size: 12px;
+}

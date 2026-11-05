@@ -41,6 +41,15 @@ public sealed class AdminListingsController(
         return Ok(mapper.Map<List<AmenityResponseDTO>>(amenities));
     }
 
+    [HttpPost("amenities")]
+    public async Task<ActionResult<AmenityResponseDTO>> CreateAmenity(
+        AmenityRequestDTO request, CancellationToken cancellationToken)
+    {
+        var (amenity, error) = await AmenityCreator.GetOrCreateAsync(context, request, cancellationToken);
+        if (amenity is null) return BadRequest(new { message = error });
+        return Ok(mapper.Map<AmenityResponseDTO>(amenity));
+    }
+
     [HttpPost]
     public async Task<ActionResult<ListingResponseDTO>> Create(
         AdminListingRequestDTO request,

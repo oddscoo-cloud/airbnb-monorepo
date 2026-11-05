@@ -253,6 +253,16 @@ export function AdminDashboard({ accessToken, onBack, onSaved }: AdminDashboardP
           isSaving={isSaving}
           onUpdate={update}
           onFilesChange={setFiles}
+          onCreateAmenity={async (name, icon) => {
+            const created = await adminRequest<AdminAmenity>(accessToken, '/api/admin/listings/amenities', {
+              method: 'POST',
+              body: JSON.stringify({ name, icon }),
+            })
+            setAmenities((prev) => prev.some((a) => a.id === created.id) ? prev : [...prev, created])
+            setForm((prev) => prev.amenityIds.includes(created.id)
+              ? prev
+              : { ...prev, amenityIds: [...prev.amenityIds, created.id] })
+          }}
           onDeleteImage={(image) => void deleteImage(image)}
           onSubmit={handleSubmit}
         />

@@ -3,6 +3,7 @@ import { Check, X } from 'lucide-react'
 import {
   STATUS_LABELS,
   approveSubmission,
+  createHostAmenity,
   getHostAmenities,
   getSubmissions,
   rejectSubmission,
@@ -13,6 +14,8 @@ import {
   type SubmissionStatus,
 } from '../../api/hostListings'
 import { getAllRegions, type Region } from '../../api/regions'
+import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
+import { AmenityCreate } from '../AmenityIcon/AmenityCreate'
 import './AdminSubmissions.css'
 
 interface AdminSubmissionsProps {
@@ -221,6 +224,7 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                     </label>
                     <fieldset className="admin-field">
                       <legend>Зручності</legend>
+                      <div className="admin-checkboxes">
                       {amenities.map((a) => (
                         <label key={a.id} style={{ display: 'inline-flex', gap: 4, marginRight: 12 }}>
                           <input
@@ -231,9 +235,20 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                               amenityIds: e.target.checked ? [...edit.amenityIds, a.id] : edit.amenityIds.filter((id) => id !== a.id),
                             })}
                           />
+                          <AmenityIcon icon={a.icon} size={16} />
                           {a.name}
                         </label>
                       ))}
+                      </div>
+                      <AmenityCreate
+                        onCreate={async (name, icon) => {
+                          const created = await createHostAmenity(accessToken, name, icon)
+                          setAmenities((prev) => prev.some((x) => x.id === created.id) ? prev : [...prev, created])
+                          setEdit((prev) => prev && !prev.amenityIds.includes(created.id)
+                            ? { ...prev, amenityIds: [...prev.amenityIds, created.id] }
+                            : prev)
+                        }}
+                      />
                     </fieldset>
                     <div className="admin-form-actions">
                       <button type="submit" className="admin-primary-button" disabled={isBusy}>Зберегти</button>

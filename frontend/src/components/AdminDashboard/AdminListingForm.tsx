@@ -2,6 +2,8 @@
 import { Save, Trash2, Upload } from 'lucide-react'
 import type { AdminAmenity, AdminImage, ListingForm } from './adminTypes'
 import type { Region } from '../../api/regions'
+import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
+import { AmenityCreate } from '../AmenityIcon/AmenityCreate'
 
 const CATEGORIES = [
   'Гарні краєвиди',
@@ -28,6 +30,7 @@ type AdminListingFormProps = {
   isSaving: boolean
   onUpdate: <K extends keyof ListingForm>(field: K, value: ListingForm[K]) => void
   onFilesChange: (files: File[]) => void
+  onCreateAmenity: (name: string, icon: string) => Promise<void>
   onDeleteImage: (image: AdminImage) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
@@ -42,6 +45,7 @@ export function AdminListingForm({
   isSaving,
   onUpdate,
   onFilesChange,
+  onCreateAmenity,
   onDeleteImage,
   onSubmit,
 }: AdminListingFormProps) {
@@ -109,11 +113,13 @@ export function AdminListingForm({
                       ? [...form.amenityIds, amenity.id]
                       : form.amenityIds.filter((id) => id !== amenity.id))}
                   />
+                  <AmenityIcon icon={amenity.icon} size={18} />
                   {amenity.name}
                 </label>
               ))}
             </div>
           )}
+          <AmenityCreate onCreate={onCreateAmenity} />
         </fieldset>
 
         <div className="admin-field admin-field--wide">
