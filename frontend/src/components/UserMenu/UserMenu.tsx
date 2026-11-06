@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Menu, User as UserIcon } from 'lucide-react'
 import { AVATAR_EVENT, AVATAR_STORAGE_KEY, getCurrentUser } from '../../api/users'
+import { getAccountInitial } from '../../utils/account'
 import './UserMenu.css'
 
 export interface UserMenuProps {
@@ -37,7 +38,7 @@ export function UserMenu({
   const sessionEmail = typeof window !== 'undefined' ? sessionStorage.getItem('account_email') : null
   const sessionRole = typeof window !== 'undefined' ? sessionStorage.getItem('account_role') : null
 
-  const initial = propInitial !== undefined ? propInitial : (sessionEmail?.trim().charAt(0).toUpperCase() ?? '')
+  const initial = propInitial !== undefined ? propInitial : getAccountInitial(sessionEmail)
   const role = propRole !== undefined ? propRole : (sessionRole ?? '')
   const isAuthenticated = Boolean(initial)
   const [avatarUrl, setAvatarUrl] = useState(() => sessionStorage.getItem(AVATAR_STORAGE_KEY) || null)
@@ -190,4 +191,3 @@ export function UserMenu({
     </div>
   )
 }
-

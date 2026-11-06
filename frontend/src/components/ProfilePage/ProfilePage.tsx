@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { useSavedListings } from '../../hooks/useSavedListings'
 import { getCurrentUser, updateProfileFacts, uploadAvatar, type ProfileFacts } from '../../api/users'
+import { getAccountInitial } from '../../utils/account'
 import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
@@ -172,7 +173,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
   const [isSaving, setIsSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const accountEmail = sessionStorage.getItem('account_email') ?? ''
-  const accountInitial = accountEmail.charAt(0).toUpperCase()
+  const accountInitial = getAccountInitial(accountEmail)
   const accountRole = sessionStorage.getItem('account_role') ?? ''
   const accessToken = sessionStorage.getItem('access_token')
   const fileInputRef = useRef<HTMLInputElement>(null)
