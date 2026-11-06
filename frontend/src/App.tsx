@@ -19,7 +19,7 @@ import { useAccountSession } from './hooks/useAccountSession'
 import { useSavedListings } from './hooks/useSavedListings'
 import type { Listing } from './types/listing'
 import './App.css'
-import { getListingRegions, type ListingSearchFilters } from './api/listings'
+import { getListingRegions, type ListingRegion, type ListingSearchFilters } from './api/listings'
 
 function App() {
   // Общее состояние экранов приложения.
@@ -38,7 +38,7 @@ function App() {
   // Revision для повторной загрузки каталога через useListings.
   const [listingsRevision, setListingsRevision] = useState(0)
   const [searchFilters, setSearchFilters] = useState<ListingSearchFilters>({ guests: 1 })
-  const [regions, setRegions] = useState<string[]>([])
+  const [regions, setRegions] = useState<ListingRegion[]>([])
   const { listings, isLoading: listingsLoading, error: listingsError } = useListings(searchFilters, listingsRevision)
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
   const accessToken = sessionStorage.getItem('access_token')
@@ -444,7 +444,7 @@ function App() {
                 }}
                 searchFilters={searchFilters}
                 onSearchFiltersChange={updateSearchFilters}
-                allRegions={regions}
+                allRegions={regions.map((region) => region.name)}
                 selectedRegion={selectedRegion}
                 onSelectRegion={(region) => {
                   setSelectedRegion(region)

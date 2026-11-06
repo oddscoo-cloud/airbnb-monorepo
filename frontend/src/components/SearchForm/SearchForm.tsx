@@ -1,5 +1,6 @@
 ﻿import { type FormEvent, useEffect, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
+import type { ListingRegion } from '../../api/listings'
 import { RegionPickerPanel } from '../RegionPickerPanel/RegionPickerPanel'
 import { DatePickerPanel } from '../DatePickerPanel/DatePickerPanel'
 import { ShowMapButton } from '../ShowMapButton/ShowMapButton'
@@ -7,7 +8,7 @@ import './SearchForm.css'
 
 interface SearchFormProps {
   selectedRegion?: string | null
-  regions: string[]
+  regions: ListingRegion[]
   onRegionSelect?: (region: string) => void
   onFocusRegion?: () => void
   onFocusDates?: () => void

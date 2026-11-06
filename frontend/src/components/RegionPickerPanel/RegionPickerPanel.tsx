@@ -1,8 +1,9 @@
 ﻿import { RegionMap } from './RegionMap'
+import type { ListingRegion } from '../../api/listings'
 import './RegionPickerPanel.css'
 
 interface RegionPickerPanelProps {
-  regions: string[]
+  regions: ListingRegion[]
   onClose: () => void
   onSelectRegion?: (region: string) => void
 }
@@ -16,18 +17,18 @@ export function RegionPickerPanel({ regions, onClose, onSelectRegion }: RegionPi
         {/* Список регіонів із props; OSM-карта генерується автоматично за назвою регіону. */}
         {regions.map((region) => (
           <button
-            key={region}
+            key={region.name}
             type="button"
             className="region-picker__item"
             onClick={() => {
-              onSelectRegion?.(region)
+              onSelectRegion?.(region.name)
               onClose()
             }}
           >
             <span className="region-picker__map" aria-hidden="true">
               <RegionMap region={region} />
             </span>
-            <span className="region-picker__label">{region}</span>
+            <span className="region-picker__label">{region.name}</span>
           </button>
         ))}
       </div>

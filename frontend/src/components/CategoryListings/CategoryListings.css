@@ -311,6 +311,23 @@
   transition: transform 300ms ease;
 }
 
+.listing-card__image-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.listing-card__like--no-photo {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+}
+
 .listing-card:hover .listing-card__image {
   transform: scale(1.035);
 }

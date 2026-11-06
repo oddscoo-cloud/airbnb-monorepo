@@ -31,6 +31,18 @@ export interface ListingSearchFilters {
   checkOut?: string | null
 }
 
+export interface ListingRegion {
+  name: string
+  latitude: number | null
+  longitude: number | null
+}
+
+interface ListingRegionResponse {
+  name: string
+  latitude?: number | null
+  longitude?: number | null
+}
+
 export function buildListingsUrl(filters: ListingSearchFilters = {}): string {
   const params = new URLSearchParams({ page: '1', pageSize: '100' })
   for (const [key, value] of Object.entries(filters)) {
@@ -41,10 +53,19 @@ export function buildListingsUrl(filters: ListingSearchFilters = {}): string {
   return `/api/listings?${params.toString()}`
 }
 
-// Backend возвращает регионы объектами { id, name, imageUrl }; UI работает с названиями.
-export async function getListingRegions(signal?: AbortSignal): Promise<string[]> {
-  const regions = await apiRequest<(string | { name: string })[]>('/api/listings/regions', { signal })
-  return regions.map((region) => (typeof region === 'string' ? region : region.name))
+export function mapListingRegionResponse(region: string | ListingRegionResponse): ListingRegion {
+  return typeof region === 'string'
+    ? { name: region, latitude: null, longitude: null }
+    : {
+      name: region.name,
+      latitude: region.latitude ?? null,
+      longitude: region.longitude ?? null,
+    }
+}
+
+export async function getListingRegions(signal?: AbortSignal): Promise<ListingRegion[]> {
+  const regions = await apiRequest<(string | ListingRegionResponse)[]>('/api/listings/regions', { signal })
+  return regions.map(mapListingRegionResponse)
 }
 
 // Преобразование ответа backend в общую UI-модель Listing.

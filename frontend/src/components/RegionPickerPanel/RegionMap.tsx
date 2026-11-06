@@ -1,4 +1,5 @@
 ﻿import { MapContainer, TileLayer } from 'react-leaflet'
+import type { ListingRegion } from '../../api/listings'
 import 'leaflet/dist/leaflet.css'
 
 // Координати центру та рівень зуму для кожного регіону України.
@@ -38,11 +39,8 @@ const REGION_COORDS: Record<string, { center: [number, number]; zoom: number }> 
   'Севастополь':                { center: [44.61, 33.52], zoom: 11 },
 }
 
-/** Fallback — центр України, якщо регіон невідомий. */
-const UKRAINE_CENTER: [number, number] = [49.0, 32.0]
-
 interface RegionMapProps {
-  region: string
+  region: ListingRegion
 }
 
 /**
@@ -51,12 +49,22 @@ interface RegionMapProps {
  * Усі взаємодії вимкнені: карта є лише візуальним превью.
  */
 export function RegionMap({ region }: RegionMapProps) {
-  const config = REGION_COORDS[region]
-  const center = config?.center ?? UKRAINE_CENTER
-  const zoom   = config?.zoom   ?? 6
+  const config = REGION_COORDS[region.name]
+  const { latitude, longitude } = region
+  const hasCoordinates = latitude !== null && longitude !== null
+    && Number.isFinite(latitude) && Number.isFinite(longitude)
+  const center: [number, number] | undefined = hasCoordinates
+    ? [latitude, longitude]
+    : config?.center
+  const zoom = hasCoordinates ? 11 : config?.zoom
+
+  if (!center || zoom === undefined) {
+    return <span className="region-picker__map-placeholder">Карта недоступна</span>
+  }
 
   return (
     <MapContainer
+      key={region.name}
       center={center}
       zoom={zoom}
       style={{ width: '100%', height: '100%' }}
