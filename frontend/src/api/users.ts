@@ -95,3 +95,17 @@ export async function getCurrentUser(accessToken: string, signal?: AbortSignal):
   if ((sessionStorage.getItem(AVATAR_STORAGE_KEY) || null) !== avatar) cacheAvatar(avatar)
   return user
 }
+
+export async function updateProfileFacts(
+  accessToken: string,
+  facts: Partial<ProfileFacts>,
+  signal?: AbortSignal,
+): Promise<ProfileFacts> {
+  return apiRequest<ProfileFacts>('/api/users/me/facts', {
+    method: 'PUT',
+    accessToken,
+    signal,
+    body: JSON.stringify(facts),
+    fallbackError: (status) => `Не вдалося зберегти профіль (${status})`,
+  })
+}

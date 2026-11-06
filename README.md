@@ -1,57 +1,84 @@
 # airbnb-monorepo
 
-HomeFU: React + Vite frontend, ASP.NET Core 9 API, PostgreSQL.
+HomeFU: фронтенд на React + Vite, API на ASP.NET Core 9, PostgreSQL.
 
-## Quick start (Docker, one command)
+## Быстрый старт (Docker, одна команда)
 
-Requirements: Docker Desktop (or Docker Engine + Compose v2). Nothing else is needed: no .NET SDK, Node.js or local Postgres.
+Требования: Docker Desktop (или Docker Engine + Compose v2). Больше ничего не нужно: ни .NET SDK, ни Node.js, ни локального Postgres.
 
 ```powershell
 docker compose up -d --build
 ```
 
-| Service | URL / port | Notes |
-|---------|-----------|-------|
-| Site (nginx + built frontend) | http://localhost:3000 | proxies `/api`, `/listing-images`, `/avatars` to the API |
+| Сервис | URL / порт | Примечания |
+|--------|-----------|------------|
+| Сайт (nginx + собранный фронтенд) | http://localhost:3000 | проксирует `/api`, `/listing-images`, `/avatars` на API |
 | API | http://localhost:5189 | Swagger: http://localhost:5189/swagger |
-| PostgreSQL | localhost:5432 | db `airbnb_db`, user `postgres` |
+| PostgreSQL | localhost:5432 | БД `airbnb_db`, пользователь `postgres` |
 
-On the first start (the API runs with `ASPNETCORE_ENVIRONMENT=Development`) the API itself applies EF migrations, seeds users/amenities and creates the admin account:
+При первом запуске (API работает с `ASPNETCORE_ENVIRONMENT=Development`) API сам применяет миграции EF, заполняет пользователей/удобства и создаёт аккаунт администратора:
 
 - Email: `admin@homefu.local`
-- Password: `Admin12345!`
+- Пароль: `Admin12345!`
 
-The database starts empty: there are no listings and no regions until they are added in the admin panel or submitted by users.
+База данных изначально пустая: объявлений и регионов нет, пока их не добавят в админ-панели или не отправят пользователи.
 
-Stop: `docker compose down` (data is kept). Full reset including the database and uploaded files: `docker compose down -v`.
+Остановка: `docker compose down` (данные сохраняются). Полный сброс, включая базу и загруженные файлы: `docker compose down -v`.
 
-Rebuild after code changes: `docker compose up -d --build`. Logs: `docker compose logs -f api`.
+Пересборка после изменений в коде: `docker compose up -d --build`. Логи: `docker compose logs -f api`.
 
-### Configuration
+### Конфигурация
 
-Override defaults through environment variables or a `.env` file next to `docker-compose.yml`:
+Значения по умолчанию можно переопределить переменными окружения или файлом `.env` рядом с `docker-compose.yml`:
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `POSTGRES_PASSWORD` | `postgrespassword` | Postgres password |
-| `JWT_KEY` | dev key | JWT signing secret, at least 32 random characters |
-| `ADMIN_EMAIL` | `admin@homefu.local` | initial admin email |
-| `ADMIN_PASSWORD` | `Admin12345!` | initial admin password |
+| Переменная | По умолчанию | Назначение |
+|------------|--------------|------------|
+| `POSTGRES_PASSWORD` | `postgrespassword` | пароль Postgres |
+| `JWT_KEY` | dev-ключ | секрет подписи JWT, минимум 32 случайных символа |
+| `ADMIN_EMAIL` | `admin@homefu.local` | email начального администратора |
+| `ADMIN_PASSWORD` | `Admin12345!` | пароль начального администратора |
 
-Docker volumes persist data: `postgres_data` (DB), `listing_images`, `avatars`, `verification_docs`.
+Данные хранятся в томах Docker: `postgres_data` (БД), `listing_images`, `avatars`, `verification_docs`.
 
-### Common problems
+Для входа через Google фронтенду нужна переменная `VITE_GOOGLE_CLIENT_ID` (файл `frontend/.env`, пример в `frontend/.env.example`). Без неё сайт работает, но кнопка входа через Google не функционирует. Vite читает переменные только при запуске, а в Docker они попадают в сборку фронтенда, поэтому после изменения нужна пересборка.
 
-- **Port already in use** (3000, 5189, 5432): stop the other project or change the left side of the port mapping in `docker-compose.yml`. A locally installed Postgres on 5432 conflicts with the container.
-- **Another project opens on the same port**: check `docker ps`; clear browser cache or open in a private window.
-- **Catalog is empty**: expected on a fresh database. Log in as admin, add a listing, or submit one from a verified account and approve it in the admin panel.
-- **Role changed in DB but no admin access**: log out and log in again, the role is stored in the JWT.
-- Give admin to an existing account:
-  `docker exec airbnb_postgres psql -U postgres -d airbnb_db -c "update users set role='Admin' where email='you@example.com'"`
+## Как сделать пользователя администратором
 
-### Moving data from the backend developer's local database
+Обычная регистрация всегда создаёт пользователя с ролью `Guest`. Есть три способа получить роль `Admin`.
 
-To use the existing local database instead of an empty one:
+**1. Через базу данных (для существующего аккаунта).** Пользователь должен быть уже зарегистрирован:
+
+```powershell
+docker exec airbnb_postgres psql -U postgres -d airbnb_db -c "update users set role='Admin' where email='you@example.com'"
+```
+
+Чтобы вернуть обычную роль, подставьте `role='Guest'`.
+
+После смены роли пользователь должен выйти из аккаунта и войти снова: роль хранится в JWT-токене. После этого в меню аккаунта появится пункт админ-панели.
+
+**2. Через переменные окружения (начальный админ).** Задайте `ADMIN_EMAIL` и `ADMIN_PASSWORD` в `.env` рядом с `docker-compose.yml` и перезапустите API: `docker compose up -d --build`. В режиме Development при старте API создаёт этот аккаунт, а если он уже существует, назначает ему роль `Admin` и заданный пароль.
+
+**3. Без Docker.** В том же окне PowerShell, из которого запускается API:
+
+```powershell
+$env:Admin__Email = Read-Host 'Admin email'
+$adminPassword = Read-Host 'Admin password' -AsSecureString
+$env:Admin__Password = [System.Net.NetworkCredential]::new('', $adminPassword).Password
+```
+
+Подробности: [backend/Airbnb.Api/ADMIN_SETUP.md](backend/Airbnb.Api/ADMIN_SETUP.md). Не коммитьте пароль и не кладите его в `appsettings.json`.
+
+### Частые проблемы
+
+- **Порт уже занят** (3000, 5189, 5432): остановите другой проект или измените левую часть привязки порта в `docker-compose.yml`. Локально установленный Postgres на 5432 конфликтует с контейнером.
+- **На том же порту открывается другой проект**: проверьте `docker ps`; очистите кэш браузера или откройте сайт в приватном окне.
+- **Каталог пуст**: это нормально для свежей базы. Войдите как администратор, добавьте объявление или отправьте его от верифицированного аккаунта и одобрите в админ-панели.
+- **Роль изменена в БД, но доступа администратора нет**: выйдите и войдите снова, роль хранится в JWT.
+- **Белый экран на страницах с входом через Google**: не задан `VITE_GOOGLE_CLIENT_ID` (см. раздел «Конфигурация»).
+
+### Перенос данных из локальной базы backend-разработчика
+
+Чтобы использовать существующую локальную базу вместо пустой:
 
 ```powershell
 pg_dump -U postgres -d <db_name> -F c -f airbnb.dump
@@ -61,44 +88,44 @@ docker exec airbnb_postgres pg_restore -U postgres -d airbnb_db --clean --if-exi
 docker compose up -d --build
 ```
 
-Images and avatars from the local `wwwroot` should be copied into the `listing_images` and `avatars` volumes.
+Изображения и аватары из локальной `wwwroot` нужно скопировать в тома `listing_images` и `avatars`.
 
-## Running without Docker (development)
+## Запуск без Docker (разработка)
 
-Requirements: .NET SDK 9, Node.js 20+, PostgreSQL 16.
+Требования: .NET SDK 9, Node.js 20+, PostgreSQL 16.
 
-1. Create a database and set the connection string and `Jwt:Key` (user secrets or env vars `ConnectionStrings__DefaultConnection`, `Jwt__Key`).
-2. Backend: `cd backend\Airbnb.Api; dotnet run` (Development applies migrations and seeds data).
-3. Frontend: `cd frontend; npm install; npm run dev`.
+1. Создайте базу данных и задайте строку подключения и `Jwt:Key` (user secrets или переменные окружения `ConnectionStrings__DefaultConnection`, `Jwt__Key`).
+2. Бэкенд: `cd backend\Airbnb.Api; dotnet run` (в режиме Development применяются миграции и заполняются данные).
+3. Фронтенд: `cd frontend; npm install; npm run dev`.
 
-## User listing submissions
+## Заявки пользователей на объявления
 
-- A logged-in, verified user opens "Запропонувати помешкання на HomeFU" and fills in the form (details, region, photos 1–15, amenities). Region is typed with suggestions; a new name creates a region.
-- The submission goes to the admin panel, tab "Заявки". The admin can edit a pending submission, approve it (it is published) or reject it with a reason shown to the user.
+- Вошедший и верифицированный пользователь открывает «Запропонувати помешкання на HomeFU» и заполняет форму (описание, регион, фото 1–15, удобства). Регион вводится с подсказками; новое название создаёт новый регион.
+- Заявка попадает в админ-панель, вкладка «Заявки». Администратор может отредактировать заявку в ожидании, одобрить её (она публикуется) или отклонить с причиной, которую увидит пользователь.
 - API: `POST /api/host/listings`, `GET /api/host/listings/mine`, `GET /api/admin/submissions`, `PUT /api/admin/submissions/{id}`, `POST /api/admin/submissions/{id}/approve|reject`, `GET /api/region/all`.
 
-## Production notes (for the backend developer)
+## Заметки для продакшена (для backend-разработчика)
 
-The Docker setup is intended for development and demos. Before a real deployment:
+Docker-конфигурация рассчитана на разработку и демо. Перед реальным развёртыванием:
 
-- Run migrations (`dotnet ef database update`) and create the admin as a separate step instead of relying on Development mode; set `ASPNETCORE_ENVIRONMENT=Production`.
-- Use real secrets for `JWT_KEY`, `POSTGRES_PASSWORD`, `ADMIN_PASSWORD`; do not commit them.
-- Do not expose Postgres (remove the `5432` port mapping) and disable Swagger.
-- Put the site behind HTTPS (reverse proxy / load balancer).
-- Back up the volumes (database, images, verification documents).
+- Выполняйте миграции (`dotnet ef database update`) и создавайте администратора отдельным шагом, не полагаясь на режим Development; задайте `ASPNETCORE_ENVIRONMENT=Production`.
+- Используйте настоящие секреты для `JWT_KEY`, `POSTGRES_PASSWORD`, `ADMIN_PASSWORD`; не коммитьте их.
+- Не открывайте Postgres наружу (уберите привязку порта `5432`) и отключите Swagger.
+- Разместите сайт за HTTPS (reverse proxy / балансировщик).
+- Делайте резервные копии томов (база, изображения, документы верификации).
 
-## Authentication API
+## API аутентификации
 
-The backend exposes JWT authentication at `/api/auth`:
+Бэкенд предоставляет JWT-аутентификацию по адресу `/api/auth`:
 
-- `POST /register`: `email`, `password`, `confirm_password`, optional names; returns `201 Created`.
-- `POST /login`: returns `access_token` and `refresh_token`; the refresh token is also set as an HTTP-only cookie.
-- `POST /refresh`: accepts `refresh_token` JSON or the cookie and rotates the refresh token.
-- `POST /logout`: revokes the supplied or cookie refresh token.
+- `POST /register`: `email`, `password`, `confirm_password`, необязательные имена; возвращает `201 Created`.
+- `POST /login`: возвращает `access_token` и `refresh_token`; refresh-токен также устанавливается как HTTP-only cookie.
+- `POST /refresh`: принимает JSON `refresh_token` или cookie и ротирует refresh-токен.
+- `POST /logout`: отзывает переданный или cookie refresh-токен.
 
-Access tokens are valid for 30 minutes and refresh tokens for 30 days. Refresh tokens are stored as SHA-256 hashes in `RefreshTokens`. Send access tokens as `Authorization: Bearer <access_token>`; listing creation is protected as an example.
+Access-токены действуют 30 минут, refresh-токены — 30 дней. Refresh-токены хранятся в `RefreshTokens` в виде SHA-256 хэшей. Передавайте access-токен в заголовке `Authorization: Bearer <token>`; в качестве примера защищено создание объявлений.
 
-Before deploying, set `Jwt:Key` through user secrets or an environment variable (`Jwt__Key`) to a random secret of at least 32 characters. Apply the schema with:
+Перед развёртыванием задайте `Jwt:Key` через user secrets или переменную окружения (`Jwt__Key`) случайным секретом длиной не менее 32 символов. Схему базы применяйте командой:
 
 ```powershell
 dotnet ef database update --project backend\Airbnb.Api\Airbnb.Api.csproj --startup-project backend\Airbnb.Api\Airbnb.Api.csproj

@@ -158,6 +158,45 @@ public class UsersController : ControllerBase
         await file.CopyToAsync(target, cancellationToken);
     }
 
+    [Authorize]
+    [HttpPut("me/facts")]
+    public async Task<IActionResult> UpdateProfileFacts(
+        [FromBody] UpdateProfileFactsRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+            return Unauthorized();
+
+        ProfileFacts? facts = await Context.Facts
+            .FirstOrDefaultAsync(f => f.UserId == userId, cancellationToken);
+        
+        if (facts == null)
+        {
+            facts = new ProfileFacts { UserId = userId };
+            Context.Facts.Add(facts);
+        }
+
+        facts.Education = request.Education;
+        facts.Profession = request.Profession;
+        facts.Address = request.Address;
+        facts.Languages = request.Languages;
+        facts.BirthdayDecade = request.BirthdayDecade;
+        facts.Song = request.Song;
+        facts.Excitement = request.Excitement;
+        facts.Fact = request.Fact;
+        facts.UselessSkills = request.UselessSkills;
+        facts.BiographyTitle = request.BiographyTitle;
+        facts.TimeAbsorber = request.TimeAbsorber;
+        facts.Pets = request.Pets;
+        facts.AboutMe = request.AboutMe;
+        facts.Favorite = request.Favorite;
+
+        await Context.SaveChangesAsync(cancellationToken);
+        
+        var dto = Mapper.Map<ProfileFactsResponseDTO>(facts);
+        return Ok(dto);
+    }
+
     private static async Task EnsureUserHasFacts(AppDbContext context, User user)
     {
         if (user.Facts != null)

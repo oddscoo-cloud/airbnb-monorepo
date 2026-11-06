@@ -19,7 +19,7 @@ import {
   Star,
 } from 'lucide-react'
 import { useSavedListings } from '../../hooks/useSavedListings'
-import { getCurrentUser, uploadAvatar, type ProfileFacts } from '../../api/users'
+import { getCurrentUser, updateProfileFacts, uploadAvatar, type ProfileFacts } from '../../api/users'
 import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
@@ -169,6 +169,8 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [avatarError, setAvatarError] = useState<string | null>(null)
   const [showSaved, setShowSaved] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const accountEmail = sessionStorage.getItem('account_email') ?? ''
   const accountInitial = accountEmail.charAt(0).toUpperCase()
   const accountRole = sessionStorage.getItem('account_role') ?? ''
@@ -219,6 +221,44 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
 
   function setInterest(index: number, value: string) {
     setInterests((prev) => prev.map((item, i) => (i === index ? value : item)))
+  }
+
+  async function handleSaveProfile() {
+    if (!accessToken) return
+    
+    setIsSaving(true)
+    setSaveMessage(null)
+    
+    try {
+      const favoriteText = interests.filter(Boolean).join(', ')
+      
+      const profileData: Partial<ProfileFacts> = {
+        education: values.school || null,
+        profession: values.job || null,
+        address: values.city || null,
+        languages: values.languages || null,
+        birthdayDecade: values.decade || null,
+        song: values.song || null,
+        excitement: values.hobby || null,
+        fact: values.fact || null,
+        uselessSkills: values.useless || null,
+        biographyTitle: values.bioTitle || null,
+        timeAbsorber: values.time || null,
+        pets: values.pets || null,
+        aboutMe: bio || null,
+        favorite: favoriteText || null,
+      }
+      
+      await updateProfileFacts(accessToken, profileData)
+      setSaveMessage({ type: 'success', text: 'Профіль збережено успішно!' })
+      setTimeout(() => setSaveMessage(null), 3000)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Помилка при збереженні'
+      setSaveMessage({ type: 'error', text: message })
+      console.error('Failed to save profile', error)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -383,7 +423,27 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
             )}
           </div>
 
-          {/* ── Збережені оголошення ── */}
+          <div className="profile__divider" />
+
+          <div className="profile__save-section">
+            {saveMessage && (
+              <p
+                className={`profile__save-message profile__save-message--${saveMessage.type}`}
+                role={saveMessage.type === 'error' ? 'alert' : undefined}
+              >
+                {saveMessage.text}
+              </p>
+            )}
+            <button
+              type="button"
+              className="profile__save-button"
+              onClick={handleSaveProfile}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Збереження...' : 'Зберегти профіль'}
+            </button>
+          </div>
+
           <div className="profile__divider" />
 
           <div className="profile__saved-header">

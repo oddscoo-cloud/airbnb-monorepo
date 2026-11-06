@@ -352,6 +352,59 @@
   outline: none;
 }
 
+/* Save section */
+
+.profile__save-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profile__save-message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+}
+
+.profile__save-message--success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #4caf50;
+}
+
+.profile__save-message--error {
+  background: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #f44336;
+}
+
+.profile__save-button {
+  align-self: flex-start;
+  padding: 12px 32px;
+  border: 1.5px solid var(--text-primary);
+  border-radius: 999px;
+  background: transparent;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.profile__save-button:hover:not(:disabled) {
+  background: var(--text-primary);
+  color: var(--bg-muted);
+}
+
+.profile__save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Footer */
 
 .profile__footer {
