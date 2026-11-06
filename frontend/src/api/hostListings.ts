@@ -63,6 +63,16 @@ export const LISTING_CATEGORIES = [
   'Біля моря',
   'Особняки',
   'Легендарне',
+  'Квартира',
+  'Апартаменти',
+  'Гостьовий будинок',
+  'Студія',
+  'Готель',
+  'Будинок',
+  'Котедж',
+  'Лофт',
+  'Хостел',
+  'Вілла',
 ]
 
 export const STATUS_LABELS: Record<SubmissionStatus, string> = {

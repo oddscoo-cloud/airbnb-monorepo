@@ -45,12 +45,20 @@ export function CategoryNavigation({
   const categoryNavRef = useRef<HTMLDivElement>(null)
   const categoryListRef = useRef<HTMLUListElement>(null)
   const [categoryOverflow, setCategoryOverflow] = useState({ left: false, right: false })
+  const activeFilterCount = [
+    minPrice,
+    maxPrice,
+    minimumRating,
+    guests !== '1' ? guests : '',
+    selectedRegion ?? '',
+  ].filter(Boolean).length
 
   useEffect(() => {
     if (!isFilterMenuOpen && !isRegionPickerOpen) return
 
     function handleOutsideClick(event: MouseEvent) {
-      if (event.target instanceof Node && !categoryNavRef.current?.contains(event.target)) {
+      const nav = categoryNavRef.current
+      if (nav && !event.composedPath().includes(nav)) {
         setIsFilterMenuOpen(false)
         setIsRegionPickerOpen(false)
       }
@@ -142,83 +150,185 @@ export function CategoryNavigation({
       </button>
 
       <div className="category-nav__filters-wrap">
-        <button type="button" className="category-nav__filters" onClick={() => setIsFilterMenuOpen((value) => !value)}>
+        <button
+          type="button"
+          className={`category-nav__filters${activeFilterCount ? ' category-nav__filters--active' : ''}`}
+          onClick={() => {
+            setIsRegionPickerOpen(false)
+            setIsFilterMenuOpen((value) => !value)
+          }}
+          aria-expanded={isFilterMenuOpen}
+          aria-haspopup="dialog"
+          aria-controls="category-filter-menu"
+        >
           <SlidersHorizontal size={14} aria-hidden />
           <span>Фільтри</span>
+          {activeFilterCount > 0 && (
+            <span className="category-nav__filters-count" aria-label={`Активних фільтрів: ${activeFilterCount}`}>
+              {activeFilterCount}
+            </span>
+          )}
         </button>
 
         {/* Передача значений полей родителю для пересчёта каталога. */}
         {isFilterMenuOpen && (
-          <div className="category-nav__filter-menu" role="dialog" aria-label="Фільтри помешкань">
-            <label className="category-nav__filter-field">
-              <span>Ціна за ніч, від</span>
-              <input type="number" min="0" value={minPrice} onChange={(event) => onMinPriceChange(event.target.value)} />
-            </label>
-            <label className="category-nav__filter-field">
-              <span>Ціна за ніч, до</span>
-              <input type="number" min="0" value={maxPrice} onChange={(event) => onMaxPriceChange(event.target.value)} />
-            </label>
-            <label className="category-nav__filter-field">
-              <span>Мінімальний рейтинг</span>
-              <select value={minimumRating} onChange={(event) => onMinimumRatingChange(event.target.value)}>
-                <option value="">Будь-який</option>
-                <option value="4">Від 4,0</option>
-                <option value="4.5">Від 4,5</option>
-                <option value="4.8">Від 4,8</option>
-              </select>
-            </label>
-            <label className="category-nav__filter-field">
-              <span>Гості</span>
-              <input type="number" min="1" value={guests} onChange={(event) => onGuestsChange(event.target.value)} />
-            </label>
-            <button type="button" className="category-nav__filter-item" onClick={() => {
-              setIsRegionPickerOpen(true)
-              setIsFilterMenuOpen(false)
-            }}>
-              Регіон
-            </button>
-            <button type="button" className="category-nav__filter-item" onClick={() => {
-              onClearFilters()
-              setIsFilterMenuOpen(false)
-            }}>
-              Скинути фільтри
-            </button>
+          <div className="category-nav__filter-menu" id="category-filter-menu" role="dialog" aria-labelledby="category-filter-title">
+            {isRegionPickerOpen ? (
+              <>
+                <div className="category-nav__filter-header">
+                  <div className="category-nav__region-picker-title">
+                    <button
+                      type="button"
+                      className="category-nav__region-back"
+                      aria-label="Повернутися до фільтрів"
+                      onClick={() => setIsRegionPickerOpen(false)}
+                    >
+                      <ChevronLeft size={18} aria-hidden />
+                    </button>
+                    <div>
+                      <h2 className="category-nav__filter-title" id="category-filter-title">Виберіть регіон</h2>
+                      <p>Оберіть область або місто</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="category-nav__filter-close"
+                    aria-label="Закрити фільтри"
+                    onClick={() => {
+                      setIsRegionPickerOpen(false)
+                      setIsFilterMenuOpen(false)
+                    }}
+                  >
+                    <X size={18} aria-hidden />
+                  </button>
+                </div>
+                <div className="category-nav__region-list">
+                  <button
+                    type="button"
+                    className={`category-nav__region-option${selectedRegion === null ? ' category-nav__region-option--active' : ''}`}
+                    onClick={() => {
+                      onSelectRegion(null)
+                      setIsRegionPickerOpen(false)
+                      setIsFilterMenuOpen(false)
+                    }}
+                  >
+                    Усі регіони
+                  </button>
+                  {allRegions.length > 0 ? allRegions.map((region) => (
+                    <button
+                      key={region}
+                      type="button"
+                      className={`category-nav__region-option${selectedRegion === region ? ' category-nav__region-option--active' : ''}`}
+                      onClick={() => {
+                        onSelectRegion(region)
+                        setIsRegionPickerOpen(false)
+                        setIsFilterMenuOpen(false)
+                      }}
+                    >
+                      {region}
+                    </button>
+                  )) : (
+                    <p className="category-nav__region-empty">Регіони поки недоступні.</p>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="category-nav__filter-header">
+                  <div>
+                    <h2 className="category-nav__filter-title" id="category-filter-title">Фільтри</h2>
+                    <p>Знайдіть помешкання для своєї подорожі</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="category-nav__filter-close"
+                    aria-label="Закрити фільтри"
+                    onClick={() => {
+                      setIsRegionPickerOpen(false)
+                      setIsFilterMenuOpen(false)
+                    }}
+                  >
+                    <X size={18} aria-hidden />
+                  </button>
+                </div>
+
+                <section className="category-nav__filter-section" aria-labelledby="category-filter-price">
+                  <h3 className="category-nav__filter-section-title" id="category-filter-price">Ціна за ніч</h3>
+                  <div className="category-nav__price-range">
+                    <label className="category-nav__filter-field">
+                      <span>Від</span>
+                      <div className="category-nav__price-input">
+                        <span aria-hidden>$</span>
+                        <input
+                          type="number"
+                          min="0"
+                          placeholder="Будь-яка"
+                          value={minPrice}
+                          onChange={(event) => onMinPriceChange(event.target.value)}
+                        />
+                      </div>
+                    </label>
+                    <label className="category-nav__filter-field">
+                      <span>До</span>
+                      <div className="category-nav__price-input">
+                        <span aria-hidden>$</span>
+                        <input
+                          type="number"
+                          min="0"
+                          placeholder="Будь-яка"
+                          value={maxPrice}
+                          onChange={(event) => onMaxPriceChange(event.target.value)}
+                        />
+                      </div>
+                    </label>
+                  </div>
+                </section>
+
+                <label className="category-nav__filter-field category-nav__filter-section">
+                  <span className="category-nav__filter-section-title">Мінімальний рейтинг</span>
+                  <select value={minimumRating} onChange={(event) => onMinimumRatingChange(event.target.value)}>
+                    <option value="">Будь-який</option>
+                    <option value="4">Від 4,0</option>
+                    <option value="4.5">Від 4,5</option>
+                    <option value="4.8">Від 4,8</option>
+                  </select>
+                </label>
+
+                <label className="category-nav__filter-field category-nav__filter-section">
+                  <span className="category-nav__filter-section-title">Гості</span>
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Кількість гостей"
+                    value={guests}
+                    onChange={(event) => onGuestsChange(event.target.value)}
+                  />
+                </label>
+
+                <section className="category-nav__filter-section" aria-labelledby="category-filter-region">
+                  <h3 className="category-nav__filter-section-title" id="category-filter-region">Регіон</h3>
+                  <button type="button" className="category-nav__filter-region" onClick={() => setIsRegionPickerOpen(true)}>
+                    <span className="category-nav__filter-region-copy">
+                      <span className="category-nav__filter-region-value">{selectedRegion ?? 'Усі регіони'}</span>
+                      <span>{selectedRegion ? 'Обраний регіон' : 'Оберіть область або місто'}</span>
+                    </span>
+                    <ChevronRight size={18} aria-hidden />
+                  </button>
+                </section>
+
+                <div className="category-nav__filter-footer">
+                  <button type="button" className="category-nav__filter-reset" onClick={() => {
+                    onClearFilters()
+                    setIsFilterMenuOpen(false)
+                  }}>
+                    Скинути фільтри
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
-
-      {/* Отдельная панель выбора региона. */}
-      {isRegionPickerOpen && (
-        <div className="category-nav__region-picker">
-          <div className="category-nav__region-picker-header">
-            <span>Вибрати регіон</span>
-            <button type="button" aria-label="Закрити" onClick={() => setIsRegionPickerOpen(false)}>
-              <X size={14} aria-hidden />
-            </button>
-          </div>
-          <div className="category-nav__region-list">
-            {allRegions.map((region) => (
-              <button
-                key={region}
-                type="button"
-                className={`category-nav__region-option${selectedRegion === region ? ' category-nav__region-option--active' : ''}`}
-                onClick={() => {
-                  onSelectRegion(region)
-                  setIsRegionPickerOpen(false)
-                }}
-              >
-                {region}
-              </button>
-            ))}
-            <button type="button" className="category-nav__region-option category-nav__region-option--clear" onClick={() => {
-              onClearFilters()
-              setIsRegionPickerOpen(false)
-            }}>
-              Скинути
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Переключатель с поддержкой мыши, Enter и Space. */}
       <label className="category-nav__toggle">
