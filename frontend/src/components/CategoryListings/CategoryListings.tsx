@@ -22,6 +22,7 @@ interface CategoryListingsProps {
   onOpenListing: (listing: Listing) => void
   savedIds?: Set<number>
   onToggleSave?: (listingId: number) => void
+  showAllListings?: boolean
 }
 
 export function CategoryListings({
@@ -39,6 +40,7 @@ export function CategoryListings({
   onOpenListing,
   savedIds,
   onToggleSave,
+  showAllListings = false,
 }: CategoryListingsProps) {
   // Локальное состояние фильтров каталога.
   const [activeCategory, setActiveCategory] = useState(() =>
@@ -48,11 +50,11 @@ export function CategoryListings({
   const [minPrice, setMinPrice] = useState(searchFilters.minPrice?.toString() ?? '')
   const [maxPrice, setMaxPrice] = useState(searchFilters.maxPrice?.toString() ?? '')
   const [minimumRating, setMinimumRating] = useState(searchFilters.minimumRating?.toString() ?? '')
-  const [visibleCount, setVisibleCount] = useState(8)
+  const [visibleCount, setVisibleCount] = useState(showAllListings ? listings.length : 8)
 
   useEffect(() => {
-    setVisibleCount(8)
-  }, [listings])
+    setVisibleCount(showAllListings ? listings.length : 8)
+  }, [listings, showAllListings])
 
   function clearFilters() {
     onClearRegionFilter()

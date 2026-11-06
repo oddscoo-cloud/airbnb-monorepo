@@ -34,6 +34,7 @@ function App() {
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [guestCount, setGuestCount] = useState(1)
   const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
+  const [showAllListings, setShowAllListings] = useState(false)
   // Revision для повторной загрузки каталога через useListings.
   const [listingsRevision, setListingsRevision] = useState(0)
   const [searchFilters, setSearchFilters] = useState<ListingSearchFilters>({ guests: 1 })
@@ -134,6 +135,36 @@ function App() {
       const calendarSection = document.getElementById('calendar')
       calendarSection?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
+  }
+
+  function handleShowAllListings() {
+    setShowAllListings(true)
+    setSearchFilters({ guests: guestCount })
+    setListingsRevision((revision) => revision + 1)
+    requestAnimationFrame(() => {
+      const categoryListings = document.querySelector<HTMLElement>('.category-listings')
+      categoryListings?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
+  function handleOpenRandomPopularListing() {
+    if (listings.length === 0) return
+
+    const listingsWithComments = listings.filter((listing) => listing.reviews && listing.reviews.length > 0)
+    if (listingsWithComments.length === 0) return
+
+    const sortedByPopularity = listingsWithComments.sort((a, b) => {
+      const scoreA = (a.rating || 0) * (a.reviewCount || 0)
+      const scoreB = (b.rating || 0) * (b.reviewCount || 0)
+      return scoreB - scoreA
+    })
+
+    const randomIndex = Math.floor(Math.random() * sortedByPopularity.length)
+    const selectedListing = sortedByPopularity[randomIndex]
+
+    if (selectedListing) {
+      handleOpenListing(selectedListing)
+    }
   }
 
   // Условная маршрутизация экранов без отдельной библиотеки.
@@ -339,9 +370,18 @@ function App() {
                 </a>
 
                 <nav className="site-header__nav" aria-label="Основна навігація">
-                  <a href="#stays">Варіанти помешкань</a>
-                  <a href="#experiences">Враження</a>
-                  <a href="#online">Онлайн-враження</a>
+                  <a href="#stays" onClick={(event) => {
+                    event.preventDefault()
+                    handleShowAllListings()
+                  }}>Варіанти помешкань</a>
+                  <a href="#experiences" onClick={(event) => {
+                    event.preventDefault()
+                    handleOpenRandomPopularListing()
+                  }}>Враження</a>
+                  <a href="#online" onClick={(event) => {
+                    event.preventDefault()
+                    handleOpenRandomPopularListing()
+                  }}>Онлайн-враження</a>
                 </nav>
 
                 <div className="site-header__actions">
@@ -417,6 +457,7 @@ function App() {
                 onOpenListing={handleOpenListing}
                 savedIds={savedIds}
                 onToggleSave={handleToggleSave}
+                showAllListings={showAllListings}
               />
               <Footer onOpenMap={() => setIsLocationMapOpen(true)} />
             </main>
