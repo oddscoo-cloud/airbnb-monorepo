@@ -19,7 +19,7 @@ interface CategoryListingsProps {
   allRegions: string[]
   selectedRegion: string | null
   onSelectRegion: (region: string | null) => void
-  onClearRegionFilter: () => void
+  onClearFilters: () => void
   onOpenListing: (listing: Listing) => void
   savedIds?: Set<number>
   onToggleSave?: (listingId: number) => void
@@ -38,7 +38,7 @@ export function CategoryListings({
   allRegions,
   selectedRegion,
   onSelectRegion,
-  onClearRegionFilter,
+  onClearFilters,
   onOpenListing,
   savedIds,
   onToggleSave,
@@ -73,13 +73,11 @@ export function CategoryListings({
   }, [expandAllRevision])
 
   function clearFilters() {
-    onClearRegionFilter()
     setActiveCategory('all')
     setMinPrice('')
     setMaxPrice('')
     setMinimumRating('')
-    onGuestCountChange(1)
-    onSearchFiltersChange({ category: null, minPrice: null, maxPrice: null, minimumRating: null })
+    onClearFilters()
   }
   const visibleListings = listings.slice(0, visibleCount)
 

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { buildListingsUrl, mapListingRegionResponse, mapListingResponse, type ListingResponse } from './listings'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { buildListingsUrl, getListings, mapListingRegionResponse, mapListingResponse, type ListingResponse } from './listings'
 
 describe('buildListingsUrl', () => {
   it('serializes supported filters and skips empty values', () => {
@@ -61,6 +61,47 @@ describe('mapListingResponse', () => {
       gallery: ['/listing-images/cover.jpg', '/listing-images/room.jpg'],
       latitude: 50.45,
       longitude: 30.52,
+    })
+  })
+
+  describe('getListings', () => {
+    afterEach(() => vi.unstubAllGlobals())
+
+    it('fetches all pages and maps each API response', async () => {
+      const listing: ListingResponse = {
+        id: 1,
+        title: 'Test listing',
+        description: null,
+        pricePerNight: 100,
+        maxGuests: 2,
+        latitude: 0,
+        longtitude: 0,
+        location: 'Kyiv',
+        region: null,
+        category: null,
+        isPublished: true,
+        rating: null,
+        reviewCount: 0,
+      }
+      const fullPage = Array.from({ length: 100 }, (_, index) => ({ ...listing, id: index + 1 }))
+      const fetchMock = vi.fn()
+        .mockResolvedValueOnce(new Response(JSON.stringify(fullPage), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }))
+        .mockResolvedValueOnce(new Response(JSON.stringify([{ ...listing, id: 101 }]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }))
+      vi.stubGlobal('fetch', fetchMock)
+
+      const results = await getListings()
+
+      expect(results).toHaveLength(101)
+      expect(results[0]).toMatchObject({ id: '1', location: 'Kyiv' })
+      expect(fetchMock).toHaveBeenCalledTimes(2)
+      expect(fetchMock.mock.calls[0]?.[0]).toContain('page=1')
+      expect(fetchMock.mock.calls[1]?.[0]).toContain('page=2')
     })
   })
 

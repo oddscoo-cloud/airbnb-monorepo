@@ -28,6 +28,8 @@ export function useSavedListings(accessToken: string | null): SavedState {
   const [revision, setRevision]           = useState(0)
 
   const reload = useCallback(() => setRevision((r) => r + 1), [])
+  const pendingToggles = useRef(new Set<number>())
+  const loadedToken = useRef(accessToken)
 
   // Зберігаємо ref на актуальний токен, щоб toggle завжди мав свіжий.
   const tokenRef = useRef(accessToken)
@@ -35,13 +37,21 @@ export function useSavedListings(accessToken: string | null): SavedState {
 
   useEffect(() => {
     if (!accessToken) {
+      loadedToken.current = null
       setSavedIds(new Set())
       setSavedListings([])
+      setIsLoading(false)
+      setError('')
       return
     }
 
     let active = true
     const controller = new AbortController()
+    if (loadedToken.current !== accessToken) {
+      loadedToken.current = accessToken
+      setSavedIds(new Set())
+      setSavedListings([])
+    }
     setIsLoading(true)
     setError('')
 
@@ -75,9 +85,11 @@ export function useSavedListings(accessToken: string | null): SavedState {
   /** Оптимістичний toggle: одразу оновлює стан, відправляє запит у фоні. */
   const toggle = useCallback(async (listingId: number) => {
     const token = tokenRef.current
-    if (!token) return
+    if (!token || pendingToggles.current.has(listingId)) return
 
+    pendingToggles.current.add(listingId)
     const isSaved = savedIds.has(listingId)
+    setError('')
 
     // Оптимістичне оновлення.
     setSavedIds((prev) => {
@@ -96,17 +108,18 @@ export function useSavedListings(accessToken: string | null): SavedState {
         // Перезавантажуємо після збереження, щоб отримати повний об'єкт.
         reload()
       }
-    } catch {
-      // Відкат при помилці.
+    } catch (err) {
       setSavedIds((prev) => {
         const next = new Set(prev)
         if (isSaved) next.add(listingId)
         else next.delete(listingId)
         return next
       })
+      setError(err instanceof Error ? err.message : 'Помилка оновлення збережених')
+    } finally {
+      pendingToggles.current.delete(listingId)
     }
   }, [savedIds, reload])
 
   return { savedIds, savedListings, isLoading, error, toggle, reload }
 }
-

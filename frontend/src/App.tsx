@@ -48,7 +48,7 @@ function App() {
   const { listings, isLoading: listingsLoading, error: listingsError } = useListings(searchFilters, listingsRevision)
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
   const accessToken = sessionStorage.getItem('access_token')
-  const { savedIds, toggle: toggleSave } = useSavedListings(accessToken)
+  const { savedIds, error: savedError, toggle: toggleSave } = useSavedListings(accessToken)
 
   function handleOpenHost() {
     // Страница доступна только авторизованным; верификация проверяется на самой странице.
@@ -169,6 +169,7 @@ function App() {
   function handleShowAllListings() {
     setShowAllListings(true)
     setSelectedRegion(null)
+    setStayDates({ start: null, end: null })
     setSearchFilters({ guests: guestCount })
     setListingsRevision((revision) => revision + 1)
     setExpandAllRevision((revision) => revision + 1)
@@ -271,6 +272,8 @@ function App() {
           onHost={handleOpenHost}
           onLogout={() => void logout()}
         />
+
+        {savedError && <p role="alert">{savedError}</p>}
 
         {!isLocationMapOpen && isRegisterModalOpen && (
           <RegisterModal
@@ -443,6 +446,7 @@ function App() {
             </header>
 
             <main>
+              {savedError && <p role="alert">{savedError}</p>}
               <CategoryListings
                 listings={listings}
                 isLoading={listingsLoading}
@@ -460,9 +464,11 @@ function App() {
                   setSelectedRegion(region)
                   updateSearchFilters({ region })
                 }}
-                onClearRegionFilter={() => {
+                onClearFilters={() => {
                   setSelectedRegion(null)
-                  updateSearchFilters({ region: null })
+                  setStayDates({ start: null, end: null })
+                  setGuestCount(1)
+                  setSearchFilters({ guests: 1 })
                 }}
                 onOpenListing={handleOpenListing}
                 savedIds={savedIds}

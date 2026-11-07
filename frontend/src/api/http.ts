@@ -43,10 +43,17 @@ export async function apiRequest<T>(url: string, options: ApiRequestOptions = {}
       response = await fetch(url, { ...requestOptions, headers })
     }
   }
-  // Обработка пустого ответа 204 и невалидного JSON.
-  const body: unknown = response.status === 204
-    ? null
-    : await response.json().catch(() => null)
+  let body: unknown = null
+  if (response.status !== 204) {
+    const responseText = await response.text()
+    if (responseText) {
+      try {
+        body = JSON.parse(responseText) as unknown
+      } catch {
+        if (response.ok) throw new Error('Invalid JSON response')
+      }
+    }
+  }
 
   // Приоритет сообщения сервера, затем fallback и стандартный текст ошибки.
   if (!response.ok) {
