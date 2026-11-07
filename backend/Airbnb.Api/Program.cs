@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Airbnb.API.Services;
+using Airbnb.Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
