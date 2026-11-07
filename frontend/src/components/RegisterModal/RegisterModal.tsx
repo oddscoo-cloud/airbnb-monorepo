@@ -174,7 +174,11 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
             <span>Sign In with Google</span>
           </button>
 
-          <button type="button" className="register-modal__social-button">
+          <button type="button" className="register-modal__social-button"
+                      onClick={() => {
+                          window.location.assign('/api/facebook-auth/login')
+                      }}
+                  >
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
               <path
                 fill="#1877F2"

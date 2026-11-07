@@ -143,7 +143,11 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
             <span>Sign In with Google</span>
           </button>
 
-          <button type="button" className="sign-in-modal__social-button">
+          <button type="button" className="sign-in-modal__social-button"
+                      onClick={() => {
+                          window.location.assign('/api/facebook-auth/login')
+                      }}
+                  >
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
               <path
                 fill="#1877F2"
