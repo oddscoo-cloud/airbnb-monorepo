@@ -1,6 +1,5 @@
 ﻿/* Значения из Figma (узел 91:10 "Профіль"): фон var(--bg-muted), текст var(--text-primary),
    подписи #48433d, акцент var(--accent-primary), шрифты Nunito Sans / Inknut Antiqua / Inder. */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Inknut+Antiqua:wght@500&family=Inder&display=swap');
 
 .profile {
   display: flex;

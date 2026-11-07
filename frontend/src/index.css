@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Nunito+Sans:wght@400;600;700;800&family=Inder&display=swap');
 @import "tailwindcss";
 @import './tokens.css';
 /* Глобальная база: типографика, box sizing и минимальная высота React-контейнера. */
@@ -42,6 +41,13 @@ textarea {
 
 #root {
   min-height: 100svh;
+}
+
+.app-loading {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  color: var(--text-primary);
 }
 
 @keyframes page-enter {

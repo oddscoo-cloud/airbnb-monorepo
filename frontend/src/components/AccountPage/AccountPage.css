@@ -1,6 +1,5 @@
 /* Значения из Figma (узел 91:6 "Регестрація"): фон #dddbd7, текст #211e1a,
    акцент #6f6558, шрифты Inknut Antiqua / Nunito Sans. */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Inknut+Antiqua:wght@400;500;600;700&display=swap');
 
 .account {
   min-height: 100vh;

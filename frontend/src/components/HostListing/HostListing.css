@@ -1,6 +1,5 @@
 /* Стиль узгоджено зі сторінками «Верифікація» та «Акаунт»:
    фон #dddbd7, акцент #6f6558, шрифти Inknut Antiqua / Nunito Sans. */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Inknut+Antiqua:wght@500&display=swap');
 
 .host {
   min-height: 100vh;

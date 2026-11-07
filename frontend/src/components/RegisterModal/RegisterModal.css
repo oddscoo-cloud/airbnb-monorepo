@@ -1,5 +1,4 @@
 ﻿/* Шрифт Nunito Sans; для модального окна используется отдельный от главной страницы набор. */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap');
 
 .register-modal__overlay {
   position: fixed;

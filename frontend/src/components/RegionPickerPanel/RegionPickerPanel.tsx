@@ -1,7 +1,9 @@
-﻿import { RegionMap } from './RegionMap'
+import { lazy, Suspense } from 'react'
 import type { ListingRegion } from '../../api/listings'
 import { useLanguage } from '../../i18n'
 import './RegionPickerPanel.css'
+
+const RegionMap = lazy(() => import('./RegionMap').then((module) => ({ default: module.RegionMap })))
 
 interface RegionPickerPanelProps {
   regions: ListingRegion[]
@@ -28,7 +30,9 @@ export function RegionPickerPanel({ regions, onClose, onSelectRegion }: RegionPi
             }}
           >
             <span className="region-picker__map" aria-hidden="true">
-              <RegionMap region={region} />
+              <Suspense fallback={<span className="region-picker__map-placeholder" />}>
+                <RegionMap region={region} />
+              </Suspense>
             </span>
             <span className="region-picker__label">{region.name}</span>
           </button>

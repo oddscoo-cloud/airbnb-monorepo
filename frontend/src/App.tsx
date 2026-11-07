@@ -1,18 +1,7 @@
-import { useEffect, useState } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import { SearchForm } from './components/SearchForm/SearchForm'
 import { CategoryListings } from './components/CategoryListings/CategoryListings'
 import { Footer } from './components/Footer/Footer'
-import { RegisterModal } from './components/RegisterModal/RegisterModal'
-import { SignInModal } from './components/SignInModal/SignInModal'
-import { LocationMap } from './components/Map/LocationMap'
-import ZhitloPage from './components/Buildingpage/Buildingpage'
-import { BookingRequest } from './components/Bookingrequest/BookingRequest'
-import { PaymentConfirmation } from './components/Paymentconfirmation/PaymentConfirmation'
-import { AdminDashboard } from './components/AdminDashboard/AdminDashboard'
-import { ProfilePage } from './components/ProfilePage/ProfilePage'
-import { AccountPage } from './components/AccountPage/AccountPage'
-import { HostListing } from './components/HostListing/HostListing'
-import { Verification } from './components/Verification/Verification'
 import { UserMenu } from './components/UserMenu/UserMenu'
 import { useListings } from './hooks/useListings'
 import { useAccountSession } from './hooks/useAccountSession'
@@ -21,6 +10,18 @@ import type { Listing } from './types/listing'
 import './App.css'
 import { getListingRegions, getListings, type ListingRegion, type ListingSearchFilters } from './api/listings'
 import { useLanguage } from './i18n'
+
+const RegisterModal = lazy(() => import('./components/RegisterModal/RegisterModal').then((module) => ({ default: module.RegisterModal })))
+const SignInModal = lazy(() => import('./components/SignInModal/SignInModal').then((module) => ({ default: module.SignInModal })))
+const LocationMap = lazy(() => import('./components/Map/LocationMap').then((module) => ({ default: module.LocationMap })))
+const BuildingPage = lazy(() => import('./components/Buildingpage/Buildingpage'))
+const BookingRequest = lazy(() => import('./components/Bookingrequest/BookingRequest').then((module) => ({ default: module.BookingRequest })))
+const PaymentConfirmation = lazy(() => import('./components/Paymentconfirmation/PaymentConfirmation').then((module) => ({ default: module.PaymentConfirmation })))
+const AdminDashboard = lazy(() => import('./components/AdminDashboard/AdminDashboard').then((module) => ({ default: module.AdminDashboard })))
+const ProfilePage = lazy(() => import('./components/ProfilePage/ProfilePage').then((module) => ({ default: module.ProfilePage })))
+const AccountPage = lazy(() => import('./components/AccountPage/AccountPage').then((module) => ({ default: module.AccountPage })))
+const HostListing = lazy(() => import('./components/HostListing/HostListing').then((module) => ({ default: module.HostListing })))
+const Verification = lazy(() => import('./components/Verification/Verification').then((module) => ({ default: module.Verification })))
 
 function App() {
   const { t } = useLanguage()
@@ -250,7 +251,7 @@ function App() {
   if (activePage === 'listing' && selectedListing) {
     return (
       <div className="App">
-        <ZhitloPage
+        <BuildingPage
           listing={selectedListing}
           stayDates={stayDates}
           onStayDatesChange={updateStayDates}

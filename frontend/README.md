@@ -1,32 +1,23 @@
-# React + TypeScript + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The frontend is a React + TypeScript application built with Vite.
 
-Currently, two official plugins are available:
+## Architecture
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `src/main.tsx` composes global providers and the lazy-loading boundary.
+- `src/App.tsx` coordinates application-level state and switches between the home view and feature screens.
+- `src/components/<Feature>/` groups feature UI, styles, and related tests by domain.
+- `src/api/` contains HTTP transport and backend resource clients; keep presentation logic out of this layer.
+- `src/hooks/` composes API calls with React state, while `src/types/` and `src/utils/` hold shared contracts and pure helpers.
+- `src/tokens.css` and `src/index.css` define shared design tokens and global styles. Font requests are centralized in `index.html`.
 
-## React Compiler
+Feature screens and authentication dialogs are loaded on demand. Map previews and full-screen maps are separate async modules so Leaflet is not part of the initial page bundle.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Commands
 
-## Expanding the Oxlint configuration
+Run these commands from `frontend/`:
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- `npm run dev` — start the Vite development server.
+- `npm run build` — type-check and create a production build.
+- `npm test` — run the Vitest suite.
+- `npm run lint` — run Oxlint.
