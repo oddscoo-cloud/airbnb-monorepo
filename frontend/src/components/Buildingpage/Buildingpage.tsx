@@ -16,6 +16,7 @@ import { PropertyCalendar } from './PropertyCalendar'
 import { PropertyReviews } from './PropertyReviews'
 import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
 import { ListingGallery } from './ListingGallery'
+import { ListingQuestionForm } from './ListingQuestionForm'
 import { formatPrice } from '../../utils/formatPrice'
 import { useLanguage } from '../../i18n'
 import './Buildingpage.css'
@@ -392,6 +393,10 @@ export function PropertyDetail({
             <h2 className="property__section-title">{t('Важлива інформація')}</h2>
             <p>{t('Максимальна кількість гостей:')} {listing.maxGuests}</p>
           </section>
+
+          <div className="property__divider" />
+
+          <ListingQuestionForm listingId={listing.id} />
         </main>
 
         <aside className="property__sidebar">

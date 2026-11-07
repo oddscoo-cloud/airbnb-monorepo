@@ -644,6 +644,69 @@
   font: 14px 'Nunito Sans', Arial, sans-serif;
 }
 
+.property__question-section {
+  max-width: 640px;
+}
+
+.property__question-note {
+  margin: 0 0 16px;
+  font: 14px/1.5 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__question-form {
+  display: grid;
+  gap: 14px;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__question-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.property__question-form input,
+.property__question-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--accent-primary);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font: 15px 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__question-form textarea {
+  resize: vertical;
+}
+
+.property__question-form button {
+  justify-self: start;
+  min-height: 42px;
+  padding: 8px 18px;
+  border: 1px solid var(--text-primary);
+  border-radius: 8px;
+  background: var(--text-primary);
+  color: #fff;
+  font: 700 14px 'Nunito Sans', Arial, sans-serif;
+  cursor: pointer;
+}
+
+.property__question-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.property__question-result,
+.property__question-error {
+  margin: 0;
+  font: 14px/1.5 'Nunito Sans', Arial, sans-serif;
+}
+
+.property__question-error {
+  color: #8b1f1f;
+}
+
 /* Расположение */
 
 .property__map-preview {

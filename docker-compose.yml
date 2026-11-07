@@ -29,6 +29,13 @@ services:
       Jwt__Key: ${JWT_KEY:-development-only-key-replace-with-a-random-secret-32-chars}
       Admin__Email: ${ADMIN_EMAIL:-admin@homefu.local}
       Admin__Password: ${ADMIN_PASSWORD:-Admin12345!}
+      Email__Smtp__Host: ${SMTP_HOST:-}
+      Email__Smtp__Port: ${SMTP_PORT:-587}
+      Email__Smtp__Username: ${SMTP_USERNAME:-}
+      Email__Smtp__Password: ${SMTP_PASSWORD:-}
+      Email__Smtp__FromAddress: ${SMTP_FROM_ADDRESS:-}
+      Email__Smtp__FromName: ${SMTP_FROM_NAME:-HomeFU}
+      Email__Smtp__EnableSsl: ${SMTP_ENABLE_SSL:-true}
     ports:
       - "5189:8080"
     volumes:

@@ -83,7 +83,7 @@ public class AppDbContext : DbContext
             .WithMany(l => l.SavedByUsers)
             .HasForeignKey(s => s.ListingId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         modelBuilder.Entity<User>()
             .HasOne(user => user.Facts)
             .WithOne(facts => facts.User)

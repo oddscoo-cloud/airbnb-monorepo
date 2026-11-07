@@ -428,6 +428,14 @@ const translations: Record<string, string> = {
   'Відхилено': 'Declined',
   'Додати фото': 'Add a photo',
   'фото': 'photo',
+  'Є питання про помешкання?': 'Have a question about this stay?',
+  'Напишіть власнику оголошення. Відповідь може надійти на вказану вами пошту не відразу.': 'Message the listing owner. Their reply may take some time and will be sent to the email address you provide.',
+  'Ваше ім’я': 'Your name',
+  'Електронна пошта для відповіді': 'Email address for the reply',
+  'Ваше запитання': 'Your question',
+  'Лист надіслано власнику. Він зможе відповісти вам на вказану пошту.': 'Your email was sent to the owner. They can reply to the email address you provided.',
+  'Надіслати запитання': 'Send email',
+  'Не вдалося надіслати запитання': 'Could not send your question',
 }
 
 interface LanguageContextValue {
