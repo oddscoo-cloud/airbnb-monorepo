@@ -60,13 +60,17 @@
 
   /* Borders */
   --border-default: #dddddd;
+  --border-divider: var(--color-warm-5);
   --border-medium:  var(--color-warm-1);    /* #dddbd7 */
   --border-strong:  var(--color-warm-85);   /* #211e1a */
+  --border-input:   var(--color-warm-3);
   --border-accent:  var(--color-warm-5);    /* #6f6558 – filter buttons etc. */
 
   /* Accents / interactive */
   --accent-primary:       var(--color-warm-5);   /* #6f6558 */
   --accent-primary-hover: var(--color-warm-6);   /* #595146 */
+  --btn-map-bg:            var(--accent-primary);
+  --btn-map-hover:         var(--accent-primary-hover);
   --accent-dark:          var(--color-warm-8);   /* #2c2823 – CTAs, submit buttons */
   --accent-dark-hover:    var(--color-warm-85);  /* #211e1a */
   --accent-avatar:        #df7058;               /* avatar initial background */
@@ -86,6 +90,7 @@
   --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.12);
   --shadow-lg:  0 12px 28px rgba(33, 30, 26, 0.08);
   --shadow-xl:  0 18px 34px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0 1px 8px rgba(0, 0, 0, 0.08), 0 4px 69px rgba(0, 0, 0, 0.05);
 
   /* ── Radii ── */
   --radius-sm:   8px;
@@ -93,6 +98,8 @@
   --radius-lg:   16px;
   --radius-xl:   24px;
   --radius-pill: 999px;
+  --radius-button: var(--radius-pill);
+  --radius-card: var(--radius-lg);
 
   /* ── Spacing ── */
   --space-xs:  8px;

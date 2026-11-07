@@ -37,8 +37,8 @@
   padding: 8px;
   background: #fff;
   border: 1px solid var(--border-default);
-  border-radius: 999px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-form__field {
@@ -143,10 +143,10 @@
   gap: 16px;
   width: min(280px, calc(100vw - 32px));
   padding: 18px;
-  border: 1px solid #e5e5e5;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-xl);
 }
 
 .guest-picker__label {
@@ -161,7 +161,7 @@
   height: 36px;
   border: 1px solid var(--color-warm-3);
   border-radius: 50%;
-  background: #fff;
+  background: var(--bg-surface);
   color: var(--text-primary);
   font-size: 20px;
   cursor: pointer;

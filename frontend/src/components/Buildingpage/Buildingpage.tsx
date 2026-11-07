@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -15,6 +15,7 @@ import { UserMenu } from '../UserMenu/UserMenu'
 import { PropertyCalendar } from './PropertyCalendar'
 import { PropertyReviews } from './PropertyReviews'
 import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
+import { ListingGallery } from './ListingGallery'
 import './Buildingpage.css'
 
 const AMENITIES_PREVIEW = 6
@@ -156,6 +157,25 @@ export function PropertyDetail({
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
   const [showAllAmenities, setShowAllAmenities] = useState(false)
+  const [showGallery, setShowGallery] = useState(false)
+  const galleryScrollPosition = useRef(0)
+  const galleryPreview = useRef<HTMLDivElement>(null)
+  const galleryTriggerIndex = useRef(0)
+
+  function openGallery(index: number) {
+    galleryScrollPosition.current = window.scrollY
+    galleryTriggerIndex.current = index
+    setShowGallery(true)
+    window.scrollTo(0, 0)
+  }
+
+  function closeGallery() {
+    setShowGallery(false)
+    requestAnimationFrame(() => {
+      galleryPreview.current?.querySelectorAll('button')[galleryTriggerIndex.current]?.focus({ preventScroll: true })
+      window.scrollTo(0, galleryScrollPosition.current)
+    })
+  }
 
   function formatDate(date: Date | null) {
     return date
@@ -185,6 +205,10 @@ export function PropertyDetail({
       </MapContainer>
     </div>
   ) : <p>Координати помешкання не вказані.</p>
+
+  if (showGallery) {
+    return <ListingGallery listing={listing} isSaved={isSaved} onToggleSave={onToggleSave} onBack={closeGallery} />
+  }
 
   // Полноэкранный режим карты до возврата на страницу жилья.
   if (showMap) {
@@ -241,12 +265,16 @@ export function PropertyDetail({
           </div>
 
           {/* Cover-фото и до четырёх дополнительных изображений. */}
-          <div className="property__gallery">
+          <div ref={galleryPreview} className="property__gallery">
             {listing.gallery?.length ? <>
-              <img className="property__gallery-main" src={listing.gallery[0]} alt={listing.title} />
+              <button type="button" className="property__gallery-photo property__gallery-main" onClick={() => openGallery(0)} aria-label="Переглянути всі фотографії">
+                <img src={listing.gallery[0]} alt={listing.title} />
+              </button>
               <div className="property__gallery-grid">
                 {listing.gallery.slice(1, 5).map((src, i) => (
-                  <img key={`${src}-${i}`} src={src} alt={`${listing.title}, фото ${i + 2}`} />
+                  <button key={`${src}-${i}`} type="button" className="property__gallery-photo" onClick={() => openGallery(i + 1)} aria-label={`Переглянути всі фотографії, фото ${i + 2}`}>
+                    <img src={src} alt={`${listing.title}, фото ${i + 2}`} />
+                  </button>
                 ))}
               </div>
             </> : (

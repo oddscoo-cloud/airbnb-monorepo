@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Check } from 'lucide-react'
 import { getCurrentUser, type UserResponse } from '../../api/users'
 import { UserMenu, type UserMenuProps } from '../UserMenu/UserMenu'
+import { useAccountAvatar } from '../../hooks/useAccountAvatar'
 import './AccountPage.css'
 
 interface AccountPageProps {
@@ -21,6 +22,7 @@ const ROLE_LABELS: Record<string, string> = {
 export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfile, onHost }: AccountPageProps) {
   const [user, setUser] = useState<UserResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const avatarUrl = useAccountAvatar()
 
   useEffect(() => {
     const controller = new AbortController()
@@ -72,7 +74,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
         <div className="account__left">
           <section className="account__user-card" aria-label="Користувач">
             <div className="account__avatar" aria-hidden>
-              {user.avatarUrl ? <img src={user.avatarUrl} alt="" /> : name.charAt(0)}
+              {avatarUrl ? <img src={avatarUrl} alt="" /> : user.email.trim().charAt(0).toUpperCase()}
             </div>
             <h1 className="account__name">{name}</h1>
             <p className="account__role">{ROLE_LABELS[user.role] ?? user.role}</p>

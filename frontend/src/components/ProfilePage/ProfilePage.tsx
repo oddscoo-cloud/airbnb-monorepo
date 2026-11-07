@@ -19,6 +19,7 @@ import {
   Star,
 } from 'lucide-react'
 import { useSavedListings } from '../../hooks/useSavedListings'
+import { useAccountAvatar } from '../../hooks/useAccountAvatar'
 import { getCurrentUser, updateProfileFacts, uploadAvatar, type ProfileFacts } from '../../api/users'
 import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
@@ -166,13 +167,13 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
   const [editingBio, setEditingBio] = useState(false)
   const [interests, setInterests] = useState<string[]>(Array(INTEREST_SLOTS).fill(''))
   const [editingInterest, setEditingInterest] = useState<number | null>(null)
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const avatarUrl = useAccountAvatar()
   const [avatarError, setAvatarError] = useState<string | null>(null)
   const [showSaved, setShowSaved] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const accountEmail = sessionStorage.getItem('account_email') ?? ''
-  const accountInitial = accountEmail.charAt(0).toUpperCase()
+  const accountInitial = accountEmail.trim().charAt(0).toUpperCase()
   const accountRole = sessionStorage.getItem('account_role') ?? ''
   const accessToken = sessionStorage.getItem('access_token')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -184,7 +185,6 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
     const controller = new AbortController()
     void getCurrentUser(accessToken, controller.signal)
       .then((user) => {
-        if (user.avatarUrl) setAvatarUrl(user.avatarUrl)
         if (!user.facts) return
         setValues(factsToFieldValues(user.facts))
         setBio(user.facts.aboutMe ?? '')
@@ -213,7 +213,6 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
     if (!file || !accessToken) return
     setAvatarError(null)
     uploadAvatar(accessToken, file)
-      .then(setAvatarUrl)
       .catch((error: unknown) => {
         setAvatarError(error instanceof Error ? error.message : 'Не вдалося завантажити фото')
       })
@@ -297,7 +296,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
       <main className="profile__content">
         <div className="profile__avatar-col">
           <div className="profile__avatar">
-            {avatarUrl ? <img src={avatarUrl} alt="Фото профілю" /> : <span>{accountInitial || "І"}</span>}
+            {avatarUrl ? <img src={avatarUrl} alt="Фото профілю" /> : <span>{accountInitial}</span>}
           </div>
           <button
             type="button"

@@ -31,8 +31,10 @@ export interface ListingSearchFilters {
   checkOut?: string | null
 }
 
-export function buildListingsUrl(filters: ListingSearchFilters = {}): string {
-  const params = new URLSearchParams({ page: '1', pageSize: '100' })
+const LISTINGS_PAGE_SIZE = 100
+
+export function buildListingsUrl(filters: ListingSearchFilters = {}, page = 1): string {
+  const params = new URLSearchParams({ page: String(page), pageSize: String(LISTINGS_PAGE_SIZE) })
   for (const [key, value] of Object.entries(filters)) {
     if (value !== undefined && value !== null && value !== '') {
       params.set(key, String(value))
@@ -76,10 +78,16 @@ export function mapListingResponse(item: ListingResponse): Listing {
 }
 
 export async function getListings(filters: ListingSearchFilters = {}, signal?: AbortSignal): Promise<Listing[]> {
-  // Загрузка DTO и преобразование каждой записи для UI.
-  const data = await apiRequest<ListingResponse[]>(buildListingsUrl(filters), {
-    signal,
-    fallbackError: (status) => `Не вдалося завантажити помешкання (${status})`,
-  })
-  return data.map(mapListingResponse)
+  const listings: Listing[] = []
+  let page = 1
+  let data: ListingResponse[]
+  do {
+    data = await apiRequest<ListingResponse[]>(buildListingsUrl(filters, page), {
+      signal,
+      fallbackError: (status) => `Не вдалося завантажити помешкання (${status})`,
+    })
+    listings.push(...data.map(mapListingResponse))
+    page += 1
+  } while (data.length === LISTINGS_PAGE_SIZE)
+  return listings
 }

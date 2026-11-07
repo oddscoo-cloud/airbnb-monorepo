@@ -71,7 +71,7 @@
   width: 0;
   height: 32px;
   padding: 0;
-  border: 0 solid #dddddd;
+  border: 0 solid var(--border-default);
   border-radius: 50%;
   background: #fff;
   color: var(--text-primary);
@@ -121,10 +121,10 @@
   flex-direction: column;
   min-width: 180px;
   padding: 8px;
-  border: 1px solid var(--color-warm-05);
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 12px 28px rgba(34, 34, 34, 0.08);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .category-nav__filter-item {
@@ -169,10 +169,10 @@
   z-index: 15;
   width: min(360px, calc(100vw - 24px));
   padding: 12px;
-  border: 1px solid #e7e2dc;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .category-nav__region-picker-header {
@@ -299,7 +299,7 @@
 .listing-card__image-wrap {
   position: relative;
   aspect-ratio: 1 / 1;
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   overflow: hidden;
   background: var(--border-default);
 }
@@ -406,7 +406,7 @@
 .category-listings__more {
   padding: 14px 28px;
   border: 0;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   background: var(--accent-dark);
   color: #fff;
   font-family: 'Inknut Antiqua', Georgia, serif;

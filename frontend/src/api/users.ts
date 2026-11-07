@@ -92,7 +92,7 @@ export async function getCurrentUser(accessToken: string, signal?: AbortSignal):
     fallbackError: (status) => `Не вдалося завантажити профіль (${status})`,
   })
   const avatar = user.avatarUrl || null
-  if ((sessionStorage.getItem(AVATAR_STORAGE_KEY) || null) !== avatar) cacheAvatar(avatar)
+  if (sessionStorage.getItem(AVATAR_STORAGE_KEY) !== (avatar ?? '')) cacheAvatar(avatar)
   return user
 }
 

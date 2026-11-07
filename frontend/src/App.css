@@ -7,13 +7,13 @@
   gap: 20px;
   padding: 20px 40px 28px;
   background: var(--bg-header);               /* #eae9e7 — Figma warm-0.5 */
-  border-bottom: 1px solid rgba(33, 30, 26, 0.08);
+  border-bottom: 1px solid var(--border-default);
   transition: background-color 0.2s ease;
 }
 
 .site-header--dark {
   background: var(--bg-header-dark);          /* #433d35 — Figma warm-7 */
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 .site-header__top {
@@ -34,6 +34,7 @@
 
 .site-header--dark .site-header__logo,
 .site-header--dark .site-header__nav a,
+.site-header--dark .site-header__nav button,
 .site-header--dark .site-header__host,
 .site-header--dark .site-header__menu,
 .site-header--dark .site-header__account-menu button {
@@ -47,6 +48,7 @@
 }
 
 .site-header__nav a,
+.site-header__nav button,
 .site-header__host {
   color: var(--text-primary);                 /* #211e1a */
   font-size: 14px;
@@ -54,9 +56,28 @@
   text-decoration: none;
 }
 
+.site-header__nav button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.site-header__nav button:disabled {
+  cursor: wait;
+}
+
 .site-header__nav a:hover,
+.site-header__nav button:hover,
 .site-header__host:hover {
   text-decoration: underline;
+}
+
+.site-header__status {
+  margin: 0;
+  text-align: center;
+  color: inherit;
 }
 
 .site-header__actions {
@@ -82,9 +103,9 @@
   align-items: center;
   gap: 10px;
   padding: 6px 8px 6px 12px;
-  border: 1px solid var(--border-default);    /* #dddddd */
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-pill);
-  background: #fff;
+  background: var(--bg-surface);
   color: var(--text-primary);                 /* #211e1a */
   cursor: pointer;
 }
@@ -125,7 +146,7 @@
   padding: 8px;
   border: 1px solid var(--border-default);    /* #dddddd */
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--bg-surface);
   box-shadow: var(--shadow-md);
 }
 

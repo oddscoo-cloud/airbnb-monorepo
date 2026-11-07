@@ -19,7 +19,7 @@ import { useAccountSession } from './hooks/useAccountSession'
 import { useSavedListings } from './hooks/useSavedListings'
 import type { Listing } from './types/listing'
 import './App.css'
-import { getListingRegions, type ListingSearchFilters } from './api/listings'
+import { getListingRegions, getListings, type ListingSearchFilters } from './api/listings'
 
 function App() {
   // Общее состояние экранов приложения.
@@ -38,6 +38,9 @@ function App() {
   const [listingsRevision, setListingsRevision] = useState(0)
   const [searchFilters, setSearchFilters] = useState<ListingSearchFilters>({ guests: 1 })
   const [regions, setRegions] = useState<string[]>([])
+  const [expandAllRevision, setExpandAllRevision] = useState(0)
+  const [popularLoading, setPopularLoading] = useState(false)
+  const [popularError, setPopularError] = useState('')
   const { listings, isLoading: listingsLoading, error: listingsError } = useListings(searchFilters, listingsRevision)
   const { accountRole, accountInitial, handleAuthenticated, logout } = useAccountSession()
   const accessToken = sessionStorage.getItem('access_token')
@@ -108,6 +111,29 @@ function App() {
     // Сохраняем даты поиска для последующего шага бронирования.
     setSelectedListing(listing)
     setActivePage('listing')
+  }
+
+  async function handleOpenPopular(kind: 'rating' | 'reviews') {
+    setPopularLoading(true)
+    setPopularError('')
+    try {
+      const allListings = await getListings()
+      const eligible = allListings.filter((listing) =>
+        kind === 'rating' ? listing.rating !== null : listing.reviewCount > 0,
+      )
+      const best = eligible.reduce<Listing | null>((current, listing) => {
+        if (!current) return listing
+        const score = kind === 'rating' ? listing.rating ?? -Infinity : listing.reviewCount
+        const currentScore = kind === 'rating' ? current.rating ?? -Infinity : current.reviewCount
+        return score > currentScore ? listing : current
+      }, null)
+      if (best) handleOpenListing(best)
+      else setPopularError('Поки що немає помешкань з відгуками.')
+    } catch (error) {
+      setPopularError(error instanceof Error ? error.message : 'Не вдалося завантажити помешкання')
+    } finally {
+      setPopularLoading(false)
+    }
   }
 
   function handleBackHome() {
@@ -339,9 +365,9 @@ function App() {
                 </a>
 
                 <nav className="site-header__nav" aria-label="Основна навігація">
-                  <a href="#stays">Варіанти помешкань</a>
-                  <a href="#experiences">Враження</a>
-                  <a href="#online">Онлайн-враження</a>
+                  <a href="#stays" onClick={() => setExpandAllRevision((revision) => revision + 1)}>Варіанти помешкань</a>
+                  <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('rating')}>Враження</button>
+                  <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('reviews')}>Онлайн-враження</button>
                 </nav>
 
                 <div className="site-header__actions">
@@ -370,6 +396,11 @@ function App() {
                 </div>
               </div>
 
+              {(popularLoading || popularError) && (
+                <p className="site-header__status" role={popularError ? 'alert' : 'status'}>
+                  {popularError || 'Завантаження помешкання…'}
+                </p>
+              )}
               <SearchForm
                 selectedRegion={selectedRegion}
                 regions={regions}
@@ -417,6 +448,7 @@ function App() {
                 onOpenListing={handleOpenListing}
                 savedIds={savedIds}
                 onToggleSave={handleToggleSave}
+                expandAllRevision={expandAllRevision}
               />
               <Footer onOpenMap={() => setIsLocationMapOpen(true)} />
             </main>

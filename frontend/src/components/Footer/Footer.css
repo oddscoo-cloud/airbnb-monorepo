@@ -3,8 +3,13 @@
 
 
 .destinations {
-  padding: 40px 40px 24px;
-  border-top: 1px solid var(--border-default);
+  padding: 40px 24px 24px;
+}
+
+.destinations__inner,
+.site-footer__inner {
+  width: min(980px, 100%);
+  margin-inline: auto;
 }
 
 .destinations__title {
@@ -17,11 +22,12 @@
 
 .destinations__tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 24px;
   padding-bottom: 16px;
   margin-bottom: 24px;
   border-bottom: 1px solid var(--border-default);
+  overflow-x: auto;
 }
 
 .destinations__tab {
@@ -48,11 +54,12 @@
 
 .destinations__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px 32px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 20px 24px;
 }
 
 .destinations__item {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -63,6 +70,9 @@
   font-family: 'Inder', Arial, sans-serif;
   font-size: 14px;
   color: var(--accent-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .destinations__type {
@@ -70,6 +80,9 @@
   font-family: 'Inder', Arial, sans-serif;
   font-size: 13px;
   color: rgba(44, 40, 35, 0.6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .destinations__more {
@@ -88,9 +101,12 @@
 /* Футер сайта */
 
 .site-footer {
-  padding: 40px;
-  /* Фон футера согласован с оттенком шапки из App.css. */
+  padding: 0 24px;
   background: var(--bg-surface);
+}
+
+.site-footer__inner {
+  padding: 32px 0 40px;
   border-top: 1px solid var(--border-default);
 }
 
@@ -136,7 +152,7 @@
   flex-wrap: wrap;
   gap: 16px;
   padding-top: 24px;
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid var(--border-default);
 }
 
 .site-footer__legal {
@@ -188,12 +204,20 @@
     padding: 24px 16px;
   }
 
+  .destinations__tabs {
+    gap: 20px;
+  }
+
   .destinations__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .site-footer {
-    padding: 24px 16px;
+    padding: 0 16px;
+  }
+
+  .site-footer__inner {
+    padding: 24px 0;
   }
 
   .site-footer__columns {

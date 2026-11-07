@@ -1,8 +1,9 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Nunito+Sans:wght@400;600;700;800&family=Inder&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Nunito+Sans:wght@400;600;700;800&family=Inder&display=swap');
+@import "tailwindcss";
 @import './tokens.css';
 /* Глобальная база: типографика, box sizing и минимальная высота React-контейнера. */
 :root {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   line-height: 1.4;
   font-weight: 400;
   color: var(--text-primary);
@@ -20,6 +21,23 @@
 
 body {
   margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--text-primary);
+  background: var(--bg-page);
+  font-family: var(--font-sans);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 #root {
@@ -60,4 +78,3 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
-@import "tailwindcss";

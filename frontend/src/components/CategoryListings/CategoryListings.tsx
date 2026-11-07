@@ -22,6 +22,7 @@ interface CategoryListingsProps {
   onOpenListing: (listing: Listing) => void
   savedIds?: Set<number>
   onToggleSave?: (listingId: number) => void
+  expandAllRevision: number
 }
 
 export function CategoryListings({
@@ -39,6 +40,7 @@ export function CategoryListings({
   onOpenListing,
   savedIds,
   onToggleSave,
+  expandAllRevision,
 }: CategoryListingsProps) {
   // Локальное состояние фильтров каталога.
   const [activeCategory, setActiveCategory] = useState(() =>
@@ -52,7 +54,11 @@ export function CategoryListings({
 
   useEffect(() => {
     setVisibleCount(8)
-  }, [listings])
+  }, [JSON.stringify(searchFilters)])
+
+  useEffect(() => {
+    if (expandAllRevision > 0) setVisibleCount(Infinity)
+  }, [expandAllRevision])
 
   function clearFilters() {
     onClearRegionFilter()
@@ -66,7 +72,7 @@ export function CategoryListings({
   const visibleListings = listings.slice(0, visibleCount)
 
   return (
-    <section className="category-listings" aria-label="Категорії та помешкання">
+    <section id="stays" className="category-listings" aria-label="Категорії та помешкання">
       <CategoryNavigation
         activeCategory={activeCategory}
         onActiveCategoryChange={(category) => {

@@ -74,105 +74,109 @@ export function Footer({ onOpenMap }: FooterProps) {
   return (
     <>
       <section className="destinations" aria-label="Ідеї для майбутніх поїздок">
-        <h2 className="destinations__title">Ідеї для майбутніх поїздок</h2>
+        <div className="destinations__inner">
+          <h2 className="destinations__title">Ідеї для майбутніх поїздок</h2>
 
-        <div className="destinations__tabs" role="tablist">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              className={`destinations__tab${activeTab === tab.id ? ' destinations__tab--active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
+          <div className="destinations__tabs" role="tablist">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                className={`destinations__tab${activeTab === tab.id ? ' destinations__tab--active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="destinations__grid">
+            {/* Направления и подписи из статического массива. */}
+            {DESTINATIONS.map((destination) => (
+              <a key={destination.id} className="destinations__item" href="#">
+                <span className="destinations__city">{destination.city}</span>
+                <span className="destinations__type">{destination.type}</span>
+              </a>
+            ))}
+            <button type="button" className="destinations__more">
+              Показати більше
             </button>
-          ))}
-        </div>
-
-        <div className="destinations__grid">
-          {/* Направления и подписи из статического массива. */}
-          {DESTINATIONS.map((destination) => (
-            <a key={destination.id} className="destinations__item" href="#">
-              <span className="destinations__city">{destination.city}</span>
-              <span className="destinations__type">{destination.type}</span>
-            </a>
-          ))}
-          <button type="button" className="destinations__more">
-            Показати більше
-          </button>
+          </div>
         </div>
       </section>
 
       <footer className="site-footer">
-        <div className="site-footer__columns">
-          <div className="site-footer__column">
-            <h3>Підтримка</h3>
-            <ul>
-              {SUPPORT_LINKS.map((link) => (
-                <li key={link}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
+        <div className="site-footer__inner">
+          <div className="site-footer__columns">
+            <div className="site-footer__column">
+              <h3>Підтримка</h3>
+              <ul>
+                {SUPPORT_LINKS.map((link) => (
+                  <li key={link}>
+                    <a href="#">{link}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="site-footer__column">
+              <h3>Прийом гостей</h3>
+              <ul>
+                {HOSTING_LINKS.map((link) => (
+                  <li key={link}>
+                    <a href="#">{link}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="site-footer__column">
+              <h3>HomeFU</h3>
+              <ul>
+                {COMPANY_LINKS.map((link) => (
+                  <li key={link}>
+                    <a href="#">{link}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <div className="site-footer__column">
-            <h3>Прийом гостей</h3>
-            <ul>
-              {HOSTING_LINKS.map((link) => (
-                <li key={link}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <div className="site-footer__bottom">
+            <div className="site-footer__legal">
+              <span>2022 HomeFU, Inc.</span>
+              <a href="#">Конфіденційність</a>
+              <a href="#">Умови</a>
+              <a
+                href="#site-map"
+                onClick={(event) => {
+                  // Открытие карты через callback без перехода по якорю.
+                  event.preventDefault()
+                  onOpenMap()
+                }}
+              >
+                Мапа сайту
+              </a>
+            </div>
 
-          <div className="site-footer__column">
-            <h3>HomeFU</h3>
-            <ul>
-              {COMPANY_LINKS.map((link) => (
-                <li key={link}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="site-footer__bottom">
-          <div className="site-footer__legal">
-            <span>2022 HomeFU, Inc.</span>
-            <a href="#">Конфіденційність</a>
-            <a href="#">Умови</a>
-            <a
-              href="#site-map"
-              onClick={(event) => {
-                // Открытие карты через callback без перехода по якорю.
-                event.preventDefault()
-                onOpenMap()
-              }}
-            >
-              Мапа сайту
-            </a>
-          </div>
-
-          <div className="site-footer__locale">
-            <button type="button" className="site-footer__locale-item">
-              <Globe size={16} aria-hidden />
-              <span>Українська (UA)</span>
-            </button>
-            <button type="button" className="site-footer__locale-item">
-              <DollarSign size={16} aria-hidden />
-              <span>USD</span>
-            </button>
-            {/* <a href="#" aria-label="Facebook" className="site-footer__social">
+            <div className="site-footer__locale">
+              <button type="button" className="site-footer__locale-item">
+                <Globe size={16} aria-hidden />
+                <span>Українська (UA)</span>
+              </button>
+              <button type="button" className="site-footer__locale-item">
+                <DollarSign size={16} aria-hidden />
+                <span>USD</span>
+              </button>
+              {/* <a href="#" aria-label="Facebook" className="site-footer__social">
               <Facebook size={16} aria-hidden />
             </a>
             <a href="#" aria-label="Instagram" className="site-footer__social">
               <Instagram size={16} aria-hidden />
             </a> */}
+            </div>
           </div>
         </div>
       </footer>

@@ -59,7 +59,7 @@
 }
 
 .profile__menu:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-sm);
 }
 
 .profile__account-avatar {
@@ -68,7 +68,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #df7058;
+  background: var(--accent-avatar);
   color: #fff;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-size: 14px;
@@ -134,7 +134,7 @@
   height: 200px;
   border-radius: 50%;
   background: var(--accent-primary);
-  color: #fff;
+  color: #000;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 700;
   font-size: 64px;

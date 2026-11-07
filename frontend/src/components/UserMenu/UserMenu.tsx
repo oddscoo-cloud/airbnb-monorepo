@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Menu, User as UserIcon } from 'lucide-react'
-import { AVATAR_EVENT, AVATAR_STORAGE_KEY, getCurrentUser } from '../../api/users'
+import { AVATAR_STORAGE_KEY, getCurrentUser } from '../../api/users'
+import { useAccountAvatar } from '../../hooks/useAccountAvatar'
 import './UserMenu.css'
 
 export interface UserMenuProps {
@@ -40,20 +41,16 @@ export function UserMenu({
   const initial = propInitial !== undefined ? propInitial : (sessionEmail?.trim().charAt(0).toUpperCase() ?? '')
   const role = propRole !== undefined ? propRole : (sessionRole ?? '')
   const isAuthenticated = Boolean(initial)
-  const [avatarUrl, setAvatarUrl] = useState(() => sessionStorage.getItem(AVATAR_STORAGE_KEY) || null)
-
-  useEffect(() => {
-    const sync = () => setAvatarUrl(sessionStorage.getItem(AVATAR_STORAGE_KEY) || null)
-    window.addEventListener(AVATAR_EVENT, sync)
-    return () => window.removeEventListener(AVATAR_EVENT, sync)
-  }, [])
+  const avatarUrl = useAccountAvatar()
 
   // Аватар ещё не загружен в эту сессию — запрашиваем один раз.
   useEffect(() => {
     const token = sessionStorage.getItem('access_token')
     if (!isAuthenticated || !token || sessionStorage.getItem(AVATAR_STORAGE_KEY) !== null) return
     const controller = new AbortController()
-    getCurrentUser(token, controller.signal).catch(() => {})
+    getCurrentUser(token, controller.signal).catch((error: unknown) => {
+      if (!controller.signal.aborted) console.error('Failed to load account avatar', error)
+    })
     return () => controller.abort()
   }, [isAuthenticated])
 
@@ -190,4 +187,3 @@ export function UserMenu({
     </div>
   )
 }
-
