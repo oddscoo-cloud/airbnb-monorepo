@@ -139,3 +139,61 @@ Access-токены действуют 30 минут, refresh-токены — 3
 ```powershell
 dotnet ef database update --project backend\Airbnb.Api\Airbnb.Api.csproj --startup-project backend\Airbnb.Api\Airbnb.Api.csproj
 ```
+
+# Facebook Authentication — Airbnb Project
+
+## Project Description
+
+As part of the Airbnb project, I worked on preparing the backend for Facebook authentication and user registration.
+
+My task was to add the necessary components that will allow users to sign in to the Airbnb application using their Facebook accounts.
+
+## What Was Added and Changed
+
+### 1. Airbnb.Api.csproj
+
+- Added the `Microsoft.AspNetCore.Authentication.Facebook` library.
+- Used version `9.0.10`.
+- Added the dependency required for Facebook Authentication integration in ASP.NET Core.
+
+### 2. Models/User.cs
+
+- Added a `FacebookId` property to the User model.
+- This property is designed to store the unique Facebook user ID.
+- It allows a Facebook account to be linked to an existing user record in the database.
+
+### 3. Repositories/UserRepository.cs
+
+- Added logic to search for users by their `FacebookId`.
+- Extended the repository to find users associated with Facebook accounts.
+- This functionality is necessary for implementing Facebook authentication.
+
+### 4. Program.cs
+
+- Prepared the backend configuration for Facebook Authentication integration.
+- Created the foundation for further Facebook authentication setup in ASP.NET Core.
+
+## Technologies Used
+
+- C#
+- ASP.NET Core 9
+- Entity Framework Core
+- PostgreSQL
+- Microsoft.AspNetCore.Authentication.Facebook
+- OAuth 2.0
+
+## Project Testing
+
+After making the changes, I executed the following command:
+
+`dotnet build Airbnb.Api/Airbnb.Api.csproj`
+
+The project built successfully without errors.
+
+## Project Results
+
+As a result, I prepared the backend foundation for Facebook Authentication integration.
+
+I added the necessary dependencies, updated the User model, and extended the repository to support searching for accounts by Facebook ID.
+
+These changes provide the foundation for implementing complete Facebook login and registration functionality in the Airbnb application.
