@@ -127,8 +127,8 @@ describe('mapListingResponse', () => {
     })
   })
 
-  // Проверка значений по умолчанию для необязательных полей.
-  it('provides defaults when optional listing data is absent', () => {
+  // Фото без загрузок заменяются локальной подборкой.
+  it('provides stock photos when listing images are missing', () => {
     const response: ListingResponse = {
       id: 7,
       title: 'Quiet room',
@@ -151,8 +151,23 @@ describe('mapListingResponse', () => {
       region: '',
       amenities: [],
       reviews: [],
-      image: '',
-      gallery: [],
+      image: '/listing-photos/fallback-43.webp',
+      gallery: [
+        '/listing-photos/fallback-43.webp',
+        '/listing-photos/fallback-50.webp',
+        '/listing-photos/fallback-06.webp',
+        '/listing-photos/fallback-13.webp',
+        '/listing-photos/fallback-20.webp',
+      ],
     })
+
+    const mappedListings = Array.from({ length: 51 }, (_, index) =>
+      mapListingResponse({ ...response, id: index + 1 }),
+    )
+    expect(mappedListings).toHaveLength(51)
+    expect(new Set(mappedListings.map((listing) => listing.image)).size).toBe(51)
+    expect(mappedListings.every((listing) =>
+      listing.gallery?.length === 5 && new Set(listing.gallery).size === 5,
+    )).toBe(true)
   })
 })

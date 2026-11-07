@@ -32,6 +32,18 @@ export interface ListingSearchFilters {
 }
 
 const LISTINGS_PAGE_SIZE = 100
+const FALLBACK_LISTING_PHOTOS = Array.from(
+  { length: 51 },
+  (_, index) => `/listing-photos/fallback-${String(index + 1).padStart(2, '0')}.webp`,
+)
+
+function getFallbackListingPhotos(listingId: number): string[] {
+  const firstPhotoIndex = ((Math.abs(listingId) - 1) * 7 % FALLBACK_LISTING_PHOTOS.length
+    + FALLBACK_LISTING_PHOTOS.length) % FALLBACK_LISTING_PHOTOS.length
+  return Array.from({ length: 5 }, (_, index) =>
+    FALLBACK_LISTING_PHOTOS[(firstPhotoIndex + index * 7) % FALLBACK_LISTING_PHOTOS.length],
+  )
+}
 
 export interface ListingRegion {
   name: string
@@ -76,6 +88,9 @@ export function mapListingResponse(item: ListingResponse): Listing {
   const images = item.images ?? []
   // Приоритет обложки в каталоге и галерее.
   const orderedImages = [...images].sort((left, right) => Number(right.isCover) - Number(left.isCover))
+  const gallery = orderedImages.length
+    ? orderedImages.map((image) => image.imageUrl)
+    : getFallbackListingPhotos(item.id)
 
   return {
     id: String(item.id),
@@ -91,8 +106,8 @@ export function mapListingResponse(item: ListingResponse): Listing {
     reviews: item.reviews ?? [],
     isPublished: item.isPublished,
     maxGuests: item.maxGuests,
-    image: orderedImages[0]?.imageUrl ?? '',
-    gallery: orderedImages.map((image) => image.imageUrl),
+    image: gallery[0] ?? '',
+    gallery,
     latitude: item.latitude,
     longitude: item.longtitude,
   }
