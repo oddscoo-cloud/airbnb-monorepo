@@ -1,7 +1,8 @@
 using System.Net;
 using System.Net.Mail;
-
-namespace Airbnb.API.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+namespace Airbnb.Infrastructure.Services;
 
 public sealed class ListingQuestionEmailSender(
     IConfiguration configuration,

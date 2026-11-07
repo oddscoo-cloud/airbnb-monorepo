@@ -1,4 +1,4 @@
-using Airbnb.API.Services;
+using Airbnb.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

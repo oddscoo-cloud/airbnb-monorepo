@@ -18,19 +18,6 @@ public class AppDbContext : DbContext
         //Database.EnsureDeleted();
         //Database.EnsureCreated();
     }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // Строка подключения из DI (Program.cs, включая переменные окружения) имеет приоритет.
-        if (optionsBuilder.IsConfigured)
-            return;
-
-        var config = new ConfigurationBuilder()
-                        .AddJsonFile("appsettings.json")
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .Build();
- 
-        optionsBuilder.UseNpgsql(config.GetConnectionString("DefaultConnection"));
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

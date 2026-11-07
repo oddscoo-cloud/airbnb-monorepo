@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+/*
 public sealed class HostListingRequestDTO
 {
     [Required, MaxLength(160)]
@@ -34,6 +34,6 @@ public sealed class HostListingRequestDTO
     public List<int> AmenityIds { get; set; } = [];
 
     public List<IFormFile> Photos { get; set; } = [];
-}
+}*/
 
 public sealed record RejectListingRequest([Required, MaxLength(1000)] string Reason);

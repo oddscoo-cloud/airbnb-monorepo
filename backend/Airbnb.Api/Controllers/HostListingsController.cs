@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Airbnb.API.Controllers;
 
@@ -62,7 +63,7 @@ public sealed class HostListingsController(
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(200 * 1024 * 1024)]
     public async Task<ActionResult<ListingSubmissionResponseDTO>> Submit(
-        [FromForm] HostListingRequestDTO request,
+        [FromForm] SubmitionRequest request,
         CancellationToken cancellationToken)
     {
         if (!TryGetUserId(out var userId))
