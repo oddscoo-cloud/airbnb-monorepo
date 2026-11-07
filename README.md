@@ -2,6 +2,9 @@
 
 HomeFU: фронтенд на React + Vite, API на ASP.NET Core 9, PostgreSQL.
 
+Документация по устройству и разработке клиентского приложения: [frontend/README.md](frontend/README.md).
+Документация backend API, модели данных и интеграций: [backend/README.md](backend/README.md).
+
 ## Быстрый старт (Docker, одна команда)
 
 Требования: Docker Desktop (или Docker Engine + Compose v2). Больше ничего не нужно: ни .NET SDK, ни Node.js, ни локального Postgres.

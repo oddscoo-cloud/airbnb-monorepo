@@ -24,7 +24,8 @@ public sealed class AdminListingsController(
             .Include(listing => listing.Reviews).ThenInclude(review => review.Author)
             .AsNoTracking()
             .AsSplitQuery()
-            .Where(listing => listing.SubmittedAt == null)
+            .Where(listing => listing.SubmittedAt == null ||
+                              listing.ReviewStatus == ListingReviewStatus.Approved)
             .OrderByDescending(listing => listing.Id)
             .ToListAsync(cancellationToken);
 
