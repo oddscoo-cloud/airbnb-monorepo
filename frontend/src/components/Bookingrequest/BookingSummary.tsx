@@ -36,7 +36,7 @@ export function BookingSummary({ listing, stayNights, totalPrice, formatMoney }:
       </div>
       <div className="booking__price-row">
         <a href="#cleaning-fee">Плата за прибирання</a>
-        <span>$20,00</span>
+        <span>${formatMoney(20)}</span>
       </div>
 
       <div className="booking__divider" />

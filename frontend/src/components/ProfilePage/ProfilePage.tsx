@@ -22,6 +22,7 @@ import { useSavedListings } from '../../hooks/useSavedListings'
 import { useAccountAvatar } from '../../hooks/useAccountAvatar'
 import { getCurrentUser, updateProfileFacts, uploadAvatar, type ProfileFacts } from '../../api/users'
 import { getAccountInitial } from '../../utils/account'
+import { formatPrice } from '../../utils/formatPrice'
 import { UserMenu } from '../UserMenu/UserMenu'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
@@ -515,7 +516,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
                           </span>
                         )}
                         <p className="profile__saved-card-price">
-                          <strong>${listing.price},00</strong> за ніч
+                          <strong>${formatPrice(listing.price)}</strong> за ніч
                         </p>
                       </div>
                     </article>

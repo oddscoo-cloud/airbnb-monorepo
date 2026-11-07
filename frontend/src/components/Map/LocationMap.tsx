@@ -5,6 +5,7 @@ import L from 'leaflet'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { useEffect } from 'react'
 import type { Listing } from '../../types/listing'
+import { formatPrice } from '../../utils/formatPrice'
 import 'leaflet/dist/leaflet.css'
 import './LocationMap.css'
 
@@ -107,7 +108,7 @@ export function LocationMap({ listings, onBack }: LocationMapProps) {
 
             {locatedListings.map((listing) => (
               <Marker key={listing.id} position={[listing.latitude, listing.longitude]} icon={pinIcon}>
-                <Popup>{listing.title} · ${listing.price} / ніч</Popup>
+                <Popup>{listing.title} · ${formatPrice(listing.price)} / ніч</Popup>
               </Marker>
             ))}
           </MapContainer>

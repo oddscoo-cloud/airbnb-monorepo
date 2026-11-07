@@ -16,6 +16,7 @@ import { PropertyCalendar } from './PropertyCalendar'
 import { PropertyReviews } from './PropertyReviews'
 import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
 import { ListingGallery } from './ListingGallery'
+import { formatPrice } from '../../utils/formatPrice'
 import './Buildingpage.css'
 
 const AMENITIES_PREVIEW = 6
@@ -56,7 +57,7 @@ function BookingWidget({
   return (
     <div className="property__widget">
       <div className="property__widget-top">
-        <span className="property__widget-price">${listing.price}</span>
+        <span className="property__widget-price">${formatPrice(listing.price)}</span>
         <span className="property__widget-night">ніч</span>
         {listing.rating !== null && <span className="property__widget-rating">
           <Star size={12} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} ·{' '}
@@ -89,8 +90,8 @@ function BookingWidget({
       {expanded ? (
         <>
           <div className="property__widget-price-row">
-            <a href="#nights">${listing.price} х {stayNights} ночей</a>
-            <span>${listing.price * stayNights}</span>
+            <a href="#nights">${formatPrice(listing.price)} х {stayNights} ночей</a>
+            <span>${formatPrice(listing.price * stayNights)}</span>
           </div>
           <div className="property__widget-price-row">
             <a href="#cleaning">Плата за прибирання</a>
@@ -99,7 +100,7 @@ function BookingWidget({
           <div className="property__widget-divider" />
           <div className="property__widget-price-row property__widget-price-row--total">
             <span>Усього до сплати податків</span>
-            <span>${totalPrice}</span>
+            <span>${formatPrice(totalPrice)}</span>
           </div>
           <a href="#report" className="property__widget-report">
             <Flag size={12} aria-hidden /> Поскаржитись на це оголошення

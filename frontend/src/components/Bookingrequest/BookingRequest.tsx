@@ -4,6 +4,7 @@ import { UserMenu } from '../UserMenu/UserMenu'
 import { BookingLoginSection } from './BookingLoginSection'
 import { BookingPaymentOptions } from './BookingPaymentOptions'
 import { BookingSummary } from './BookingSummary'
+import { formatPrice } from '../../utils/formatPrice'
 import './BookingRequest.css'
 
 type PaymentOption = 'full' | 'split'
@@ -47,7 +48,7 @@ export function BookingRequest({
 }) {
   // Общая сумма с фиксированной платой за уборку, без отдельного расчёта налогов.
   const totalPrice = listing.price * stayNights + 20
-  const formatMoney = (amount: number) => amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const formatMoney = formatPrice
   // Отображение диапазона из общего состояния App.
   const dateRangeText = stayDates.start
     ? `${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`

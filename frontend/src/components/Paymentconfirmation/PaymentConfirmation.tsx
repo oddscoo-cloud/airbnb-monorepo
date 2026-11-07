@@ -5,6 +5,7 @@ import { PaymentMethodSection } from './PaymentMethodSection'
 import { PaymentOptionSelector, type PaymentOption } from './PaymentOptionSelector'
 import { PaymentSummary } from './PaymentSummary'
 import { PaymentTripSection } from './PaymentTripSection'
+import { formatPrice } from '../../utils/formatPrice'
 import './PaymentConfirmation.css'
 
 export function PaymentConfirmation({
@@ -40,7 +41,7 @@ export function PaymentConfirmation({
 }) {
   // Итоговая цена по той же формуле, что и на шаге бронирования.
   const totalPrice = listing.price * stayNights + 20
-  const formatMoney = (amount: number) => amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const formatMoney = formatPrice
 
   return (
     <div className="payment">

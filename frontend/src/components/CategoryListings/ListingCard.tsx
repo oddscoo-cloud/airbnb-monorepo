@@ -1,5 +1,6 @@
 import { Heart, Image, Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
+import { formatPrice } from '../../utils/formatPrice'
 
 type ListingCardProps = {
   listing: Listing
@@ -59,7 +60,7 @@ export function ListingCard({ listing, taxIncluded, isSaved = false, onOpenListi
         </div>
         {listing.category && <p className="listing-card__meta">{listing.category}</p>}
         <p className="listing-card__price">
-          <strong>${taxIncluded ? listing.price * 5 + 20 : listing.price},00</strong>{' '}
+          <strong>${formatPrice(taxIncluded ? listing.price * 5 + 20 : listing.price)}</strong>{' '}
           {taxIncluded ? 'за 5 ночей' : 'за ніч'}
         </p>
       </div>

@@ -1,5 +1,6 @@
 ﻿import { Eye, EyeOff } from 'lucide-react'
 import type { AdminListing } from './adminTypes'
+import { formatPrice } from '../../utils/formatPrice'
 
 type AdminListingListProps = {
   listings: AdminListing[]
@@ -29,7 +30,7 @@ export function AdminListingList({ listings, isLoading, selectedId, onEdit, onTo
                   <strong>{listing.title}</strong>
                   <span>{listing.location || 'Адреса не указана'}</span>
                   <span className={`admin-status${listing.isPublished ? ' admin-status--published' : ''}`}>
-                    {listing.isPublished ? 'Опубликовано' : 'Черновик'} · ${listing.pricePerNight}/ніч
+                    {listing.isPublished ? 'Опубликовано' : 'Черновик'} · ${formatPrice(listing.pricePerNight)}/ніч
                   </span>
                 </span>
               </button>

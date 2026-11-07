@@ -16,6 +16,7 @@ import {
 import { getAllRegions, type Region } from '../../api/regions'
 import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
 import { AmenityCreate } from '../AmenityIcon/AmenityCreate'
+import { formatPrice } from '../../utils/formatPrice'
 import './AdminSubmissions.css'
 
 interface AdminSubmissionsProps {
@@ -170,7 +171,7 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                       <strong>{item.title}</strong>
                       <span>{item.hostEmail}</span>
                       <span className="admin-status">
-                        {item.submittedAt ? new Date(item.submittedAt).toLocaleDateString('uk-UA') : ''} · ${item.pricePerNight}/ніч
+                        {item.submittedAt ? new Date(item.submittedAt).toLocaleDateString('uk-UA') : ''} · ${formatPrice(item.pricePerNight)}/ніч
                       </span>
                     </span>
                   </button>
@@ -268,7 +269,7 @@ export function AdminSubmissions({ accessToken, onChanged }: AdminSubmissionsPro
                   <dt>Категорія</dt>
                   <dd>{selected.category}</dd>
                   <dt>Ціна / гостей</dt>
-                  <dd>${selected.pricePerNight} за ніч · до {selected.maxGuests} гостей</dd>
+                  <dd>${formatPrice(selected.pricePerNight)} за ніч · до {selected.maxGuests} гостей</dd>
                   <dt>Координати</dt>
                   <dd>{selected.latitude}, {selected.longtitude}</dd>
                   <dt>Зручності</dt>
