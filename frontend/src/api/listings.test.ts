@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildListingsUrl, mapListingResponse, type ListingResponse } from './listings'
+import { buildListingsUrl, mapListingRegionResponse, mapListingResponse, type ListingResponse } from './listings'
 
 describe('buildListingsUrl', () => {
   it('serializes supported filters and skips empty values', () => {
@@ -61,6 +61,28 @@ describe('mapListingResponse', () => {
       gallery: ['/listing-images/cover.jpg', '/listing-images/room.jpg'],
       latitude: 50.45,
       longitude: 30.52,
+    })
+  })
+
+  describe('mapListingRegionResponse', () => {
+    it('preserves region coordinates for map previews', () => {
+      expect(mapListingRegionResponse({
+        name: 'Центр',
+        latitude: 49.84,
+        longitude: 24.03,
+      })).toEqual({
+        name: 'Центр',
+        latitude: 49.84,
+        longitude: 24.03,
+      })
+    })
+
+    it('keeps compatibility with region names that have no coordinates', () => {
+      expect(mapListingRegionResponse('Центр')).toEqual({
+        name: 'Центр',
+        latitude: null,
+        longitude: null,
+      })
     })
   })
 

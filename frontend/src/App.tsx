@@ -19,7 +19,7 @@ import { useAccountSession } from './hooks/useAccountSession'
 import { useSavedListings } from './hooks/useSavedListings'
 import type { Listing } from './types/listing'
 import './App.css'
-import { getListingRegions, getListings, type ListingSearchFilters } from './api/listings'
+import { getListingRegions, getListings, type ListingRegion, type ListingSearchFilters } from './api/listings'
 
 function App() {
   // Общее состояние экранов приложения.
@@ -34,10 +34,11 @@ function App() {
   const [stayDates, setStayDates] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
   const [guestCount, setGuestCount] = useState(1)
   const [paymentOption, setPaymentOption] = useState<'full' | 'split'>('full')
+  const [showAllListings, setShowAllListings] = useState(false)
   // Revision для повторной загрузки каталога через useListings.
   const [listingsRevision, setListingsRevision] = useState(0)
   const [searchFilters, setSearchFilters] = useState<ListingSearchFilters>({ guests: 1 })
-  const [regions, setRegions] = useState<string[]>([])
+  const [regions, setRegions] = useState<ListingRegion[]>([])
   const [expandAllRevision, setExpandAllRevision] = useState(0)
   const [popularLoading, setPopularLoading] = useState(false)
   const [popularError, setPopularError] = useState('')
@@ -159,6 +160,18 @@ function App() {
     requestAnimationFrame(() => {
       const calendarSection = document.getElementById('calendar')
       calendarSection?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
+  function handleShowAllListings() {
+    setShowAllListings(true)
+    setSelectedRegion(null)
+    setSearchFilters({ guests: guestCount })
+    setListingsRevision((revision) => revision + 1)
+    setExpandAllRevision((revision) => revision + 1)
+    requestAnimationFrame(() => {
+      const categoryListings = document.querySelector<HTMLElement>('.category-listings')
+      categoryListings?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
   }
 
@@ -365,7 +378,10 @@ function App() {
                 </a>
 
                 <nav className="site-header__nav" aria-label="Основна навігація">
-                  <a href="#stays" onClick={() => setExpandAllRevision((revision) => revision + 1)}>Варіанти помешкань</a>
+                  <a href="#stays" onClick={(event) => {
+                    event.preventDefault()
+                    handleShowAllListings()
+                  }}>Варіанти помешкань</a>
                   <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('rating')}>Враження</button>
                   <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('reviews')}>Онлайн-враження</button>
                 </nav>
@@ -435,7 +451,7 @@ function App() {
                 }}
                 searchFilters={searchFilters}
                 onSearchFiltersChange={updateSearchFilters}
-                allRegions={regions}
+                allRegions={regions.map((region) => region.name)}
                 selectedRegion={selectedRegion}
                 onSelectRegion={(region) => {
                   setSelectedRegion(region)
@@ -449,6 +465,7 @@ function App() {
                 savedIds={savedIds}
                 onToggleSave={handleToggleSave}
                 expandAllRevision={expandAllRevision}
+                showAllListings={showAllListings}
               />
               <Footer onOpenMap={() => setIsLocationMapOpen(true)} />
             </main>

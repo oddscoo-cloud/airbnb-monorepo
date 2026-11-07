@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api/http'
+import { getAccountInitial } from '../utils/account'
 
 type Account = {
   role: string
@@ -10,7 +11,7 @@ export function useAccountSession() {
   const [accountRole, setAccountRole] = useState('')
   const [accountInitial, setAccountInitial] = useState(() => {
     const savedEmail = sessionStorage.getItem('account_email')
-    return savedEmail?.charAt(0).toUpperCase() ?? ''
+    return getAccountInitial(savedEmail)
   })
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function useAccountSession() {
 
   function handleAuthenticated(email: string, role: string) {
     // Синхронизация sessionStorage и React state после успешного входа.
-    const initial = email.trim().charAt(0).toUpperCase()
+    const initial = getAccountInitial(email)
     sessionStorage.setItem('account_email', email)
     sessionStorage.setItem('account_role', role)
     setAccountInitial(initial)

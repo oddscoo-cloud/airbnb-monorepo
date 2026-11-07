@@ -23,7 +23,17 @@ public class ListingsController : ControllerBase
     {
         var regions = await Context.Regions
             .Where(region => region.Listings.Any(listing => listing.IsPublished))
-            .OrderBy(region => region)
+            .OrderBy(region => region.Name)
+            .Select(region => new
+            {
+                region.Name,
+                Latitude = region.Listings
+                    .Where(listing => listing.IsPublished)
+                    .Average(listing => (double?)listing.Latitude),
+                Longitude = region.Listings
+                    .Where(listing => listing.IsPublished)
+                    .Average(listing => (double?)listing.Longtitude)
+            })
             .ToListAsync(cancellationToken);
 
         return Ok(regions);

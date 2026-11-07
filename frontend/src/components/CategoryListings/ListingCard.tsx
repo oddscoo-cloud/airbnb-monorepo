@@ -1,4 +1,4 @@
-﻿import { Heart, Star } from 'lucide-react'
+import { Heart, Image, Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
 
 type ListingCardProps = {
@@ -27,15 +27,18 @@ export function ListingCard({ listing, taxIncluded, isSaved = false, onOpenListi
     >
       <div className="listing-card__image-wrap">
         {/* Необязательное фото с отложенной загрузкой. */}
-        {listing.image && <img
+        {listing.image ? <img
           className="listing-card__image"
           src={listing.image}
           alt={`Помешкання в ${listing.location}`}
           loading="lazy"
-        />}
+        /> : <div className="listing-card__image-placeholder">
+          <Image size={28} aria-hidden />
+          <span>Фото ще не додано</span>
+        </div>}
         <button
           type="button"
-          className={`listing-card__like${isSaved ? ' listing-card__like--saved' : ''}`}
+          className={`listing-card__like${isSaved ? ' listing-card__like--saved' : ''}${listing.image ? '' : ' listing-card__like--no-photo'}`}
           aria-label={isSaved ? 'Видалити зі збережених' : 'Додати до збережених'}
           aria-pressed={isSaved}
           onClick={(event) => {

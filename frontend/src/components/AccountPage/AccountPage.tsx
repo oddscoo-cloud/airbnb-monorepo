@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Check } from 'lucide-react'
 import { getCurrentUser, type UserResponse } from '../../api/users'
+import { getAccountInitial } from '../../utils/account'
 import { UserMenu, type UserMenuProps } from '../UserMenu/UserMenu'
 import { useAccountAvatar } from '../../hooks/useAccountAvatar'
 import './AccountPage.css'
@@ -47,6 +48,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
   }
 
   const name = user.firstName?.trim() || user.email.split('@')[0]
+  const initial = menu.accountInitial || getAccountInitial(user.email)
 
   return (
     <div className="account">
@@ -66,7 +68,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
           <a href="#host" className="account__host-link" onClick={(event) => { event.preventDefault(); onHost?.() }}>
             Запропонувати помешкання на HomeFU
           </a>
-          <UserMenu {...menu} />
+          <UserMenu {...menu} accountInitial={initial} />
         </div>
       </header>
 
@@ -74,7 +76,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
         <div className="account__left">
           <section className="account__user-card" aria-label="Користувач">
             <div className="account__avatar" aria-hidden>
-              {avatarUrl ? <img src={avatarUrl} alt="" /> : user.email.trim().charAt(0).toUpperCase()}
+              {avatarUrl ? <img src={avatarUrl} alt="" /> : initial}
             </div>
             <h1 className="account__name">{name}</h1>
             <p className="account__role">{ROLE_LABELS[user.role] ?? user.role}</p>
@@ -121,7 +123,7 @@ export function AccountPage({ accessToken, menu, onHome, onVerify, onCreateProfi
             більше про вас дізнатися.
           </p>
           <button type="button" className="account__create-button" onClick={onCreateProfile}>
-            Створити профіль
+            Мiй профіль
           </button>
         </section>
       </main>

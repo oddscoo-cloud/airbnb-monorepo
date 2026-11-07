@@ -23,6 +23,7 @@ interface CategoryListingsProps {
   savedIds?: Set<number>
   onToggleSave?: (listingId: number) => void
   expandAllRevision: number
+  showAllListings?: boolean
 }
 
 export function CategoryListings({
@@ -41,6 +42,7 @@ export function CategoryListings({
   savedIds,
   onToggleSave,
   expandAllRevision,
+  showAllListings = false,
 }: CategoryListingsProps) {
   // Локальное состояние фильтров каталога.
   const [activeCategory, setActiveCategory] = useState(() =>
@@ -50,11 +52,19 @@ export function CategoryListings({
   const [minPrice, setMinPrice] = useState(searchFilters.minPrice?.toString() ?? '')
   const [maxPrice, setMaxPrice] = useState(searchFilters.maxPrice?.toString() ?? '')
   const [minimumRating, setMinimumRating] = useState(searchFilters.minimumRating?.toString() ?? '')
-  const [visibleCount, setVisibleCount] = useState(8)
+  const [visibleCount, setVisibleCount] = useState(showAllListings ? Infinity : 8)
+  const searchFiltersKey = JSON.stringify(searchFilters)
 
   useEffect(() => {
-    setVisibleCount(8)
-  }, [JSON.stringify(searchFilters)])
+    setActiveCategory(CATEGORIES.find((category) => category.label === searchFilters.category)?.id ?? 'all')
+    setMinPrice(searchFilters.minPrice?.toString() ?? '')
+    setMaxPrice(searchFilters.maxPrice?.toString() ?? '')
+    setMinimumRating(searchFilters.minimumRating?.toString() ?? '')
+  }, [searchFilters.category, searchFilters.minPrice, searchFilters.maxPrice, searchFilters.minimumRating])
+
+  useEffect(() => {
+    setVisibleCount(showAllListings ? Infinity : 8)
+  }, [searchFiltersKey, listings, showAllListings])
 
   useEffect(() => {
     if (expandAllRevision > 0) setVisibleCount(Infinity)
