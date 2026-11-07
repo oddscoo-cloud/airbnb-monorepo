@@ -3,6 +3,7 @@ import { Menu, User as UserIcon } from 'lucide-react'
 import { AVATAR_STORAGE_KEY, getCurrentUser } from '../../api/users'
 import { useAccountAvatar } from '../../hooks/useAccountAvatar'
 import { getAccountInitial } from '../../utils/account'
+import { useLanguage } from '../../i18n'
 import './UserMenu.css'
 
 export interface UserMenuProps {
@@ -32,6 +33,7 @@ export function UserMenu({
   onLogout,
   className = '',
 }: UserMenuProps) {
+  const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -88,7 +90,7 @@ export function UserMenu({
       <button
         type="button"
         className="user-menu__trigger"
-        aria-label="Меню користувача"
+        aria-label={t('Меню користувача')}
         aria-expanded={isOpen}
         aria-haspopup="menu"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -115,7 +117,7 @@ export function UserMenu({
                 role="menuitem"
                 onClick={() => handleAction(onOpenProfile)}
               >
-                <span>Профіль</span>
+                <span>{t('Профіль')}</span>
               </button>
 
               <button
@@ -124,7 +126,7 @@ export function UserMenu({
                 role="menuitem"
                 onClick={() => handleAction(onOpenSaved ?? onOpenProfile)}
               >
-                <span>Збереженi</span>
+                <span>{t('Збереженi')}</span>
                 {typeof savedCount === 'number' && savedCount > 0 && (
                   <span className="user-menu__badge">{savedCount}</span>
                 )}
@@ -137,7 +139,7 @@ export function UserMenu({
                   role="menuitem"
                   onClick={() => handleAction(onOpenAccount)}
                 >
-                  <span>Акаунт</span>
+                  <span>{t('Акаунт')}</span>
                 </button>
               )}
 
@@ -148,7 +150,7 @@ export function UserMenu({
                   role="menuitem"
                   onClick={() => handleAction(onOpenAdmin)}
                 >
-                  <span>Адмін-панель</span>
+                  <span>{t('Адмін-панель')}</span>
                 </button>
               )}
 
@@ -160,7 +162,7 @@ export function UserMenu({
                 role="menuitem"
                 onClick={() => handleAction(onLogout)}
               >
-                <span>Вийти</span>
+                <span>{t('Вийти')}</span>
               </button>
             </>
           ) : (
@@ -171,7 +173,7 @@ export function UserMenu({
                 role="menuitem"
                 onClick={() => handleAction(onSignIn)}
               >
-                <span>Вхід</span>
+                <span>{t('Вхід')}</span>
               </button>
               <button
                 type="button"
@@ -179,7 +181,7 @@ export function UserMenu({
                 role="menuitem"
                 onClick={() => handleAction(onRegister)}
               >
-                <span>Реєстрація</span>
+                <span>{t('Реєстрація')}</span>
               </button>
             </>
           )}

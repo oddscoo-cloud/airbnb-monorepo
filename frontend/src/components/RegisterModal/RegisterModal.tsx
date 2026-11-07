@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import './RegisterModal.css'
 import { useGoogleLogin } from '@react-oauth/google'
 import { apiRequest } from '../../api/http'
+import { useLanguage } from '../../i18n'
 
 const MAX_LENGTH = 50
 
@@ -13,6 +14,7 @@ interface RegisterModalProps {
 }
 
 export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) {
+  const { t } = useLanguage()
   // Обмен Google OAuth-токена; синхронизация профиля App в этом callback не подключена.
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
@@ -40,7 +42,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
     setError('')
 
     if (password !== repeatPassword) {
-      setError('Пароли не совпадают')
+      setError(t('Пароли не совпадают'))
       return
     }
 
@@ -53,14 +55,14 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
           password,
           confirm_password: repeatPassword,
         }),
-        fallbackError: () => 'Не удалось зарегистрироваться',
+        fallbackError: () => t('Не удалось зарегистрироваться'),
       })
 
       // Передача данных пользователя в App и закрытие диалога после регистрации.
       onAuthenticated(email, data.role ?? 'Guest')
       onClose()
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Не удалось зарегистрироваться')
+      setError(submitError instanceof Error ? submitError.message : t('Не удалось зарегистрироваться'))
     } finally {
       setIsSubmitting(false)
     }
@@ -79,7 +81,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
         <button
           type="button"
           className="register-modal__close"
-          aria-label="Закрити"
+          aria-label={t('Закрити')}
           onClick={onClose}
         >
           <X size={18} aria-hidden />
@@ -144,7 +146,7 @@ export function RegisterModal({ onClose, onAuthenticated }: RegisterModalProps) 
           </p>
 
           <button type="submit" className="register-modal__submit">
-            {isSubmitting ? 'Регистрация...' : 'Continue'}
+            {isSubmitting ? t('Регистрация...') : 'Continue'}
           </button>
           {error && <p className="register-modal__error" role="alert">{error}</p>}
         </form>

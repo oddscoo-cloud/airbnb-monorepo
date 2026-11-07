@@ -1,9 +1,7 @@
 ﻿import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useLanguage } from '../../i18n'
 import './DatePickerPanel.css'
-
-const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
-const MONTHS = ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
 
 interface DatePickerPanelProps {
   startDate: Date | null
@@ -24,6 +22,13 @@ function isBetween(date: Date, startDate: Date | null, endDate: Date | null) {
 }
 
 export function DatePickerPanel({ startDate, endDate, onSelect, onClose }: DatePickerPanelProps) {
+  const { language, t } = useLanguage()
+  const locale = language === 'en' ? 'en-US' : 'uk-UA'
+  const weekStartsOn = language === 'en' ? 0 : 1
+  const weekdays = Array.from({ length: 7 }, (_, index) =>
+    new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(2024, 0, index + (weekStartsOn === 0 ? 7 : 1))),
+  )
+
   const [visibleMonth, setVisibleMonth] = useState(() => {
     const today = new Date()
     return new Date(today.getFullYear(), today.getMonth(), 1)
@@ -40,7 +45,7 @@ export function DatePickerPanel({ startDate, endDate, onSelect, onClose }: DateP
 
   function renderMonth(monthOffset: number) {
     const month = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + monthOffset, 1)
-    const firstWeekday = (month.getDay() + 6) % 7
+    const firstWeekday = (month.getDay() - weekStartsOn + 7) % 7
     const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate()
     const cells = Array.from({ length: firstWeekday + daysInMonth }, (_, index) =>
       index < firstWeekday ? null : new Date(month.getFullYear(), month.getMonth(), index - firstWeekday + 1),
@@ -48,9 +53,11 @@ export function DatePickerPanel({ startDate, endDate, onSelect, onClose }: DateP
 
     return (
       <div key={`${month.getFullYear()}-${month.getMonth()}`} className="date-picker__month">
-        <div className="date-picker__month-title">{MONTHS[month.getMonth()]} {month.getFullYear()}</div>
+        <div className="date-picker__month-title">
+          {new Intl.DateTimeFormat(locale, { month: 'long' }).format(month)} {month.getFullYear()}
+        </div>
         <div className="date-picker__weekdays">
-          {DAYS.map((day) => <span key={day}>{day}</span>)}
+          {weekdays.map((day, index) => <span key={index}>{day}</span>)}
         </div>
         <div className="date-picker__days">
           {cells.map((date, index) => {
@@ -82,7 +89,7 @@ export function DatePickerPanel({ startDate, endDate, onSelect, onClose }: DateP
   }
 
   return (
-    <div className="date-picker" role="dialog" aria-label="Вибір дат">
+    <div className="date-picker" role="dialog" aria-label={t('Вибір дат')}>
       <div className="date-picker__months">
         {renderMonth(0)}
         {renderMonth(1)}
@@ -92,17 +99,17 @@ export function DatePickerPanel({ startDate, endDate, onSelect, onClose }: DateP
           type="button"
           className="date-picker__action"
           onClick={() => setVisibleMonth((month) => new Date(month.getFullYear(), month.getMonth() - 1, 1))}
-          aria-label="Попередній місяць"
+          aria-label={t('Попередній місяць')}
         >
           <ChevronLeft size={16} aria-hidden />
         </button>
-        <button type="button" className="date-picker__action" onClick={() => onSelect(null, null)}>Очистити дати</button>
-        <button type="button" className="date-picker__action" onClick={onClose}>Готово</button>
+        <button type="button" className="date-picker__action" onClick={() => onSelect(null, null)}>{t('Очистити дати')}</button>
+        <button type="button" className="date-picker__action" onClick={onClose}>{t('Готово')}</button>
         <button
           type="button"
           className="date-picker__action"
           onClick={() => setVisibleMonth((month) => new Date(month.getFullYear(), month.getMonth() + 1, 1))}
-          aria-label="Наступний місяць"
+          aria-label={t('Наступний місяць')}
         >
           <ChevronRight size={16} aria-hidden />
         </button>

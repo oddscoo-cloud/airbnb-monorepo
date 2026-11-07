@@ -4,6 +4,7 @@ import type { ListingRegion } from '../../api/listings'
 import { RegionPickerPanel } from '../RegionPickerPanel/RegionPickerPanel'
 import { DatePickerPanel } from '../DatePickerPanel/DatePickerPanel'
 import { ShowMapButton } from '../ShowMapButton/ShowMapButton'
+import { useLanguage } from '../../i18n'
 import './SearchForm.css'
 
 interface SearchFormProps {
@@ -35,6 +36,7 @@ export function SearchForm({
   onStayDatesChange,
   onSearch,
 }: SearchFormProps) {
+  const { language, t } = useLanguage()
   // Активная панель поиска: регион, даты или закрытое состояние.
   const [activePanel, setActivePanel] = useState<'region' | 'dates' | 'guests' | null>(null)
   const searchShellRef = useRef<HTMLDivElement>(null)
@@ -65,9 +67,9 @@ export function SearchForm({
   }, [activePanel, onClosePanels])
 
   const formatDate = (date: Date | null) => date
-    ? date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })
-    : 'Додайте дати'
-  const guestNoun = guests === 1 ? 'гість' : guests < 5 ? 'гостя' : 'гостей'
+    ? date.toLocaleDateString(language === 'en' ? 'en-US' : 'uk-UA', { day: 'numeric', month: 'short' })
+    : t('Додайте дати')
+  const guestNoun = guests === 1 ? t('гість') : guests < 5 ? t('гостя') : t('гостей')
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -97,18 +99,18 @@ export function SearchForm({
         id="home-search"
         className="search-form"
         role="search"
-        aria-label="Пошук помешкань"
+        aria-label={t('Пошук помешкань')}
         onSubmit={handleSubmit}
       >
         <button
           type="button"
           className="search-form__field"
           onClick={openRegionPanel}
-          aria-label="Вибрати регіон"
+          aria-label={t('Вибрати регіон')}
         >
-          <span className="search-form__label">Куди</span>
+          <span className="search-form__label">{t('Куди')}</span>
           <span className="search-form__placeholder">
-            {selectedRegion ?? 'Пошук напрямку'}
+            {selectedRegion ?? t('Пошук напрямку')}
           </span>
         </button>
 
@@ -118,9 +120,9 @@ export function SearchForm({
           type="button"
           className="search-form__field"
           onClick={openDatePanel}
-          aria-label="Вибрати дати прибуття та виїзду"
+          aria-label={t('Вибрати дати прибуття та виїзду')}
         >
-          <span className="search-form__label">Прибуття</span>
+          <span className="search-form__label">{t('Прибуття')}</span>
           <span className="search-form__placeholder">{formatDate(stayDates.start)}</span>
         </button>
 
@@ -130,9 +132,9 @@ export function SearchForm({
           type="button"
           className="search-form__field"
           onClick={openDatePanel}
-          aria-label="Вибрати дату виїзду"
+          aria-label={t('Вибрати дату виїзду')}
         >
-          <span className="search-form__label">Виїзд</span>
+          <span className="search-form__label">{t('Виїзд')}</span>
           <span className="search-form__placeholder">{formatDate(stayDates.end)}</span>
         </button>
 
@@ -141,7 +143,7 @@ export function SearchForm({
         <button
           type="button"
           className="search-form__field search-form__field--guests"
-          aria-label="Вибрати гостей"
+          aria-label={t('Вибрати гостей')}
           aria-expanded={activePanel === 'guests'}
           onClick={() => {
             if (activePanel === 'guests') {
@@ -152,11 +154,11 @@ export function SearchForm({
             }
           }}
         >
-          <span className="search-form__label">Хто</span>
+          <span className="search-form__label">{t('Хто')}</span>
           <span className="search-form__placeholder">{guests} {guestNoun}</span>
         </button>
 
-        <button className="search-form__submit" type="submit" aria-label="Пошук">
+        <button className="search-form__submit" type="submit" aria-label={t('Пошук')}>
           <Search size={18} strokeWidth={2.5} aria-hidden="true" />
         </button>
       </form>
@@ -183,11 +185,11 @@ export function SearchForm({
         />
       )}
       {activePanel === 'guests' && (
-        <div className="guest-picker" role="dialog" aria-label="Кількість гостей">
-          <span className="guest-picker__label">Гості</span>
-          <button type="button" onClick={() => onGuestsChange(Math.max(1, guests - 1))} aria-label="Зменшити кількість гостей" disabled={guests <= 1}>−</button>
+        <div className="guest-picker" role="dialog" aria-label={t('Кількість гостей')}>
+          <span className="guest-picker__label">{t('Гості')}</span>
+          <button type="button" onClick={() => onGuestsChange(Math.max(1, guests - 1))} aria-label={t('Зменшити кількість гостей')} disabled={guests <= 1}>−</button>
           <output aria-live="polite">{guests}</output>
-          <button type="button" onClick={() => onGuestsChange(Math.min(16, guests + 1))} aria-label="Збільшити кількість гостей" disabled={guests >= 16}>+</button>
+          <button type="button" onClick={() => onGuestsChange(Math.min(16, guests + 1))} aria-label={t('Збільшити кількість гостей')} disabled={guests >= 16}>+</button>
         </div>
       )}
     </div>

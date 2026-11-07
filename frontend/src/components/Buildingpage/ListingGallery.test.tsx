@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import type { Listing } from '../../types/listing'
+import { LanguageProvider } from '../../i18n'
 import { ListingGallery } from './ListingGallery'
 
 const listing: Listing = {
@@ -26,7 +27,9 @@ const listing: Listing = {
 describe('ListingGallery', () => {
   it('renders every listing photo in order and makes every fifth photo wide', () => {
     const markup = renderToStaticMarkup(
-      <ListingGallery listing={listing} isSaved={false} onBack={() => {}} />,
+      <LanguageProvider>
+        <ListingGallery listing={listing} isSaved={false} onBack={() => {}} />
+      </LanguageProvider>,
     )
     const photos = [...markup.matchAll(/<img\b[^>]*>/g)].map(([image]) => image)
 
@@ -40,7 +43,9 @@ describe('ListingGallery', () => {
 
   it('shows the saved state and handles listings without photos', () => {
     const markup = renderToStaticMarkup(
-      <ListingGallery listing={{ ...listing, gallery: [] }} isSaved onBack={() => {}} />,
+      <LanguageProvider>
+        <ListingGallery listing={{ ...listing, gallery: [] }} isSaved onBack={() => {}} />
+      </LanguageProvider>,
     )
 
     expect(markup).not.toContain('<img')

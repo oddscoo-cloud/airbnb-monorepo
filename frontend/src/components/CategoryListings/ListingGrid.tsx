@@ -1,5 +1,6 @@
 ﻿import type { Listing } from '../../types/listing'
 import { ListingCard } from './ListingCard'
+import { useLanguage } from '../../i18n'
 
 type ListingGridProps = {
   listings: Listing[]
@@ -12,10 +13,11 @@ type ListingGridProps = {
 }
 
 export function ListingGrid({ listings, isLoading, error, taxIncluded, savedIds, onOpenListing, onToggleSave }: ListingGridProps) {
+  const { t } = useLanguage()
   return (
     <div className="listings__grid">
       {/* Приоритет состояний: загрузка, ошибка, пустой список, карточки. */}
-      {isLoading ? <p>Завантаження помешкань…</p> : error ? <p role="alert">{error}</p> : listings.length === 0 ? <p>За вибраними фільтрами помешкань не знайдено.</p> : listings.map((listing) => (
+      {isLoading ? <p>{t('Завантаження помешкань…')}</p> : error ? <p role="alert">{error}</p> : listings.length === 0 ? <p>{t('За вибраними фільтрами помешкань не знайдено.')}</p> : listings.map((listing) => (
         <ListingCard
           key={listing.id}
           listing={listing}

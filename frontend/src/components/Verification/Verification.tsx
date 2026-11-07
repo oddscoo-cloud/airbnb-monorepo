@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { ArrowLeft, ImagePlus } from 'lucide-react'
 import { submitVerification } from '../../api/users'
 import { UserMenu, type UserMenuProps } from '../UserMenu/UserMenu'
+import { useLanguage } from '../../i18n'
 import './Verification.css'
 
 type Step = 1 | 2 | 3
@@ -54,6 +55,7 @@ function UploadTile({
   file: File | null
   onChange: (file: File | null) => void
 }) {
+  const { t } = useLanguage()
   const [preview, setPreview] = useState<string | null>(null)
 
   useEffect(() => {
@@ -77,7 +79,7 @@ function UploadTile({
         <>
           <ImagePlus size={28} strokeWidth={1.5} aria-hidden />
           <span className="verify__tile-label">{label}</span>
-          <span className="verify__tile-hint">Лише JPEG або PNG</span>
+          <span className="verify__tile-hint">{t('Лише JPEG або PNG')}</span>
         </>
       )}
       <input
@@ -92,6 +94,7 @@ function UploadTile({
 }
 
 export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplete }: VerificationProps) {
+  const { t } = useLanguage()
   const [step, setStep] = useState<Step>(1)
   const [method, setMethod] = useState<Method>('upload')
   const [cameraOpen, setCameraOpen] = useState(false)
@@ -122,7 +125,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
 
     async function startCamera() {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError('Цей браузер не підтримує доступ до вебкамери.')
+        setCameraError(t('Цей браузер не підтримує доступ до вебкамери.'))
         return
       }
 
@@ -142,8 +145,8 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
         if (cancelled) return
         setCameraError(
           reason instanceof DOMException && reason.name === 'NotAllowedError'
-            ? 'Дозвольте браузеру використовувати камеру та спробуйте ще раз.'
-            : 'Не вдалося відкрити камеру. Перевірте, чи вона підключена, і спробуйте ще раз.',
+            ? t('Дозвольте браузеру використовувати камеру та спробуйте ще раз.')
+            : t('Не вдалося відкрити камеру. Перевірте, чи вона підключена, і спробуйте ще раз.'),
         )
       }
     }
@@ -155,12 +158,12 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
       streamRef.current = null
       setCameraReady(false)
     }
-  }, [cameraOpen])
+  }, [cameraOpen, t])
 
   async function handleCapture() {
     const video = videoRef.current
     if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
-      setCameraError('Камера ще не готова. Зачекайте кілька секунд і спробуйте ще раз.')
+      setCameraError(t('Камера ще не готова. Зачекайте кілька секунд і спробуйте ще раз.'))
       return
     }
 
@@ -169,14 +172,14 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
     canvas.height = video.videoHeight
     const context = canvas.getContext('2d')
     if (!context) {
-      setCameraError('Не вдалося підготувати знімок. Спробуйте ще раз.')
+      setCameraError(t('Не вдалося підготувати знімок. Спробуйте ще раз.'))
       return
     }
     context.drawImage(video, 0, 0, canvas.width, canvas.height)
 
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92))
     if (!blob) {
-      setCameraError('Не вдалося зробити знімок. Спробуйте ще раз.')
+      setCameraError(t('Не вдалося зробити знімок. Спробуйте ще раз.'))
       return
     }
 
@@ -196,7 +199,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
       await submitVerification(accessToken, { documentType: idType, country, front, back })
       onComplete?.()
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Не вдалося надіслати документи')
+      setError(reason instanceof Error ? reason.message : t('Не вдалося надіслати документи'))
     } finally {
       setIsSubmitting(false)
     }
@@ -215,8 +218,8 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
         >
           HomeFU
         </a>
-        <nav className="verify__nav" aria-label="Меню користувача">
-          <a href="#host">Стати господарем</a>
+        <nav className="verify__nav" aria-label={t('Меню користувача')}>
+          <a href="#host">{t('Стати господарем')}</a>
           <a
             href="#saved"
             onClick={(event) => {
@@ -224,7 +227,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
               onOpenSaved?.()
             }}
           >
-            Збережене
+            {t('Збережене')}
           </a>
           <a
             href="/"
@@ -233,7 +236,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
               onHome?.()
             }}
           >
-            Подорожі
+            {t('Подорожі')}
           </a>
           <UserMenu {...menu} />
         </nav>
@@ -243,31 +246,30 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
         <div className="verify__col">
           {step === 1 && (
             <>
-              <h1 className="verify__title">Додайте посвідчення особи державного зразка</h1>
+              <h1 className="verify__title">{t('Додайте посвідчення особи державного зразка')}</h1>
               <p className="verify__text">
-                Вам потрібно буде додати посвідчення особи державного зразка. Цей крок
-                допоможе переконатися, що це справді ви.
+                {t('Вам потрібно буде додати посвідчення особи державного зразка. Цей крок допоможе переконатися, що це справді ви.')}
               </p>
 
               <div className="verify__options">
                 <label className="verify__option verify__option--first">
                   <div>
-                    <h2>Завантажити наявну фотографію</h2>
-                    <p>Рекомендовано</p>
+                    <h2>{t('Завантажити наявну фотографію')}</h2>
+                    <p>{t('Рекомендовано')}</p>
                   </div>
                   <Radio
                     name="method"
-                    label="Завантажити наявну фотографію"
+                    label={t('Завантажити наявну фотографію')}
                     checked={method === 'upload'}
                     onChange={() => setMethod('upload')}
                   />
                 </label>
 
                 <label className="verify__option verify__option--second">
-                  <h2>Зробіть фотографію за допомогою вебкамери</h2>
+                  <h2>{t('Зробіть фотографію за допомогою вебкамери')}</h2>
                   <Radio
                     name="method"
-                    label="Зробіть фотографію за допомогою вебкамери"
+                    label={t('Зробіть фотографію за допомогою вебкамери')}
                     checked={method === 'webcam'}
                     onChange={() => {
                       setMethod('webcam')
@@ -280,7 +282,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
 
               <div className="verify__actions verify__actions--end">
                 <button type="button" className="verify__primary" onClick={() => setStep(2)}>
-                  Продовжити
+                  {t('Продовжити')}
                 </button>
               </div>
             </>
@@ -288,26 +290,26 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
 
           {step === 2 && (
             <>
-              <h1 className="verify__title">Виберіть відповідний тип посвідчення особи</h1>
+              <h1 className="verify__title">{t('Виберіть відповідний тип посвідчення особи')}</h1>
 
               <select
                 className="verify__select"
                 value={country}
                 onChange={(event) => setCountry(event.target.value)}
-                aria-label="Країна, яка видала документ"
+                aria-label={t('Країна, яка видала документ')}
               >
                 {COUNTRIES.map((item) => (
-                  <option key={item}>{item}</option>
+                  <option key={item} value={item}>{t(item)}</option>
                 ))}
               </select>
 
               <div className="verify__types">
                 {ID_TYPES.map((item) => (
                   <label key={item.id} className="verify__type">
-                    <span>{item.label}</span>
+                    <span>{t(item.label)}</span>
                     <Radio
                       name="idType"
-                      label={item.label}
+                      label={t(item.label)}
                       checked={idType === item.id}
                       onChange={() => setIdType(item.id)}
                     />
@@ -316,18 +318,18 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
               </div>
 
               <p className="verify__note">
-                Ваше посвідчення особи оброблятиметься відповідно до нашої{' '}
+                {t('Ваше посвідчення особи оброблятиметься відповідно до нашої')}{' '}
                 <a href="#privacy">
-                  Політики конфіденційності та не надаватиметься господарю або гостям.
+                  {t('Політики конфіденційності та не надаватиметься господарю або гостям.')}
                 </a>
               </p>
 
               <div className="verify__actions">
                 <button type="button" className="verify__back" onClick={() => setStep(1)}>
-                  <ArrowLeft size={14} aria-hidden /> Назад
+                  <ArrowLeft size={14} aria-hidden /> {t('Назад')}
                 </button>
                 <button type="button" className="verify__primary" onClick={() => setStep(3)}>
-                  Продовжити
+                  {t('Продовжити')}
                 </button>
               </div>
             </>
@@ -335,21 +337,20 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
 
           {step === 3 && (
             <>
-              <h1 className="verify__title">Завантажте зображення свого {genitive}</h1>
+              <h1 className="verify__title">{t('Завантажте зображення свого')} {t(genitive)}</h1>
               <p className="verify__text">
-                Фотографії не мають бути розмиті, а на лицевому боці {genitive} має бути чітко
-                видно ваше обличчя.
+                {t('Фотографії не мають бути розмиті, а на лицевому боці')} {t(genitive)} {t('має бути чітко видно ваше обличчя.')}
               </p>
 
               <div className="verify__tiles">
                 <UploadTile
-                  label="Завантажте лицевий бік"
+                  label={t('Завантажте лицевий бік')}
                   capture={method === 'webcam'}
                   file={front}
                   onChange={setFront}
                 />
                 <UploadTile
-                  label="Завантажте зворотній бік"
+                  label={t('Завантажте зворотній бік')}
                   capture={method === 'webcam'}
                   file={back}
                   onChange={setBack}
@@ -359,10 +360,10 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
               {method === 'webcam' && (
                 <div className="verify__camera-captures">
                   <button type="button" className="verify__back" onClick={() => openCamera('front')}>
-                    Зробити знімок лицевого боку
+                    {t('Зробити знімок лицевого боку')}
                   </button>
                   <button type="button" className="verify__back" onClick={() => openCamera('back')}>
-                    Зробити знімок зворотного боку
+                    {t('Зробити знімок зворотного боку')}
                   </button>
                 </div>
               )}
@@ -375,7 +376,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
 
               <div className="verify__actions verify__actions--tiles">
                 <button type="button" className="verify__back" onClick={() => setStep(2)}>
-                  <ArrowLeft size={14} aria-hidden /> Назад
+                  <ArrowLeft size={14} aria-hidden /> {t('Назад')}
                 </button>
                 <button
                   type="button"
@@ -383,7 +384,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
                   disabled={!front || !back || isSubmitting}
                   onClick={() => void handleSubmit()}
                 >
-                  Продовжити
+                  {t('Продовжити')}
                 </button>
               </div>
             </>
@@ -392,14 +393,13 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
 
         {step === 1 && (
           <aside className="verify__privacy">
-            <h2>Ваша приватність</h2>
+            <h2>{t('Ваша приватність')}</h2>
             <p>
-              Ми докладаємо максимум зусиль для гарантії конфіденційності, безпеки й захисту
-              даних, якими ви ділитеся під час цієї процедури. Докладніше про це читайте в нашій{' '}
-              <a href="#privacy">Політиці конфіденційності.</a>
+              {t('Ми докладаємо максимум зусиль для гарантії конфіденційності, безпеки й захисту даних, якими ви ділитеся під час цієї процедури. Докладніше про це читайте в нашій')}{' '}
+              <a href="#privacy">{t('Політиці конфіденційності.')}</a>
             </p>
             <a href="#how" className="verify__privacy-link">
-              Як здійснюється верифікація особи
+              {t('Як здійснюється верифікація особи')}
             </a>
           </aside>
         )}
@@ -414,12 +414,12 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
             aria-labelledby="verify-camera-title"
           >
             <h2 id="verify-camera-title">
-              Зробіть знімок {cameraTarget === 'front' ? 'лицевого' : 'зворотного'} боку документа
+              {t('Зробіть знімок')} {t(cameraTarget === 'front' ? 'лицевого' : 'зворотного')} {t('боку документа')}
             </h2>
-            <p>Розташуйте документ перед камерою. Знімок з’явиться у формі для попереднього перегляду.</p>
+            <p>{t('Розташуйте документ перед камерою. Знімок з’явиться у формі для попереднього перегляду.')}</p>
             <div className="verify__camera-view">
-              <video ref={videoRef} autoPlay playsInline muted aria-label="Зображення з вебкамери" />
-              {!cameraReady && !cameraError && <span>Підключаємо камеру…</span>}
+              <video ref={videoRef} autoPlay playsInline muted aria-label={t('Зображення з вебкамери')} />
+              {!cameraReady && !cameraError && <span>{t('Підключаємо камеру…')}</span>}
             </div>
             {cameraError && (
               <p className="verify__camera-error" role="alert">
@@ -428,7 +428,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
             )}
             <div className="verify__camera-actions">
               <button type="button" className="verify__back" onClick={() => setCameraOpen(false)}>
-                Скасувати
+                {t('Скасувати')}
               </button>
               <button
                 type="button"
@@ -436,7 +436,7 @@ export function Verification({ accessToken, menu, onHome, onOpenSaved, onComplet
                 disabled={!cameraReady}
                 onClick={() => void handleCapture()}
               >
-                Зробити знімок
+                {t('Зробити знімок')}
               </button>
             </div>
           </section>

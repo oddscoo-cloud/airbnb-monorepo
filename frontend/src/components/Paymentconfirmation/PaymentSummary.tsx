@@ -1,5 +1,6 @@
 ﻿import { Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
+import { useLanguage } from '../../i18n'
 
 type PaymentSummaryProps = {
   listing: Listing
@@ -9,6 +10,7 @@ type PaymentSummaryProps = {
 }
 
 export function PaymentSummary({ listing, stayNights, totalPrice, formatMoney }: PaymentSummaryProps) {
+  const { language, t } = useLanguage()
   return (
     // Итоговая сводка по готовым данным без изменения состояния оплаты.
     <aside className="payment__summary">
@@ -16,7 +18,7 @@ export function PaymentSummary({ listing, stayNights, totalPrice, formatMoney }:
         <img
           className="payment__summary-image"
           src={listing.image}
-          alt="Помешкання"
+          alt={t('Помешкання')}
         />
         <div className="payment__summary-body">
           <p className="payment__summary-desc">
@@ -26,28 +28,28 @@ export function PaymentSummary({ listing, stayNights, totalPrice, formatMoney }:
           </p>
           {listing.rating !== null && <p className="payment__summary-rating">
             <Star size={12} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} ·{' '}
-            <a href="#reviews">{listing.reviewCount} відгуків</a>
+            <a href="#reviews">{listing.reviewCount} {t('відгуків')}</a>
           </p>}
         </div>
       </div>
 
       <div className="payment__divider" />
 
-      <h2 className="payment__summary-title">Детальніше про ціну</h2>
+      <h2 className="payment__summary-title">{t('Детальніше про ціну')}</h2>
 
       <div className="payment__price-row">
-        <span>${formatMoney(listing.price)} х {stayNights} ночей</span>
+        <span>${formatMoney(listing.price)} × {stayNights} {language === 'en' ? 'nights' : 'ночей'}</span>
         <span>${formatMoney(listing.price * stayNights)}</span>
       </div>
       <div className="payment__price-row">
-        <a href="#cleaning-fee">Плата за прибирання</a>
+        <a href="#cleaning-fee">{t('Плата за прибирання')}</a>
         <span>${formatMoney(20)}</span>
       </div>
 
       <div className="payment__divider" />
 
       <div className="payment__price-row payment__price-row--total">
-        <span>Усього <a href="#usd">(USD)</a></span>
+        <span>{t('Усього')} <a href="#usd">(USD)</a></span>
         <span>${formatMoney(totalPrice)}</span>
       </div>
     </aside>

@@ -17,6 +17,7 @@ import { PropertyReviews } from './PropertyReviews'
 import { AmenityIcon } from '../AmenityIcon/AmenityIcon'
 import { ListingGallery } from './ListingGallery'
 import { formatPrice } from '../../utils/formatPrice'
+import { useLanguage } from '../../i18n'
 import './Buildingpage.css'
 
 const AMENITIES_PREVIEW = 6
@@ -50,6 +51,7 @@ function BookingWidget({
   dateRangeText?: string
   stayNights: number
 }) {
+  const { t } = useLanguage()
   // Демонстрационная стоимость: цена за ночь, длительность и фиксированная уборка.
   const cleaningFee = 20
   const totalPrice = listing.price * stayNights + cleaningFee
@@ -58,56 +60,56 @@ function BookingWidget({
     <div className="property__widget">
       <div className="property__widget-top">
         <span className="property__widget-price">${formatPrice(listing.price)}</span>
-        <span className="property__widget-night">ніч</span>
+        <span className="property__widget-night">{t('ніч')}</span>
         {listing.rating !== null && <span className="property__widget-rating">
           <Star size={12} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} ·{' '}
-          <a href="#reviews">{listing.reviewCount} відгуків</a>
+          <a href="#reviews">{listing.reviewCount} {t('відгуків')}</a>
         </span>}
       </div>
 
       <div className="property__widget-dates">
         <div className="property__widget-dates-row">
           <div>
-            <span className="property__widget-label">ПРИБУТТЯ</span>
-            <span>{dateRangeText ? dateRangeText.split(' — ')[0] : 'Виберіть дату'}</span>
+            <span className="property__widget-label">{t('Прибуття').toUpperCase()}</span>
+            <span>{dateRangeText ? dateRangeText.split(' — ')[0] : t('Виберіть дату')}</span>
           </div>
           <div>
-            <span className="property__widget-label">ВИЇЗД</span>
-            <span>{dateRangeText ? dateRangeText.split(' — ')[1] ?? 'Виберіть дату' : 'Виберіть дату'}</span>
+            <span className="property__widget-label">{t('Виїзд').toUpperCase()}</span>
+            <span>{dateRangeText ? dateRangeText.split(' — ')[1] ?? t('Виберіть дату') : t('Виберіть дату')}</span>
           </div>
         </div>
         <div className="property__widget-divider" />
         <div className="property__widget-guests">
-          <span className="property__widget-label">ГОСТІ</span>
-          <span>До {listing.maxGuests} гостей</span>
+          <span className="property__widget-label">{t('Гості').toUpperCase()}</span>
+          <span>{t('До гостей')} {listing.maxGuests}</span>
         </div>
       </div>
 
       <button type="button" className="property__widget-submit" onClick={onBook}>
-        Забронювати
+        {t('Забронювати')}
       </button>
 
       {expanded ? (
         <>
           <div className="property__widget-price-row">
-            <a href="#nights">${formatPrice(listing.price)} х {stayNights} ночей</a>
+            <a href="#nights">${formatPrice(listing.price)} × {stayNights} {t('ночей')}</a>
             <span>${formatPrice(listing.price * stayNights)}</span>
           </div>
           <div className="property__widget-price-row">
-            <a href="#cleaning">Плата за прибирання</a>
+            <a href="#cleaning">{t('Плата за прибирання')}</a>
             <span>${cleaningFee}</span>
           </div>
           <div className="property__widget-divider" />
           <div className="property__widget-price-row property__widget-price-row--total">
-            <span>Усього до сплати податків</span>
+            <span>{t('Усього до сплати податків')}</span>
             <span>${formatPrice(totalPrice)}</span>
           </div>
           <a href="#report" className="property__widget-report">
-            <Flag size={12} aria-hidden /> Поскаржитись на це оголошення
+            <Flag size={12} aria-hidden /> {t('Поскаржитись на це оголошення')}
           </a>
         </>
       ) : (
-        <p className="property__widget-note">Поки що ви нічого не платите</p>
+        <p className="property__widget-note">{t('Поки що ви нічого не платите')}</p>
       )}
     </div>
   )
@@ -154,6 +156,7 @@ export function PropertyDetail({
   onToggleSave,
   savedCount,
 }: BuildingpageProps) {
+  const { language, t } = useLanguage()
   // Локальное состояние навигации страницы объявления.
   const [activeSection, setActiveSection] = useState('photos')
   const [showMap, setShowMap] = useState(false)
@@ -180,12 +183,12 @@ export function PropertyDetail({
 
   function formatDate(date: Date | null) {
     return date
-      ? new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
-      : 'Виберіть дату'
+      ? new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
+      : t('Виберіть дату')
   }
 
   function formatRange(start: Date | null, end: Date | null) {
-    if (!start) return 'Виберіть дату'
+    if (!start) return t('Виберіть дату')
     if (!end) return formatDate(start)
     const startStr = formatDate(start)
     const endStr = formatDate(end)
@@ -205,7 +208,7 @@ export function PropertyDetail({
         <Marker position={mapCenter} icon={mapPinIcon} />
       </MapContainer>
     </div>
-  ) : <p>Координати помешкання не вказані.</p>
+  ) : <p>{t('Координати помешкання не вказані.')}</p>
 
   if (showGallery) {
     return <ListingGallery listing={listing} isSaved={isSaved} onToggleSave={onToggleSave} onBack={closeGallery} />
@@ -225,11 +228,11 @@ export function PropertyDetail({
 
         <div className="property__search">
           <Search size={16} aria-hidden />
-          <button type="button" onClick={onStartSearch}>Почніть пошук</button>
+          <button type="button" onClick={onStartSearch}>{t('Почніть пошук')}</button>
         </div>
 
         <div className="property__header-actions">
-          <a href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>Запропонувати помешкання на HomeFU</a>
+          <a href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>{t('Запропонувати помешкання на HomeFU')}</a>
           <UserMenu
             savedCount={savedCount}
             onOpenProfile={onOpenProfile}
@@ -248,19 +251,19 @@ export function PropertyDetail({
 
           <div className="property__meta-row">
             <p className="property__meta">
-              {listing.rating !== null && <><Star size={14} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} · {listing.reviewCount} відгуків · </>}
+              {listing.rating !== null && <><Star size={14} fill="currentColor" aria-hidden /> {listing.rating.toFixed(2)} · {listing.reviewCount} {t('відгуків')} · </>}
               {listing.location}
             </p>
             <div className="property__meta-actions">
               <button type="button">
-                <Share size={14} aria-hidden /> Поділитися
+                <Share size={14} aria-hidden /> {t('Поділитися')}
               </button>
               <button
                 type="button"
                 className={`property__save-btn${isSaved ? ' property__save-btn--saved' : ''}`}
                 onClick={() => onToggleSave?.(Number(listing.id))}
               >
-                <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} aria-hidden /> {isSaved ? 'Збережено' : 'Зберегти'}
+                <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} aria-hidden /> {t(isSaved ? 'Збережено' : 'Зберегти')}
               </button>
             </div>
           </div>
@@ -268,27 +271,27 @@ export function PropertyDetail({
           {/* Cover-фото и до четырёх дополнительных изображений. */}
           <div ref={galleryPreview} className="property__gallery">
             {listing.gallery?.length ? <>
-              <button type="button" className="property__gallery-photo property__gallery-main" onClick={() => openGallery(0)} aria-label="Переглянути всі фотографії">
+              <button type="button" className="property__gallery-photo property__gallery-main" onClick={() => openGallery(0)} aria-label={t('Переглянути всі фотографії')}>
                 <img src={listing.gallery[0]} alt={listing.title} />
               </button>
               <div className="property__gallery-grid">
                 {listing.gallery.slice(1, 5).map((src, i) => (
-                  <button key={`${src}-${i}`} type="button" className="property__gallery-photo" onClick={() => openGallery(i + 1)} aria-label={`Переглянути всі фотографії, фото ${i + 2}`}>
+                  <button key={`${src}-${i}`} type="button" className="property__gallery-photo" onClick={() => openGallery(i + 1)} aria-label={`${t('Переглянути всі фотографії')}, ${language === 'en' ? 'photo' : 'фото'} ${i + 2}`}>
                     <img src={src} alt={`${listing.title}, фото ${i + 2}`} />
                   </button>
                 ))}
               </div>
             </> : (
-              <p>Для цього помешкання фотографії ще не додані.</p>
+              <p>{t('Для цього помешкання фотографії ще не додані.')}</p>
             )}
           </div>
 
-          <h2 className="property__host-title">Помешкання для оренди</h2>
-          <p className="property__host-sub">До {listing.maxGuests} гостей</p>
+          <h2 className="property__host-title">{t('Помешкання для оренди')}</h2>
+          <p className="property__host-sub">{t('До гостей')} {listing.maxGuests}</p>
 
           <div className="property__divider" />
 
-          <nav className="property__section-nav" aria-label="Розділи сторінки">
+          <nav className="property__section-nav" aria-label={t('Розділи сторінки')}>
             {SECTIONS.map((section) => (
               <a
                 key={section.id}
@@ -296,7 +299,7 @@ export function PropertyDetail({
                 className={`property__section-nav-item${activeSection === section.id ? ' property__section-nav-item--active' : ''}`}
                 onClick={() => setActiveSection(section.id)}
               >
-                {section.label}
+                {t(section.label)}
               </a>
             ))}
           </nav>
@@ -304,13 +307,13 @@ export function PropertyDetail({
           <section id="photos" className="property__section">
             {listing.description
               ? <p className="property__description">{listing.description}</p>
-              : <p className="property__description">Опис для цього помешкання ще не доданий.</p>}
+              : <p className="property__description">{t('Опис для цього помешкання ще не доданий.')}</p>}
           </section>
 
           <div className="property__divider" />
 
           <section id="amenities" className="property__section">
-            <h2 className="property__section-title">Які тут зручності</h2>
+            <h2 className="property__section-title">{t('Які тут зручності')}</h2>
             {listing.amenities.length > 0 ? (
               <>
                 <div className="property__amenities">
@@ -327,21 +330,21 @@ export function PropertyDetail({
                     className="property__outline-button"
                     onClick={() => setShowAllAmenities(true)}
                   >
-                    Показати всі зручності({listing.amenities.length})
+                    {t('Показати всі зручності')} ({listing.amenities.length})
                   </button>
                 )}
               </>
-            ) : <p>Інформація про зручності ще не додана.</p>}
+            ) : <p>{t('Інформація про зручності ще не додана.')}</p>}
             {showAllAmenities && (
               <div className="property__modal" role="dialog" aria-modal="true" onClick={() => setShowAllAmenities(false)}>
                 <div className="property__modal-card" onClick={(e) => e.stopPropagation()}>
                   <button
                     type="button"
                     className="property__modal-close"
-                    aria-label="Закрити"
+                    aria-label={t('Закрити')}
                     onClick={() => setShowAllAmenities(false)}
                   >×</button>
-                  <h3>Які тут зручності</h3>
+                  <h3>{t('Які тут зручності')}</h3>
                   <div className="property__modal-list">
                     {listing.amenities.map((amenity) => (
                       <div key={amenity.id} className="property__amenity">
@@ -376,7 +379,7 @@ export function PropertyDetail({
           <div className="property__divider" />
 
           <section id="location" className="property__section">
-            <h2 className="property__section-title">Де ви будете</h2>
+            <h2 className="property__section-title">{t('Де ви будете')}</h2>
             <button type="button" className="property__map-preview-button" onClick={() => setShowMap(true)}>
               {locationMap}
             </button>
@@ -386,8 +389,8 @@ export function PropertyDetail({
           <div className="property__divider" />
 
           <section className="property__section">
-            <h2 className="property__section-title">Важлива інформація</h2>
-            <p>Максимальна кількість гостей: {listing.maxGuests}</p>
+            <h2 className="property__section-title">{t('Важлива інформація')}</h2>
+            <p>{t('Максимальна кількість гостей:')} {listing.maxGuests}</p>
           </section>
         </main>
 
@@ -399,7 +402,7 @@ export function PropertyDetail({
       <footer className="property__footer">
         <span className="property__logo-inline">HomeFU</span>
         <span>{listing.location}</span>
-        <a href="#support">Підтримка</a>
+        <a href="#support">{t('Підтримка')}</a>
       </footer>
     </div>
   )

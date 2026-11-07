@@ -1,5 +1,6 @@
 ﻿import { RegionMap } from './RegionMap'
 import type { ListingRegion } from '../../api/listings'
+import { useLanguage } from '../../i18n'
 import './RegionPickerPanel.css'
 
 interface RegionPickerPanelProps {
@@ -9,9 +10,10 @@ interface RegionPickerPanelProps {
 }
 
 export function RegionPickerPanel({ regions, onClose, onSelectRegion }: RegionPickerPanelProps) {
+  const { t } = useLanguage()
   return (
-    <div className="region-picker" role="dialog" aria-label="Пошук за регіонами">
-      <div className="region-picker__title">Пошук за регіонами</div>
+    <div className="region-picker" role="dialog" aria-label={t('Пошук за регіонами')}>
+      <div className="region-picker__title">{t('Пошук за регіонами')}</div>
 
       <div className="region-picker__grid">
         {/* Список регіонів із props; OSM-карта генерується автоматично за назвою регіону. */}

@@ -3,6 +3,7 @@ import { Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
 import type { ListingReview } from '../../types/listing'
 import { apiRequest } from '../../api/http'
+import { useLanguage } from '../../i18n'
 
 type Review = Listing['reviews'][number]
 
@@ -13,6 +14,7 @@ type PropertyReviewsProps = {
 }
 
 export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: PropertyReviewsProps) {
+  const { t } = useLanguage()
   // Локальные отзывы и поля формы; начальные данные приходят с объявлением.
   const [reviews, setReviews] = useState(initialReviews)
   const [reviewRating, setReviewRating] = useState(5)
@@ -33,7 +35,7 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
         method: 'POST',
         body: JSON.stringify({ rating: reviewRating, comment: reviewComment }),
         accessToken: accessToken ?? undefined,
-        fallbackError: () => 'Не вдалося додати відгук.',
+        fallbackError: () => t('Не вдалося додати відгук.'),
       })
 
       // Обновление списка отзывов, сброс формы и запрос обновления объявления в App.
@@ -42,7 +44,7 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
       setReviewRating(5)
       onReviewAdded()
     } catch (error) {
-      setReviewError(error instanceof Error ? error.message : 'Не вдалося додати відгук.')
+      setReviewError(error instanceof Error ? error.message : t('Не вдалося додати відгук.'))
     } finally {
       setIsReviewSubmitting(false)
     }
@@ -52,12 +54,12 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
     <section id="reviews" className="property__section">
       <h2 className="property__section-title">
         {reviews.length > 0
-          ? `${(reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(2)} · ${reviews.length} відгуків`
-          : 'Відгуків ще немає'}
+          ? `${(reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(2)} · ${reviews.length} ${t('відгуків')}`
+          : t('Відгуків ще немає')}
       </h2>
       {reviews.length > 0 && <div className="property__reviews">
         {reviews.map((review) => {
-          const authorName = review.authorName || 'Анонімний користувач'
+          const authorName = review.authorName || t('Анонімний користувач')
           // Допустимые адреса аватара: локальный путь или HTTP(S) URL.
           const avatarUrl = review.avatarUrl && (review.avatarUrl.startsWith('/') || /^https?:\/\//i.test(review.avatarUrl))
             ? review.avatarUrl
@@ -79,19 +81,19 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
       </div>}
 
       <form className="property__review-form" onSubmit={handleReviewSubmit}>
-        <h3>Залишити відгук</h3>
+        <h3>{t('Залишити відгук')}</h3>
         <label>
-          <span>Оцінка</span>
+          <span>{t('Оцінка')}</span>
           <select value={reviewRating} onChange={(event) => setReviewRating(Number(event.target.value))}>
-            {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} з 5</option>)}
+            {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating}{t(' з 5')}</option>)}
           </select>
         </label>
         <label>
-          <span>Коментар</span>
+          <span>{t('Коментар')}</span>
           <textarea value={reviewComment} onChange={(event) => setReviewComment(event.target.value)} maxLength={2000} required />
         </label>
         {reviewError && <p className="property__review-error" role="alert">{reviewError}</p>}
-        <button type="submit" disabled={isReviewSubmitting}>{isReviewSubmitting ? 'Надсилання…' : 'Додати відгук'}</button>
+        <button type="submit" disabled={isReviewSubmitting}>{isReviewSubmitting ? t('Надсилання…') : t('Додати відгук')}</button>
       </form>
     </section>
   )

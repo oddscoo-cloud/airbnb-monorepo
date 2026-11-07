@@ -6,6 +6,7 @@ import { PaymentOptionSelector, type PaymentOption } from './PaymentOptionSelect
 import { PaymentSummary } from './PaymentSummary'
 import { PaymentTripSection } from './PaymentTripSection'
 import { formatPrice } from '../../utils/formatPrice'
+import { useLanguage } from '../../i18n'
 import './PaymentConfirmation.css'
 
 export function PaymentConfirmation({
@@ -39,20 +40,21 @@ export function PaymentConfirmation({
   onOpenRegister?: () => void
   onLogout?: () => void
 }) {
+  const { language, t, setLanguage } = useLanguage()
   // Итоговая цена по той же формуле, что и на шаге бронирования.
   const totalPrice = listing.price * stayNights + 20
   const formatMoney = formatPrice
 
   return (
     <div className="payment">
-      <button type="button" className="payment__back" onClick={onBack} aria-label="Назад">
+      <button type="button" className="payment__back" onClick={onBack} aria-label={t('Назад')}>
         <ChevronLeft size={18} aria-hidden />
       </button>
 
       <header className="payment__header">
         <span className="payment__logo">HomeFU</span>
         <div className="payment__header-actions">
-          <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>Запропонувати помешкання на HomeFU</a>
+          <a className="payment__home-link" href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>{t('Запропонувати помешкання на HomeFU')}</a>
           <UserMenu
             onOpenProfile={onOpenProfile}
             onOpenSaved={onOpenProfile}
@@ -66,12 +68,12 @@ export function PaymentConfirmation({
 
       <div className="payment__layout">
         <main className="payment__main">
-          <h1 className="payment__title">Підтвердження й оплата</h1>
+          <h1 className="payment__title">{t('Підтвердження й оплата')}</h1>
 
           <div className="payment__notice">
             <Info size={22} aria-hidden className="payment__notice-icon" />
             <div className="payment__notice-text">
-              <h2>Перевірте деталі помешкання</h2>
+              <h2>{t('Перевірте деталі помешкання')}</h2>
               <p>{listing.title}</p>
             </div>
           </div>
@@ -94,23 +96,22 @@ export function PaymentConfirmation({
           <div className="payment__divider" />
 
           <section className="payment__section">
-            <h2 className="payment__section-title">Потрібно для подорожі</h2>
+            <h2 className="payment__section-title">{t('Потрібно для подорожі')}</h2>
 
             <div className="payment__requirement">
-              <h3>Напишіть господарю</h3>
-              <p>Повідомте господаря про мету своєї подорожі та час прибуття.</p>
+              <h3>{t('Напишіть господарю')}</h3>
+              <p>{t('Повідомте господаря про мету своєї подорожі та час прибуття.')}</p>
             </div>
 
             <div className="payment__requirement">
-              <h3>Фотографія профілю</h3>
-              <p>Господарі хочуть знати, хто гостюватиме в їхній оселі.</p>
+              <h3>{t('Фотографія профілю')}</h3>
+              <p>{t('Господарі хочуть знати, хто гостюватиме в їхній оселі.')}</p>
             </div>
 
             <div className="payment__requirement">
-              <h3>Номер телефону</h3>
+              <h3>{t('Номер телефону')}</h3>
               <p>
-                Додайте й підтвердьте номер телефону, щоб отримувати новини про
-                подорож.
+                {t('Додайте й підтвердьте номер телефону, щоб отримувати новини про')} {t('подорож.')}
               </p>
             </div>
           </section>
@@ -118,44 +119,41 @@ export function PaymentConfirmation({
           <div className="payment__divider" />
 
           <section className="payment__section">
-            <h2 className="payment__section-title">Правила скасування бронювання</h2>
+            <h2 className="payment__section-title">{t('Правила скасування бронювання')}</h2>
             <p className="payment__policy-text">
-              <strong>Безкоштовне скасування бронювання до 30 груд..</strong> У разі
-              скасування бронювання до прибуття 4 січ. вам повернуть частину коштів.
+              <strong>{t('Безкоштовне скасування бронювання до 30 груд..')}</strong>{t(' У разі скасування бронювання до прибуття 4 січ. вам повернуть частину коштів.')}
             </p>
             <a href="#more-cancellation" className="payment__policy-link">
-              Докладніше
+              {t('Докладніше')}
             </a>
           </section>
 
           <div className="payment__divider" />
 
           <section className="payment__section">
-            <h2 className="payment__section-title">Основні правила</h2>
+            <h2 className="payment__section-title">{t('Основні правила')}</h2>
             <p className="payment__policy-text">
-              Ми просимо всіх мандрівників пам&rsquo;ятати кілька простих правил
-              належної поведінки гостя.
+              {t('Ми просимо всіх мандрівників пам’ятати кілька простих правил належної поведінки гостя.')}
             </p>
             <ul className="payment__rules-list">
-              <li>Дотримуйтеся правил дому</li>
-              <li>Ставтеся до помешкання господаря як до власної оселі</li>
+              <li>{t('Дотримуйтеся правил дому')}</li>
+              <li>{t('Ставтеся до помешкання господаря як до власної оселі')}</li>
             </ul>
           </section>
 
           <div className="payment__divider" />
 
           <p className="payment__legal">
-            Натискаючи кнопку нижче, я приймаю умови{' '}
-            <a href="#house-rules">(Правила дому господаря,</a>{' '}
-            <a href="#guest-standards">Основні правила для гостей</a>,{' '}
-            <a href="#refund-rules">Правила повторного бронювання та повернення коштів HomeFU)</a>
-            , які HomeFU може застосовувати в разі моєї відповідальності за нанесення
-            збитків (стягнути кошти відповідно до мого способу оплати).
+            {t('Натискаючи кнопку нижче, я приймаю умови')}{' '}
+            <a href="#house-rules">{t('(Правила дому господаря,')}</a>{' '}
+            <a href="#guest-standards">{t('Основні правила для гостей')}</a>,{' '}
+            <a href="#refund-rules">{t('Правила повторного бронювання та повернення коштів HomeFU)')}</a>
+            {t(', які HomeFU може застосовувати в разі моєї відповідальності за нанесення збитків (стягнути кошти відповідно до мого способу оплати).')}
           </p>
 
           {/* Связь кнопки с формой по id, несмотря на разное положение в DOM. */}
           <button type="submit" form="payment-form" className="payment__submit">
-            Підтвердити й оплатити
+            {t('Підтвердити й оплатити')}
           </button>
         </main>
 
@@ -170,15 +168,15 @@ export function PaymentConfirmation({
       <footer className="payment__footer">
         <div className="payment__footer-legal">
           <span>2022 HomeFU, Inc.</span>
-          <a href="#privacy">Конфіденційність</a>
-          <a href="#terms">Умови</a>
-          <a href="#sitemap">Мапа сайту</a>
+          <a href="#privacy">{t('Конфіденційність')}</a>
+          <a href="#terms">{t('Умови')}</a>
+          <a href="#sitemap">{t('Мапа сайту')}</a>
         </div>
 
         <div className="payment__footer-locale">
-          <button type="button">
+          <button type="button" onClick={() => setLanguage(language === 'uk' ? 'en' : 'uk')}>
             <Globe size={16} aria-hidden />
-            <span>Українська (UA)</span>
+            <span>{language === 'en' ? 'English (US)' : 'Українська (UA)'}</span>
           </button>
           <button type="button">
             <DollarSign size={16} aria-hidden />

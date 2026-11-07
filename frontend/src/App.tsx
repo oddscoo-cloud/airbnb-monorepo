@@ -20,8 +20,10 @@ import { useSavedListings } from './hooks/useSavedListings'
 import type { Listing } from './types/listing'
 import './App.css'
 import { getListingRegions, getListings, type ListingRegion, type ListingSearchFilters } from './api/listings'
+import { useLanguage } from './i18n'
 
 function App() {
+  const { t } = useLanguage()
   // Общее состояние экранов приложения.
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false)
@@ -129,9 +131,9 @@ function App() {
         return score > currentScore ? listing : current
       }, null)
       if (best) handleOpenListing(best)
-      else setPopularError('Поки що немає помешкань з відгуками.')
+      else setPopularError(t('Поки що немає помешкань з відгуками.'))
     } catch (error) {
-      setPopularError(error instanceof Error ? error.message : 'Не вдалося завантажити помешкання')
+      setPopularError(error instanceof Error ? error.message : t('Не вдалося завантажити помешкання'))
     } finally {
       setPopularLoading(false)
     }
@@ -377,13 +379,13 @@ function App() {
                   HomeFU
                 </a>
 
-                <nav className="site-header__nav" aria-label="Основна навігація">
+                <nav className="site-header__nav" aria-label={t('Основна навігація')}>
                   <a href="#stays" onClick={(event) => {
                     event.preventDefault()
                     handleShowAllListings()
-                  }}>Варіанти помешкань</a>
-                  <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('rating')}>Враження</button>
-                  <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('reviews')}>Онлайн-враження</button>
+                  }}>{t('Варіанти помешкань')}</a>
+                  <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('rating')}>{t('Враження')}</button>
+                  <button type="button" disabled={popularLoading} onClick={() => void handleOpenPopular('reviews')}>{t('Онлайн-враження')}</button>
                 </nav>
 
                 <div className="site-header__actions">
@@ -392,7 +394,7 @@ function App() {
                       event.preventDefault()
                       handleOpenHost()
                     }}>
-                      Запропонувати помешкання на HomeFU
+                      {t('Запропонувати помешкання на HomeFU')}
                     </a>
                     <div className="site-header__account">
                       <UserMenu
@@ -414,7 +416,7 @@ function App() {
 
               {(popularLoading || popularError) && (
                 <p className="site-header__status" role={popularError ? 'alert' : 'status'}>
-                  {popularError || 'Завантаження помешкання…'}
+                  {popularError || t('Завантаження помешкання…')}
                 </p>
               )}
               <SearchForm

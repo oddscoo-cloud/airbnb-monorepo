@@ -1,11 +1,13 @@
 ﻿import { useState, type FormEvent } from 'react'
 import { CreditCard } from 'lucide-react'
+import { useLanguage } from '../../i18n'
 
 type PaymentMethodSectionProps = {
   onPaid: () => void
 }
 
 export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
+  const { t } = useLanguage()
   // Локальное состояние полей без передачи реквизитов на сервер.
   const [cardNumber, setCardNumber] = useState('')
   const [expiry, setExpiry] = useState('')
@@ -18,7 +20,7 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
     // Очистка номера карты от нецифровых символов перед проверкой длины.
     const cardDigits = cardNumber.replace(/\D/g, '')
     if (cardDigits.length < 13 || cardDigits.length > 19) {
-      window.alert('Номер картки має містити від 13 до 19 цифр.')
+      window.alert(t('Номер картки має містити від 13 до 19 цифр.'))
       return
     }
 
@@ -30,28 +32,28 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
     currentMonth.setHours(0, 0, 0, 0)
 
     if (expirationDate <= currentMonth) {
-      window.alert('Термін дії картки завершився. Перевірте введені дані.')
+      window.alert(t('Термін дії картки завершився. Перевірте введені дані.'))
       return
     }
 
     // Демонстрационное подтверждение без авторизации и списания средств.
-    window.alert('Оплату успішно підтверджено!')
+    window.alert(t('Оплату успішно підтверджено!'))
     onPaid()
   }
 
   return (
     <section className="payment__section">
-      <h2 className="payment__section-title">Оплатити за допомогою</h2>
+      <h2 className="payment__section-title">{t('Оплатити за допомогою')}</h2>
 
       <div className="payment__method-picker">
         <CreditCard size={18} aria-hidden />
-        <span>Кредитна або дебетова картка</span>
+        <span>{t('Кредитна або дебетова картка')}</span>
       </div>
 
       <form id="payment-form" onSubmit={handlePaymentSubmit}>
         <div className="payment__fieldset">
           <div className="payment__field">
-            <span className="payment__field-label">Номер картки</span>
+            <span className="payment__field-label">{t('Номер картки')}</span>
             <input
               className="payment__field-input"
               type="text"
@@ -61,13 +63,13 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
               onChange={(event) => setCardNumber(event.target.value)}
               required
               pattern="[0-9 ]{13,23}"
-              title="Введіть номер картки, що містить від 13 до 19 цифр"
+              title={t('Введіть номер картки, що містить від 13 до 19 цифр')}
             />
           </div>
 
           <div className="payment__field payment__field--split">
             <div className="payment__field-half">
-              <span className="payment__field-label">Термін дії</span>
+              <span className="payment__field-label">{t('Термін дії')}</span>
               <input
                 className="payment__field-input"
                 type="text"
@@ -76,7 +78,7 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
                 onChange={(event) => setExpiry(event.target.value)}
                 required
                 pattern="(0[1-9]|1[0-2]) */ *[0-9]{2}"
-                title="Введіть дату у форматі ММ / РР"
+                title={t('Введіть дату у форматі ММ / РР')}
               />
             </div>
             <div className="payment__field-divider" />
@@ -92,13 +94,13 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
                 required
                 pattern="[0-9]{3,4}"
                 maxLength={4}
-                title="CVV має містити 3 або 4 цифри"
+                title={t('CVV має містити 3 або 4 цифри')}
               />
             </div>
           </div>
 
           <div className="payment__field">
-            <span className="payment__field-label">Індекс</span>
+            <span className="payment__field-label">{t('Індекс')}</span>
             <input
               className="payment__field-input"
               type="text"
@@ -108,7 +110,7 @@ export function PaymentMethodSection({ onPaid }: PaymentMethodSectionProps) {
               required
               pattern="[0-9]{5}"
               maxLength={5}
-              title="Введіть поштовий індекс із 5 цифр"
+              title={t('Введіть поштовий індекс із 5 цифр')}
             />
           </div>
         </div>

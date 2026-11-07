@@ -1,6 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react'
 import { CATEGORIES } from './categories'
+import { useLanguage } from '../../i18n'
 
 type CategoryNavigationProps = {
   activeCategory: string
@@ -39,6 +40,7 @@ export function CategoryNavigation({
   guests,
   onGuestsChange,
 }: CategoryNavigationProps) {
+  const { t } = useLanguage()
   // Локальное состояние видимости меню; значения фильтров принадлежат родителю.
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [isRegionPickerOpen, setIsRegionPickerOpen] = useState(false)
@@ -131,7 +133,7 @@ export function CategoryNavigation({
                 aria-pressed={isActive}
               >
                 <Icon size={20} strokeWidth={1.5} aria-hidden />
-                <span>{category.label}</span>
+                <span>{t(category.label)}</span>
               </button>
             </li>
           )
@@ -141,7 +143,7 @@ export function CategoryNavigation({
       <button
         type="button"
         className={`category-nav__scroll${categoryOverflow.left || categoryOverflow.right ? ' category-nav__scroll--visible' : ''}`}
-        aria-label={categoryOverflow.right ? 'Показати наступні категорії' : 'Повернутися до попередніх категорій'}
+        aria-label={t(categoryOverflow.right ? 'Показати наступні категорії' : 'Повернутися до попередніх категорій')}
         aria-hidden={!categoryOverflow.left && !categoryOverflow.right}
         tabIndex={categoryOverflow.left || categoryOverflow.right ? 0 : -1}
         onClick={scrollCategories}
@@ -162,9 +164,9 @@ export function CategoryNavigation({
           aria-controls="category-filter-menu"
         >
           <SlidersHorizontal size={14} aria-hidden />
-          <span>Фільтри</span>
+          <span>{t('Фільтри')}</span>
           {activeFilterCount > 0 && (
-            <span className="category-nav__filters-count" aria-label={`Активних фільтрів: ${activeFilterCount}`}>
+            <span className="category-nav__filters-count" aria-label={`${t('Активних фільтрів:')} ${activeFilterCount}`}>
               {activeFilterCount}
             </span>
           )}
@@ -180,20 +182,20 @@ export function CategoryNavigation({
                     <button
                       type="button"
                       className="category-nav__region-back"
-                      aria-label="Повернутися до фільтрів"
+                      aria-label={t('Повернутися до фільтрів')}
                       onClick={() => setIsRegionPickerOpen(false)}
                     >
                       <ChevronLeft size={18} aria-hidden />
                     </button>
                     <div>
-                      <h2 className="category-nav__filter-title" id="category-filter-title">Виберіть регіон</h2>
-                      <p>Оберіть область або місто</p>
+                      <h2 className="category-nav__filter-title" id="category-filter-title">{t('Виберіть регіон')}</h2>
+                      <p>{t('Оберіть область або місто')}</p>
                     </div>
                   </div>
                   <button
                     type="button"
                     className="category-nav__filter-close"
-                    aria-label="Закрити фільтри"
+                    aria-label={t('Закрити фільтри')}
                     onClick={() => {
                       setIsRegionPickerOpen(false)
                       setIsFilterMenuOpen(false)
@@ -212,7 +214,7 @@ export function CategoryNavigation({
                       setIsFilterMenuOpen(false)
                     }}
                   >
-                    Усі регіони
+                    {t('Усі регіони')}
                   </button>
                   {allRegions.length > 0 ? allRegions.map((region) => (
                     <button
@@ -228,7 +230,7 @@ export function CategoryNavigation({
                       {region}
                     </button>
                   )) : (
-                    <p className="category-nav__region-empty">Регіони поки недоступні.</p>
+                    <p className="category-nav__region-empty">{t('Регіони поки недоступні.')}</p>
                   )}
                 </div>
               </>
@@ -236,13 +238,13 @@ export function CategoryNavigation({
               <>
                 <div className="category-nav__filter-header">
                   <div>
-                    <h2 className="category-nav__filter-title" id="category-filter-title">Фільтри</h2>
-                    <p>Знайдіть помешкання для своєї подорожі</p>
+                    <h2 className="category-nav__filter-title" id="category-filter-title">{t('Фільтри')}</h2>
+                    <p>{t('Знайдіть помешкання для своєї подорожі')}</p>
                   </div>
                   <button
                     type="button"
                     className="category-nav__filter-close"
-                    aria-label="Закрити фільтри"
+                    aria-label={t('Закрити фільтри')}
                     onClick={() => {
                       setIsRegionPickerOpen(false)
                       setIsFilterMenuOpen(false)
@@ -253,29 +255,29 @@ export function CategoryNavigation({
                 </div>
 
                 <section className="category-nav__filter-section" aria-labelledby="category-filter-price">
-                  <h3 className="category-nav__filter-section-title" id="category-filter-price">Ціна за ніч</h3>
+                  <h3 className="category-nav__filter-section-title" id="category-filter-price">{t('Ціна за ніч')}</h3>
                   <div className="category-nav__price-range">
                     <label className="category-nav__filter-field">
-                      <span>Від</span>
+                      <span>{t('Від')}</span>
                       <div className="category-nav__price-input">
                         <span aria-hidden>$</span>
                         <input
                           type="number"
                           min="0"
-                          placeholder="Будь-яка"
+                          placeholder={t('Будь-яка')}
                           value={minPrice}
                           onChange={(event) => onMinPriceChange(event.target.value)}
                         />
                       </div>
                     </label>
                     <label className="category-nav__filter-field">
-                      <span>До</span>
+                      <span>{t('До')}</span>
                       <div className="category-nav__price-input">
                         <span aria-hidden>$</span>
                         <input
                           type="number"
                           min="0"
-                          placeholder="Будь-яка"
+                          placeholder={t('Будь-яка')}
                           value={maxPrice}
                           onChange={(event) => onMaxPriceChange(event.target.value)}
                         />
@@ -285,32 +287,32 @@ export function CategoryNavigation({
                 </section>
 
                 <label className="category-nav__filter-field category-nav__filter-section">
-                  <span className="category-nav__filter-section-title">Мінімальний рейтинг</span>
+                  <span className="category-nav__filter-section-title">{t('Мінімальний рейтинг')}</span>
                   <select value={minimumRating} onChange={(event) => onMinimumRatingChange(event.target.value)}>
-                    <option value="">Будь-який</option>
-                    <option value="4">Від 4,0</option>
-                    <option value="4.5">Від 4,5</option>
-                    <option value="4.8">Від 4,8</option>
+                    <option value="">{t('Будь-який')}</option>
+                    <option value="4">{t('Від 4,0')}</option>
+                    <option value="4.5">{t('Від 4,5')}</option>
+                    <option value="4.8">{t('Від 4,8')}</option>
                   </select>
                 </label>
 
                 <label className="category-nav__filter-field category-nav__filter-section">
-                  <span className="category-nav__filter-section-title">Гості</span>
+                  <span className="category-nav__filter-section-title">{t('Гості')}</span>
                   <input
                     type="number"
                     min="1"
-                    placeholder="Кількість гостей"
+                    placeholder={t('Кількість гостей')}
                     value={guests}
                     onChange={(event) => onGuestsChange(event.target.value)}
                   />
                 </label>
 
                 <section className="category-nav__filter-section" aria-labelledby="category-filter-region">
-                  <h3 className="category-nav__filter-section-title" id="category-filter-region">Регіон</h3>
+                  <h3 className="category-nav__filter-section-title" id="category-filter-region">{t('Регіон')}</h3>
                   <button type="button" className="category-nav__filter-region" onClick={() => setIsRegionPickerOpen(true)}>
                     <span className="category-nav__filter-region-copy">
-                      <span className="category-nav__filter-region-value">{selectedRegion ?? 'Усі регіони'}</span>
-                      <span>{selectedRegion ? 'Обраний регіон' : 'Оберіть область або місто'}</span>
+                      <span className="category-nav__filter-region-value">{selectedRegion ?? t('Усі регіони')}</span>
+                      <span>{selectedRegion ? t('Обраний регіон') : t('Оберіть область або місто')}</span>
                     </span>
                     <ChevronRight size={18} aria-hidden />
                   </button>
@@ -321,7 +323,7 @@ export function CategoryNavigation({
                     onClearFilters()
                     setIsFilterMenuOpen(false)
                   }}>
-                    Скинути фільтри
+                    {t('Скинути фільтри')}
                   </button>
                 </div>
               </>
@@ -332,7 +334,7 @@ export function CategoryNavigation({
 
       {/* Переключатель с поддержкой мыши, Enter и Space. */}
       <label className="category-nav__toggle">
-        <span>Загальна сума до оподаткування</span>
+        <span>{t('Загальна сума до оподаткування')}</span>
         <span
           className={`category-nav__switch${taxIncluded ? ' category-nav__switch--on' : ''}`}
           role="switch"

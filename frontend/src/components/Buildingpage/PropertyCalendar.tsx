@@ -1,6 +1,5 @@
-﻿import { useState } from 'react'
-
-const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
+import { useState } from 'react'
+import { useLanguage } from '../../i18n'
 
 type StayDates = { start: Date | null; end: Date | null }
 
@@ -20,19 +19,18 @@ function getMonthGrid(year: number, month: number) {
   return cells
 }
 
-function formatDate(date: Date | null) {
+function formatDate(date: Date | null, locale: string, selectDateText: string) {
   return date
-    ? new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
-    : 'Виберіть дату'
-}
-
-function formatRange({ start, end }: StayDates) {
-  if (!start) return 'Виберіть дату'
-  if (!end) return formatDate(start)
-  return `${formatDate(start)} — ${formatDate(end)}`
+    ? new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
+    : selectDateText
 }
 
 export function PropertyCalendar({ location, stayDates, onStayDatesChange }: PropertyCalendarProps) {
+  const { language, t } = useLanguage()
+  const locale = language === 'en' ? 'en-US' : 'uk-UA'
+  const weekdays = Array.from({ length: 7 }, (_, index) =>
+    new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(2024, 0, index + 1)),
+  )
   // Видимые месяцы — локальное состояние; выбранные даты принадлежат App.
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const today = new Date()
@@ -62,27 +60,33 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
     return candidate >= min && candidate <= max
   }
 
+  function formatRange({ start, end }: StayDates) {
+    if (!start) return t('Виберіть дату')
+    if (!end) return formatDate(start, locale, t('Виберіть дату'))
+    return `${formatDate(start, locale, t('Виберіть дату'))} — ${formatDate(end, locale, t('Виберіть дату'))}`
+  }
+
   return (
     <section id="calendar" className="property__section">
-      <h2 className="property__section-title">Дати перебування · {location}</h2>
+      <h2 className="property__section-title">{t('Дати перебування ·')} {location}</h2>
       <p className="property__date-range">{formatRange(stayDates)}</p>
 
       <div className="property__calendar-controls">
         <label>
-          <span>Місяць</span>
+          <span>{t('Місяць')}</span>
           <select
             value={calendarMonth.getMonth()}
             onChange={(event) => setCalendarMonth(new Date(calendarMonth.getFullYear(), Number(event.target.value), 1))}
           >
             {Array.from({ length: 12 }, (_, month) => (
               <option key={month} value={month}>
-                {new Intl.DateTimeFormat('uk-UA', { month: 'long' }).format(new Date(calendarMonth.getFullYear(), month, 1))}
+                {new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(calendarMonth.getFullYear(), month, 1))}
               </option>
             ))}
           </select>
         </label>
         <label>
-          <span>Рік</span>
+          <span>{t('Рік')}</span>
           <select
             value={calendarMonth.getFullYear()}
             onChange={(event) => setCalendarMonth(new Date(Number(event.target.value), calendarMonth.getMonth(), 1))}
@@ -100,7 +104,7 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
           const monthDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + offset, 1)
           const year = monthDate.getFullYear()
           const month = monthDate.getMonth()
-          const label = new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(monthDate)
+          const label = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(monthDate)
           const cells = getMonthGrid(year, month)
           const today = new Date()
           today.setHours(0, 0, 0, 0)
@@ -109,7 +113,7 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
             <div key={label} className="property__calendar">
               <h3>{label}</h3>
               <div className="property__calendar-weekdays">
-                {WEEKDAYS.map((day) => <span key={day}>{day}</span>)}
+                {weekdays.map((day, index) => <span key={index}>{day}</span>)}
               </div>
               <div className="property__calendar-grid">
                 {cells.map((day, index) => {
@@ -143,7 +147,7 @@ export function PropertyCalendar({ location, stayDates, onStayDatesChange }: Pro
       </div>
 
       <button type="button" className="property__clear-dates" onClick={() => onStayDatesChange({ start: null, end: null })}>
-        Очистити дати
+        {t('Очистити дати')}
       </button>
     </section>
   )

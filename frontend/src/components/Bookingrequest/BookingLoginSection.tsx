@@ -2,6 +2,7 @@
 import { useGoogleLogin } from '@react-oauth/google'
 import { Mail } from 'lucide-react'
 import { apiRequest } from '../../api/http'
+import { useLanguage } from '../../i18n'
 
 type BookingLoginSectionProps = {
   onContinue: () => void
@@ -9,6 +10,7 @@ type BookingLoginSectionProps = {
 }
 
 export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLoginSectionProps) {
+  const { t } = useLanguage()
   // Поля и состояние запроса формы входа на шаге бронирования.
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,7 +28,7 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),
-        fallbackError: () => 'Невірний логін або пароль',
+        fallbackError: () => t('Невірний логін або пароль'),
       })
 
       // Сохранение токена, обновление шапки и переход к следующему шагу.
@@ -34,7 +36,7 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
       onAuthenticated?.(email, data.role)
       onContinue()
     } catch (error) {
-      setLoginError(error instanceof Error ? error.message : 'Не вдалося увійти')
+      setLoginError(error instanceof Error ? error.message : t('Не вдалося увійти'))
     } finally {
       setIsSubmitting(false)
     }
@@ -58,7 +60,7 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
   return (
     <section className="booking__section">
       <h2 className="booking__section-title booking__section-title--auth">
-        Увійдіть або зареєструйтеся, щоб зробити бронювання
+        {t('Увійдіть або зареєструйтеся, щоб зробити бронювання')}
       </h2>
 
       <form onSubmit={handleLoginSubmit}>
@@ -76,12 +78,12 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
             />
           </div>
           <div className="booking__field">
-            <span className="booking__field-label">Пароль</span>
+            <span className="booking__field-label">{t('Пароль')}</span>
             <input
               className="booking__field-input"
               type="password"
               autoComplete="current-password"
-              placeholder="Пароль"
+              placeholder={t('Пароль')}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               required
@@ -96,13 +98,13 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
         )}
 
         <button type="submit" className="booking__continue" disabled={isSubmitting}>
-          {isSubmitting ? 'Вхід...' : 'Продовжити'}
+          {isSubmitting ? t('Вхід...') : t('Продовжити')}
         </button>
       </form>
 
       <div className="booking__or">
         <span />
-        <span>або</span>
+        <span>{t('або')}</span>
         <span />
       </div>
 
@@ -151,7 +153,7 @@ export function BookingLoginSection({ onContinue, onAuthenticated }: BookingLogi
 
       <button type="button" className="booking__email-button">
         <Mail size={16} aria-hidden />
-        <span>Використати електронну пошту</span>
+        <span>{t('Використати електронну пошту')}</span>
       </button>
     </section>
   )

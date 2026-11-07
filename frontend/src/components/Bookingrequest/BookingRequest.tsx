@@ -5,6 +5,7 @@ import { BookingLoginSection } from './BookingLoginSection'
 import { BookingPaymentOptions } from './BookingPaymentOptions'
 import { BookingSummary } from './BookingSummary'
 import { formatPrice } from '../../utils/formatPrice'
+import { useLanguage } from '../../i18n'
 import './BookingRequest.css'
 
 type PaymentOption = 'full' | 'split'
@@ -46,24 +47,25 @@ export function BookingRequest({
   onOpenRegister?: () => void
   onLogout?: () => void
 }) {
+  const { language, t } = useLanguage()
   // Общая сумма с фиксированной платой за уборку, без отдельного расчёта налогов.
   const totalPrice = listing.price * stayNights + 20
   const formatMoney = formatPrice
   // Отображение диапазона из общего состояния App.
   const dateRangeText = stayDates.start
-    ? `${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`
-    : 'Дати не обрано'
+    ? `${new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.start)}${stayDates.end ? ` — ${new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'uk-UA', { day: '2-digit', month: 'short', year: 'numeric' }).format(stayDates.end)}` : ''}`
+    : t('Дати не обрано')
 
   return (
     <div className="booking">
-      <button type="button" className="booking__back" onClick={onBack} aria-label="Назад">
+      <button type="button" className="booking__back" onClick={onBack} aria-label={t('Назад')}>
         <ChevronLeft size={18} aria-hidden />
       </button>
 
       <header className="booking__header">
         <span className="booking__logo">HomeFU</span>
         <div className="booking__header-actions">
-          <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>Запропонувати помешкання на HomeFU</a>
+          <a className="booking__home-link" href="/" onClick={(event) => { event.preventDefault(); (onHost ?? onHome)() }}>{t('Запропонувати помешкання на HomeFU')}</a>
           <UserMenu
             onOpenProfile={onOpenProfile}
             onOpenSaved={onOpenProfile}
@@ -77,26 +79,26 @@ export function BookingRequest({
 
       <div className="booking__layout">
         <main className="booking__main">
-          <h1 className="booking__title">Запит на бронювання</h1>
+          <h1 className="booking__title">{t('Запит на бронювання')}</h1>
 
           <div className="booking__notice">
             <Info size={22} aria-hidden className="booking__notice-icon" />
             <div className="booking__notice-text">
-              <h2>Перевірте деталі помешкання</h2>
+              <h2>{t('Перевірте деталі помешкання')}</h2>
               <p>{listing.title}</p>
             </div>
           </div>
 
           <section className="booking__section">
-            <h2 className="booking__section-title">Ваша подорож</h2>
+            <h2 className="booking__section-title">{t('Ваша подорож')}</h2>
 
             <div className="booking__trip-row">
               <div>
-                <h3>Дати</h3>
+                <h3>{t('Дати')}</h3>
                 <p>{dateRangeText}</p>
               </div>
               <button type="button" className="booking__edit-link" onClick={onEditDates}>
-                Редагувати
+                {t('Редагувати')}
               </button>
             </div>
 
@@ -104,11 +106,11 @@ export function BookingRequest({
 
             <div className="booking__trip-row">
               <div>
-                <h3>Гості</h3>
-                <p>До {listing.maxGuests} гостей</p>
+                <h3>{t('Гості')}</h3>
+                <p>{t('До')} {listing.maxGuests} {t('гостей')}</p>
               </div>
               <button type="button" className="booking__edit-link" onClick={onEditGuests}>
-                Редагувати
+                {t('Редагувати')}
               </button>
             </div>
           </section>
@@ -136,15 +138,15 @@ export function BookingRequest({
       <footer className="booking__footer">
         <div className="booking__footer-legal">
           <span>2022 HomeFU, Inc.</span>
-          <a href="#privacy">Конфіденційність</a>
-          <a href="#terms">Умови</a>
-          <a href="#sitemap">Мапа сайту</a>
+          <a href="#privacy">{t('Конфіденційність')}</a>
+          <a href="#terms">{t('Умови')}</a>
+          <a href="#sitemap">{t('Мапа сайту')}</a>
         </div>
 
         <div className="booking__footer-locale">
           <button type="button">
             <Globe size={16} aria-hidden />
-            <span>Українська (UA)</span>
+            <span>{language === 'en' ? 'English (US)' : 'Українська (UA)'}</span>
           </button>
           <button type="button">
             <DollarSign size={16} aria-hidden />

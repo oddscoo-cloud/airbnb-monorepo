@@ -1,6 +1,7 @@
 import { Heart, Image, Star } from 'lucide-react'
 import type { Listing } from '../../types/listing'
 import { formatPrice } from '../../utils/formatPrice'
+import { useLanguage } from '../../i18n'
 
 type ListingCardProps = {
   listing: Listing
@@ -11,6 +12,7 @@ type ListingCardProps = {
 }
 
 export function ListingCard({ listing, taxIncluded, isSaved = false, onOpenListing, onToggleSave }: ListingCardProps) {
+  const { t } = useLanguage()
   // Клавиатурное управление карточкой и изоляция клика вложенной кнопки.
   return (
     <article
@@ -24,23 +26,23 @@ export function ListingCard({ listing, taxIncluded, isSaved = false, onOpenListi
       }}
       tabIndex={0}
       role="button"
-      aria-label={`Відкрити оголошення в ${listing.location}`}
+      aria-label={`${t('Відкрити оголошення в')} ${listing.location}`}
     >
       <div className="listing-card__image-wrap">
         {/* Необязательное фото с отложенной загрузкой. */}
         {listing.image ? <img
           className="listing-card__image"
           src={listing.image}
-          alt={`Помешкання в ${listing.location}`}
+          alt={`${t('Помешкання в')} ${listing.location}`}
           loading="lazy"
         /> : <div className="listing-card__image-placeholder">
           <Image size={28} aria-hidden />
-          <span>Фото ще не додано</span>
+          <span>{t('Фото ще не додано')}</span>
         </div>}
         <button
           type="button"
           className={`listing-card__like${isSaved ? ' listing-card__like--saved' : ''}${listing.image ? '' : ' listing-card__like--no-photo'}`}
-          aria-label={isSaved ? 'Видалити зі збережених' : 'Додати до збережених'}
+          aria-label={t(isSaved ? 'Видалити зі збережених' : 'Додати до збережених')}
           aria-pressed={isSaved}
           onClick={(event) => {
             event.stopPropagation()
@@ -61,7 +63,7 @@ export function ListingCard({ listing, taxIncluded, isSaved = false, onOpenListi
         {listing.category && <p className="listing-card__meta">{listing.category}</p>}
         <p className="listing-card__price">
           <strong>${formatPrice(taxIncluded ? listing.price * 5 + 20 : listing.price)}</strong>{' '}
-          {taxIncluded ? 'за 5 ночей' : 'за ніч'}
+          {t(taxIncluded ? 'за 5 ночей' : 'за ніч')}
         </p>
       </div>
     </article>

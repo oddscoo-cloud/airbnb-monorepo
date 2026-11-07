@@ -24,6 +24,7 @@ import { getCurrentUser, updateProfileFacts, uploadAvatar, type ProfileFacts } f
 import { getAccountInitial } from '../../utils/account'
 import { formatPrice } from '../../utils/formatPrice'
 import { UserMenu } from '../UserMenu/UserMenu'
+import { useLanguage } from '../../i18n'
 import type { Listing } from '../../types/listing'
 import './ProfilePage.css'
 
@@ -146,12 +147,13 @@ function FieldRow({
   value: string
   onChange: (value: string) => void
 }) {
+  const { t } = useLanguage()
   const Icon = field.icon
   return (
     <label className="profile__field">
       <span className="profile__field-label">
         <Icon size={18} aria-hidden />
-        <span>{field.label}</span>
+        <span>{t(field.label)}</span>
       </span>
       <input
         className="profile__field-input"
@@ -164,6 +166,7 @@ function FieldRow({
 }
 
 export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenListing }: ProfilePageProps) {
+  const { language, setLanguage, t } = useLanguage()
   const [values, setValues] = useState<Record<string, string>>({})
   const [bio, setBio] = useState('')
   const [editingBio, setEditingBio] = useState(false)
@@ -216,7 +219,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
     setAvatarError(null)
     uploadAvatar(accessToken, file)
       .catch((error: unknown) => {
-        setAvatarError(error instanceof Error ? error.message : 'Не вдалося завантажити фото')
+        setAvatarError(error instanceof Error ? error.message : t('Не вдалося завантажити фото'))
       })
   }
 
@@ -251,10 +254,10 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
       }
       
       await updateProfileFacts(accessToken, profileData)
-      setSaveMessage({ type: 'success', text: 'Профіль збережено успішно!' })
+      setSaveMessage({ type: 'success', text: t('Профіль збережено успішно!') })
       setTimeout(() => setSaveMessage(null), 3000)
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Помилка при збереженні'
+      const message = error instanceof Error ? error.message : t('Помилка при збереженні')
       setSaveMessage({ type: 'error', text: message })
       console.error('Failed to save profile', error)
     } finally {
@@ -271,7 +274,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
 
         <div className="profile__header-actions">
           <a href="#host" className="profile__host-link" onClick={(event) => { event.preventDefault(); onHost?.() }}>
-            Запропонувати помешкання на HomeFU
+            {t('Запропонувати помешкання на HomeFU')}
           </a>
           <div className="profile__account">
             <UserMenu
@@ -298,7 +301,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
       <main className="profile__content">
         <div className="profile__avatar-col">
           <div className="profile__avatar">
-            {avatarUrl ? <img src={avatarUrl} alt="Фото профілю" /> : <span>{accountInitial}</span>}
+            {avatarUrl ? <img src={avatarUrl} alt={t('Фото профілю')} /> : <span>{accountInitial}</span>}
           </div>
           <button
             type="button"
@@ -306,7 +309,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
             onClick={() => fileInputRef.current?.click()}
           >
             <Camera size={14} aria-hidden />
-            Додати
+            {t('Додати')}
           </button>
           <input
             ref={fileInputRef}
@@ -319,12 +322,12 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
         </div>
 
         <div className="profile__main">
-          <h1 className="profile__title">Ваш профіль</h1>
+          <h1 className="profile__title">{t('Ваш профіль')}</h1>
           <p className="profile__intro">
-            Інформацію, яку ви надаєте, буде використано на{' '}
+            {t('Інформацію, яку ви надаєте, буде використано на')}{' '}
             <span className="profile__brand">HomeFU, </span>
-            щоб інші гості й господарі мали змогу познайомитися з вами.{' '}
-            <a href="#more">Докладніше</a>
+            {t('щоб інші гості й господарі мали змогу познайомитися з вами.')}{' '}
+            <a href="#more">{t('Докладніше')}</a>
           </p>
 
           <div className="profile__fields">
@@ -350,7 +353,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
             </div>
           </div>
 
-          <h2 className="profile__section-title">Інформація про вас</h2>
+          <h2 className="profile__section-title">{t('Інформація про вас')}</h2>
 
           <div className="profile__bio">
             {editingBio ? (
@@ -361,27 +364,27 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
                   rows={3}
                   value={bio}
                   onChange={(event) => setBio(event.target.value)}
-                  placeholder="Напишить щось веселе й неординарне."
+                  placeholder={t('Напишить щось веселе й неординарне.')}
                 />
                 <button
                   type="button"
                   className="profile__bio-link"
                   onClick={() => setEditingBio(false)}
                 >
-                  Готово
+                  {t('Готово')}
                 </button>
               </>
             ) : (
               <>
                 <p className="profile__bio-text">
-                  {bio || 'Напишить щось веселе й неординарне.'}
+                  {bio || t('Напишить щось веселе й неординарне.')}
                 </p>
                 <button
                   type="button"
                   className="profile__bio-link"
                   onClick={() => setEditingBio(true)}
                 >
-                  {bio ? 'Редагувати вступ' : 'Додати вступ'}
+                  {t(bio ? 'Редагувати вступ' : 'Додати вступ')}
                 </button>
               </>
             )}
@@ -389,10 +392,9 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
 
           <div className="profile__divider" />
 
-          <h2 className="profile__subsection-title">Що ви найбільше любите?</h2>
+          <h2 className="profile__subsection-title">{t('Що ви найбільше любите?')}</h2>
           <p className="profile__interests-text">
-            Спілкуйтеся на грунті спільний зацікавлень з іншими гостями та господарями,
-            вказавши свої інтереси в профілі.
+            {t('Спілкуйтеся на грунті спільний зацікавлень з іншими гостями та господарями, вказавши свої інтереси в профілі.')}
           </p>
 
           <div className="profile__interests">
@@ -416,7 +418,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
                   type="button"
                   className={`profile__interest${interest ? ' profile__interest--filled' : ''}`}
                   onClick={() => setEditingInterest(index)}
-                  aria-label={interest || 'Додати інтерес'}
+                  aria-label={interest || t('Додати інтерес')}
                 >
                   {interest || <Plus size={16} aria-hidden />}
                 </button>
@@ -441,7 +443,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
               onClick={handleSaveProfile}
               disabled={isSaving}
             >
-              {isSaving ? 'Збереження...' : 'Зберегти профіль'}
+              {isSaving ? t('Збереження...') : t('Зберегти профіль')}
             </button>
           </div>
 
@@ -450,7 +452,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
           <div className="profile__saved-header">
             <h2 className="profile__section-title profile__section-title--no-margin">
               <Heart size={20} aria-hidden />
-              Збереженi
+              {t('Збереженi')}
             </h2>
             <button
               type="button"
@@ -458,20 +460,19 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
               aria-expanded={showSaved}
               onClick={() => setShowSaved((s) => !s)}
             >
-              {showSaved ? 'Сховати' : `Показати${savedIds.size > 0 ? ` (${savedIds.size})` : ''}`}
+              {showSaved ? t('Сховати') : `${t('Показати')}${savedIds.size > 0 ? ` (${savedIds.size})` : ''}`}
             </button>
           </div>
 
           {showSaved && (
-            <section className="profile__saved" aria-label="Збережені оголошення">
+            <section className="profile__saved" aria-label={t('Збережені оголошення')}>
               {savedLoading ? (
-                <p className="profile__saved-empty">Завантаження…</p>
+                <p className="profile__saved-empty">{t('Завантаження…')}</p>
               ) : savedError ? (
                 <p className="profile__saved-empty" role="alert">{savedError}</p>
               ) : savedListings.length === 0 ? (
                 <p className="profile__saved-empty">
-                  Ви ще не зберегли жодного помешкання.{' '}
-                  Натисніть ❤️ на картці, щоб додати сюди.
+                  {t('Ви ще не зберегли жодного помешкання. Натисніть ❤️ на картці, щоб додати сюди.')}
                 </p>
               ) : (
                 <div className="profile__saved-grid">
@@ -488,7 +489,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
                       }}
                       tabIndex={0}
                       role="button"
-                      aria-label={`Відкрити ${listing.title}`}
+                      aria-label={`${t('Відкрити')} ${listing.title}`}
                     >
                       <div className="profile__saved-card-img">
                         {listing.image
@@ -498,7 +499,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
                         <button
                           type="button"
                           className="profile__saved-card-unsave"
-                          aria-label="Видалити зі збережених"
+                          aria-label={t('Видалити зі збережених')}
                           onClick={(e) => {
                             e.stopPropagation()
                             void toggle(Number(listing.id))
@@ -516,7 +517,7 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
                           </span>
                         )}
                         <p className="profile__saved-card-price">
-                          <strong>${formatPrice(listing.price)}</strong> за ніч
+                          <strong>${formatPrice(listing.price)}</strong> {t('за ніч')}
                         </p>
                       </div>
                     </article>
@@ -531,15 +532,15 @@ export function ProfilePage({ onHome, onOpenAdmin, onHost, onOpenMap, onOpenList
       <footer className="profile__footer">
         <div className="profile__footer-legal">
           <span>2022 HomeFU, Inc.</span>
-          <a href="#privacy">Конфінденційність</a>
-          <a href="#terms">Умови</a>
-          <a href="#sitemap" onClick={(event) => { if (onOpenMap) { event.preventDefault(); onOpenMap() } }}>Мапа сайту</a>
+          <a href="#privacy">{t('Конфінденційність')}</a>
+          <a href="#terms">{t('Умови')}</a>
+          <a href="#sitemap" onClick={(event) => { if (onOpenMap) { event.preventDefault(); onOpenMap() } }}>{t('Мапа сайту')}</a>
         </div>
 
         <div className="profile__footer-locale">
-          <button type="button">
+          <button type="button" onClick={() => setLanguage(language === 'uk' ? 'en' : 'uk')}>
             <Globe size={16} aria-hidden />
-            <span>Українська (UA)</span>
+            <span>{language === 'en' ? 'English (US)' : 'Українська (UA)'}</span>
           </button>
           <button type="button">
             <DollarSign size={16} aria-hidden />

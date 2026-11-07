@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { useEffect } from 'react'
 import type { Listing } from '../../types/listing'
 import { formatPrice } from '../../utils/formatPrice'
+import { useLanguage } from '../../i18n'
 import 'leaflet/dist/leaflet.css'
 import './LocationMap.css'
 
@@ -62,6 +63,7 @@ function FitListingsBounds({ listings }: { listings: Listing[] }) {
 }
 
 export function LocationMap({ listings, onBack }: LocationMapProps) {
+  const { language, t } = useLanguage()
   // Список объявлений с координатами для центра карты и маркеров.
   const [showTransit, setShowTransit] = useState(false)
   const locatedListings = listings.filter((listing) => listing.latitude !== 0 && listing.longitude !== 0)
@@ -84,10 +86,10 @@ export function LocationMap({ listings, onBack }: LocationMapProps) {
 
       <div className="location-map__layout">
         <aside className="location-map__sidebar">
-          <h1>Помешкання на мапі</h1>
+          <h1>{t('Помешкання на мапі')}</h1>
           <section>
-            <h2>{locatedListings.length} помешкань із координатами</h2>
-            {!locatedListings.length && <p>Для оголошень ще не вказані координати.</p>}
+            <h2>{locatedListings.length} {t('помешкань із координатами')}</h2>
+            {!locatedListings.length && <p>{t('Для оголошень ще не вказані координати.')}</p>}
           </section>
         </aside>
 
@@ -108,7 +110,7 @@ export function LocationMap({ listings, onBack }: LocationMapProps) {
 
             {locatedListings.map((listing) => (
               <Marker key={listing.id} position={[listing.latitude, listing.longitude]} icon={pinIcon}>
-                <Popup>{listing.title} · ${formatPrice(listing.price)} / ніч</Popup>
+                <Popup>{listing.title} · ${formatPrice(listing.price)} / {language === 'en' ? 'night' : 'ніч'}</Popup>
               </Marker>
             ))}
           </MapContainer>
@@ -119,7 +121,7 @@ export function LocationMap({ listings, onBack }: LocationMapProps) {
               checked={showTransit}
               onChange={(event) => setShowTransit(event.target.checked)}
             />
-            <span>Громадський транспорт</span>
+            <span>{t('Громадський транспорт')}</span>
           </label>
         </div>
       </div>

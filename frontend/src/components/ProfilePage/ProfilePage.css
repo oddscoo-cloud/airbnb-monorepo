@@ -133,8 +133,8 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: var(--accent-primary);
-  color: #000;
+  background: var(--color-warm-5);
+  color: #fff;
   font-family: 'Nunito Sans', Arial, sans-serif;
   font-weight: 700;
   font-size: 64px;

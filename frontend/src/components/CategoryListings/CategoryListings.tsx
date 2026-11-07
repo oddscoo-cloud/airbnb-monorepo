@@ -5,6 +5,7 @@ import { CategoryNavigation } from './CategoryNavigation'
 import { CATEGORIES } from './categories'
 import { ListingGrid } from './ListingGrid'
 import type { Listing } from '../../types/listing'
+import { useLanguage } from '../../i18n'
 import './CategoryListings.css'
 
 interface CategoryListingsProps {
@@ -44,6 +45,7 @@ export function CategoryListings({
   expandAllRevision,
   showAllListings = false,
 }: CategoryListingsProps) {
+  const { t } = useLanguage()
   // Локальное состояние фильтров каталога.
   const [activeCategory, setActiveCategory] = useState(() =>
     CATEGORIES.find((category) => category.label === searchFilters.category)?.id ?? 'all',
@@ -82,7 +84,7 @@ export function CategoryListings({
   const visibleListings = listings.slice(0, visibleCount)
 
   return (
-    <section id="stays" className="category-listings" aria-label="Категорії та помешкання">
+    <section id="stays" className="category-listings" aria-label={t('Категорії та помешкання')}>
       <CategoryNavigation
         activeCategory={activeCategory}
         onActiveCategoryChange={(category) => {
@@ -128,8 +130,8 @@ export function CategoryListings({
       <div className="category-listings__continue">
         <h2>
           {selectedRegion
-            ? `Продовжити огляд регіону «${selectedRegion}»`
-            : `Продовжити огляд категорії «${CATEGORIES.find((c) => c.id === activeCategory)?.label}»`}
+            ? `${t('Продовжити огляд регіону')} «${selectedRegion}»`
+            : `${t('Продовжити огляд категорії')} «${t(CATEGORIES.find((c) => c.id === activeCategory)?.label ?? '')}»`}
         </h2>
         {visibleCount < listings.length && (
           <button
@@ -137,7 +139,7 @@ export function CategoryListings({
             className="category-listings__more"
             onClick={() => setVisibleCount((count) => count + 8)}
           >
-            Показати більше
+            {t('Показати більше')}
           </button>
         )}
       </div>

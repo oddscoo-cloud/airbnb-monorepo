@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import './SignInModal.css'
 import { useGoogleLogin } from '@react-oauth/google'
 import { apiRequest } from '../../api/http'
+import { useLanguage } from '../../i18n'
 
 interface SignInModalProps {
   onClose: () => void
@@ -12,6 +13,7 @@ interface SignInModalProps {
 }
 
 export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: SignInModalProps) {
+  const { t } = useLanguage()
   // Обмен OAuth-токена через backend; ниже расположена форма парольного входа.
   const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
@@ -43,7 +45,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),
-        fallbackError: () => 'Не удалось выполнить вход',
+        fallbackError: () => t('Не вдалося виконати вхід'),
       })
 
       // Сохранение токена на время вкладки и обновление состояния пользователя в App.
@@ -51,7 +53,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
       onAuthenticated(email, data.role)
       onClose()
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Не удалось выполнить вход')
+      setError(submitError instanceof Error ? submitError.message : t('Не вдалося виконати вхід'))
     } finally {
       setIsSubmitting(false)
     }
@@ -70,7 +72,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
         <button
           type="button"
           className="sign-in-modal__close"
-          aria-label="Закрити"
+          aria-label={t('Закрити')}
           onClick={onClose}
         >
           <X size={18} aria-hidden />
@@ -106,7 +108,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
           </div>
 
           <button type="submit" className="sign-in-modal__submit">
-            {isSubmitting ? 'Выполняется вход...' : 'Continue'}
+            {isSubmitting ? t('Выполняется вход...') : 'Continue'}
           </button>
           {error && <p className="sign-in-modal__error" role="alert">{error}</p>}
         </form>
