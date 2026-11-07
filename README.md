@@ -142,38 +142,34 @@ dotnet ef database update --project backend\Airbnb.Api\Airbnb.Api.csproj --start
 
 # Facebook Authentication — Airbnb Project
 
-## Project Description
+## Описание работы
 
-As part of the Airbnb project, I worked on preparing the backend for Facebook authentication and user registration.
+В рамках проекта Airbnb я занимался подготовкой серверной части для интеграции авторизации и регистрации пользователей через Facebook.
 
-My task was to add the necessary components that will allow users to sign in to the Airbnb application using their Facebook accounts.
+Моя задача заключалась в добавлении необходимых компонентов, которые позволят пользователям в дальнейшем входить в приложение Airbnb с помощью своего Facebook-аккаунта.
 
-## What Was Added and Changed
+## Что было добавлено и изменено
 
 ### 1. Airbnb.Api.csproj
-
-- Added the `Microsoft.AspNetCore.Authentication.Facebook` library.
-- Used version `9.0.10`.
-- Added the dependency required for Facebook Authentication integration in ASP.NET Core.
+- Добавлена библиотека `Microsoft.AspNetCore.Authentication.Facebook`.
+- Используется версия `9.0.10`.
+- Подготовлена зависимость для интеграции Facebook Authentication в ASP.NET Core.
 
 ### 2. Models/User.cs
-
-- Added a `FacebookId` property to the User model.
-- This property is designed to store the unique Facebook user ID.
-- It allows a Facebook account to be linked to an existing user record in the database.
+- Добавлено свойство `FacebookId` в модель пользователя.
+- Оно предназначено для хранения уникального идентификатора пользователя Facebook.
+- Это позволяет связывать Facebook-аккаунт с существующей записью пользователя в базе данных.
 
 ### 3. Repositories/UserRepository.cs
-
-- Added logic to search for users by their `FacebookId`.
-- Extended the repository to find users associated with Facebook accounts.
-- This functionality is necessary for implementing Facebook authentication.
+- Добавлена логика поиска пользователя по `FacebookId`.
+- Репозиторий получил возможность находить пользователей, связанных с Facebook-аккаунтом.
+- Это необходимо для дальнейшей реализации авторизации через Facebook.
 
 ### 4. Program.cs
+- Подготовлена конфигурация серверной части для интеграции Facebook Authentication.
+- Создана основа для дальнейшей настройки аутентификации через Facebook в ASP.NET Core.
 
-- Prepared the backend configuration for Facebook Authentication integration.
-- Created the foundation for further Facebook authentication setup in ASP.NET Core.
-
-## Technologies Used
+## Используемые технологии
 
 - C#
 - ASP.NET Core 9
@@ -182,18 +178,18 @@ My task was to add the necessary components that will allow users to sign in to 
 - Microsoft.AspNetCore.Authentication.Facebook
 - OAuth 2.0
 
-## Project Testing
+## Проверка проекта
 
-After making the changes, I executed the following command:
+После внесения изменений была выполнена команда:
 
 `dotnet build Airbnb.Api/Airbnb.Api.csproj`
 
-The project built successfully without errors.
+Сборка проекта прошла успешно.
 
-## Project Results
+## Результат работы
 
-As a result, I prepared the backend foundation for Facebook Authentication integration.
+В результате была подготовлена основа серверной интеграции Facebook Authentication.
 
-I added the necessary dependencies, updated the User model, and extended the repository to support searching for accounts by Facebook ID.
+Были добавлены необходимые зависимости, изменена модель пользователя и расширен репозиторий для поиска аккаунтов по Facebook ID.
 
-These changes provide the foundation for implementing complete Facebook login and registration functionality in the Airbnb application.
+Эти изменения создают основу для последующего подключения полноценного входа и регистрации пользователей через Facebook.
