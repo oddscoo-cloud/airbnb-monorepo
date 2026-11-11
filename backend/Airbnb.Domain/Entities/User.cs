@@ -26,6 +26,9 @@ public class User
     [Column("role")]
     public string Role { get; set; } = "Guest";
 
+    [Column("facebook_id")]
+    public string? FacebookId { get; set; }
+
     [Column("is_verified")]
     public bool IsVerified { get; set; }
 

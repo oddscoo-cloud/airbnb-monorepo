@@ -66,20 +66,19 @@ public sealed class AuthService(
         return await IssueTokensAsync(user, cancellationToken);
     }
 
-    public async Task<(TokenResponse? Tokens, string? Error)>
-         LoginOrRegisterWithFacebookAsync(
-             string facebookId,
-             string email,
-             string? firstName,
-             string? lastName,
-             string? avatarUrl,
-             CancellationToken cancellationToken)
+    public async Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithFacebookAsync(
+        string facebookId,
+        string email,
+        string? firstName,
+        string? lastName,
+        string? avatarUrl,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(facebookId))
-            return (null, "Facebook ID not received.");
+            return (null, "Идентификатор Facebook не получен.");
 
         if (string.IsNullOrWhiteSpace(email))
-            return (null, "Facebook did not provide an email address. Please grant access to your email and try again.");
+            return (null, "Facebook не предоставил адрес электронной почты. Пожалуйста, предоставьте доступ к своему адресу электронной почты и попробуйте снова.");
 
         email = email.Trim().ToLowerInvariant();
 
@@ -97,7 +96,7 @@ public sealed class AuthService(
             {
                 return (
                     null,
-                    "An account with this email already exists. Please sign in using the standard method first."
+                    "Учетная запись с таким адресом электронной почты уже существует. Пожалуйста, сначала войдите в систему стандартным способом."
                 );
             }
 
@@ -116,12 +115,11 @@ public sealed class AuthService(
             await users.SaveChangesAsync(cancellationToken);
         }
 
-             var tokens = await IssueTokensAsync(
-                  user,
-                  cancellationToken);
+        var tokens = await IssueTokensAsync(
+            user,
+            cancellationToken);
 
-            return (tokens, null);
-    }
+        return (tokens, null);
 }
 
     public async Task<TokenResponse?> RefreshAsync(string rawRefreshToken, CancellationToken cancellationToken)
