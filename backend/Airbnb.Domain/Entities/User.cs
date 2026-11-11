@@ -19,7 +19,7 @@ public class User
 
     [Column("last_name")]
     public string? LastName { get; set; }
-
+        
     [Column("avatar_url")]
     public required string AvatarUrl { get; set; }
   

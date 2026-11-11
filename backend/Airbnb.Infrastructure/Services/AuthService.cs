@@ -66,13 +66,7 @@ public sealed class AuthService(
         return await IssueTokensAsync(user, cancellationToken);
     }
 
-    public async Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithFacebookAsync(
-        string facebookId,
-        string email,
-        string? firstName,
-        string? lastName,
-        string? avatarUrl,
-        CancellationToken cancellationToken)
+    public async Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithFacebookAsync(string facebookId, string email, string? firstName, string? lastName, string? avatarUrl, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(facebookId))
             return (null, "Идентификатор Facebook не получен.");
@@ -94,10 +88,7 @@ public sealed class AuthService(
 
             if (existingUser is not null)
             {
-                return (
-                    null,
-                    "Учетная запись с таким адресом электронной почты уже существует. Пожалуйста, сначала войдите в систему стандартным способом."
-                );
+                return (null, "Учетная запись с таким адресом электронной почты уже существует. Пожалуйста, сначала войдите в систему стандартным способом.");
             }
 
             user = new User
@@ -115,10 +106,7 @@ public sealed class AuthService(
             await users.SaveChangesAsync(cancellationToken);
         }
 
-        var tokens = await IssueTokensAsync(
-            user,
-            cancellationToken);
-
+        var tokens = await IssueTokensAsync(user, cancellationToken);
         return (tokens, null);
 }
 
