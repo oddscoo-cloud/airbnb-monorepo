@@ -19,12 +19,15 @@ public class User
 
     [Column("last_name")]
     public string? LastName { get; set; }
-
+        
     [Column("avatar_url")]
     public required string AvatarUrl { get; set; }
   
     [Column("role")]
     public string Role { get; set; } = "Guest";
+
+    [Column("facebook_id")]
+    public string? FacebookId { get; set; }
 
     [Column("is_verified")]
     public bool IsVerified { get; set; }

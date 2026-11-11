@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 
 namespace Airbnb.API.Controllers;
 
@@ -33,6 +34,49 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Неверный email или пароль." });
 
         SetRefreshCookie(tokens.RefreshToken);
+        return Ok(tokens);
+    }
+
+    [HttpPost("facebook")]
+    public async Task<IActionResult> FacebookLogin(
+        [FromBody] FacebookLoginRequest request,
+        IAuthService authService,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request?.AccessToken))
+            return BadRequest(new { message = "AccessToken обязателен." });
+
+        using var httpClient = new HttpClient();
+
+        var fbResponse = await httpClient.GetAsync(
+            $"https://graph.facebook.com/me?fields=id,email,first_name,last_name,picture&access_token={request.AccessToken}",
+            cancellationToken);
+
+        if (!fbResponse.IsSuccessStatusCode)
+            return BadRequest(new { message = "Не удалось проверить токен Facebook." });
+
+        var fbUser = await fbResponse.Content.ReadFromJsonAsync<FacebookProfileDto>(cancellationToken: cancellationToken);
+
+        if (fbUser == null || string.IsNullOrEmpty(fbUser.Id))
+            return BadRequest(new { message = "Не удалось получить данные профиля из Facebook." });
+
+        string? avatarUrl = fbUser.Picture?.Data?.Url;
+        string email = string.IsNullOrWhiteSpace(fbUser.Email) ? $"{fbUser.Id}@facebook.local" : fbUser.Email;
+
+        var (tokens, error) = await authService.LoginOrRegisterWithFacebookAsync(
+            facebookId: fbUser.Id,
+            email: email,
+            firstName: fbUser.FirstName,
+            lastName: fbUser.LastName,
+            avatarUrl: avatarUrl,
+            cancellationToken: cancellationToken);
+
+        if (error != null)
+            return BadRequest(new { message = error });
+
+        if (tokens != null)
+            SetRefreshCookie(tokens.RefreshToken);
+
         return Ok(tokens);
     }
 
@@ -90,4 +134,39 @@ public class AuthController : ControllerBase
             IsEssential = true
         });
     }
+}
+
+public class FacebookLoginRequest
+{
+    public required string AccessToken { get; set; }
+}
+
+public class FacebookProfileDto
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
+
+    [JsonPropertyName("first_name")]
+    public string? FirstName { get; set; }
+
+    [JsonPropertyName("last_name")]
+    public string? LastName { get; set; }
+
+    [JsonPropertyName("picture")]
+    public FacebookPictureWrapper? Picture { get; set; }
+}
+
+public class FacebookPictureWrapper
+{
+    [JsonPropertyName("data")]
+    public FacebookPictureData? Data { get; set; }
+}
+
+public class FacebookPictureData
+{
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 }
