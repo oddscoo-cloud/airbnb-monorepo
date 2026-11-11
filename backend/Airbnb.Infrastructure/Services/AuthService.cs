@@ -64,15 +64,16 @@ public sealed class AuthService(
             return null;
 
         return await IssueTokensAsync(user, cancellationToken);
+    }
 
-        public async Task<(TokenResponse? Tokens, string? Error)>
-    LoginOrRegisterWithFacebookAsync(
-        string facebookId,
-        string email,
-        string? firstName,
-        string? lastName,
-        string? avatarUrl,
-        CancellationToken cancellationToken)
+    public async Task<(TokenResponse? Tokens, string? Error)>
+         LoginOrRegisterWithFacebookAsync(
+             string facebookId,
+             string email,
+             string? firstName,
+             string? lastName,
+             string? avatarUrl,
+             CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(facebookId))
             return (null, "Facebook ID not received.");
