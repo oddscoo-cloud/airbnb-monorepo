@@ -193,3 +193,53 @@ dotnet ef database update --project backend\Airbnb.Api\Airbnb.Api.csproj --start
 Были добавлены необходимые зависимости, изменена модель пользователя и расширен репозиторий для поиска аккаунтов по Facebook ID.
 
 Эти изменения создают основу для последующего подключения полноценного входа и регистрации пользователей через Facebook.
+
+# Apple ID Authentication — Airbnb Project
+
+## Описание работы
+
+В рамках проекта Airbnb была реализована полноценная интеграция входа и регистрации пользователей через **Sign in with Apple** (OpenID Connect) для веб-приложения и серверной части.
+
+Задача заключалась в обеспечении безопасной, бесшовной аутентификации с помощью аккаунта Apple, включая корректную обработку первичной передачи имени пользователя, поддержку скрытых почтовых адресов (Apple Private Email Relay) и генерацию защищенной JWT-сессии приложения.
+
+## Что было добавлено и изменено
+
+### 1. Фронтенд (React / Vite)
+
+#### `frontend/index.html`
+- Подключен официальный клиентский скрипт Apple JS SDK (`appleid.auth.js`) для инициализации и отображения системного окна авторизации Apple в браузере.
+
+#### `frontend/.env`
+- Добавлена переменная окружения `VITE_APPLE_CLIENT_ID` для хранения идентификатора сервиса (Services ID), зарегистрированного в Apple Developer Portal.
+
+#### `frontend/src/components/SignInModal.tsx`
+- Реализована асинхронная функция `handleAppleLogin`, которая инициализирует `AppleID.auth` с параметрами `clientId`, `scope: 'name email'`, `redirectURI` и режимом всплывающего окна (`usePopup: true`).
+- Настроено получение `id_token` и объекта `user` (содержащего `firstName` и `lastName`, которые Apple передает исключительно при первой регистрации аккаунта).
+- Реализована отправка полученных данных на серверный эндпоинт `/api/auth/apple`, сохранение возвращенного JWT-токена в `sessionStorage` (`access_token`) и обновление состояния авторизации через `onAuthenticated`.
+- Функция `handleAppleLogin` привязана к событию `onClick` кнопки **Sign In with Apple**.
+
+### 2. Бэкенд (ASP.NET Core & Entity Framework Core)
+
+#### `backend/Airbnb.Api/Controllers/AuthController.cs`
+- Добавлен POST-эндпоинт `api/auth/apple` и модель входящих данных `AppleLoginDto` (`Id_Token`, `FirstName`, `LastName`).
+- Реализовано декодирование и валидация входящего JWT-токена (`id_token`) с помощью `JwtSecurityTokenHandler` и извлечение верифицированного `email` пользователя из claims.
+- **Поиск и автоматическая регистрация:** Через `ApplicationDbContext` (Entity Framework Core) выполняется проверка наличия пользователя в базе данных PostgreSQL по `Email`. Если учетная запись не найдена, автоматически создается новый пользователь с указанием провайдера `"Apple"` и переданного имени.
+- **Генерация сессии:** Вызывается `GenerateJwtToken(user)` для формирования собственного JWT-токена приложения, который возвращается клиенту вместе с данными профиля.
+
+#### `backend/Airbnb.Api/appsettings.json`
+- Подготовлена структура конфигураций для хранения параметров JWT (`Issuer`, `Audience`, `Key`) и настроек внешних провайдеров аутентификации.
+
+## Используемые технологии
+
+- **Frontend:** React, TypeScript, Vite, Apple ID JS SDK (`appleid.auth.js`)
+- **Backend:** C#, ASP.NET Core 9, Entity Framework Core, `System.IdentityModel.Tokens.Jwt`
+- **Database:** PostgreSQL (`airbnb_db`)
+- **Protocols:** OpenID Connect (OIDC), OAuth 2.0, JWT
+
+## Проверка проекта
+
+После внесения изменений на клиенте и сервере выполнена проверка сборки и работы:
+1. Проверена корректная загрузка Apple SDK и открытие всплывающего окна авторизации в браузере.
+2. Выполнена сборка серверного проекта:
+   ```bash
+   dotnet build Airbnb.Api/Airbnb.Api.csproj
