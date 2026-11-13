@@ -126,6 +126,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> AppleLogin(
         [FromBody] AppleLoginRequest request,
         IAuthService authService,
+        [FromServices] IConfiguration configuration,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request?.IdToken))
@@ -137,9 +138,39 @@ public class AuthController : ControllerBase
             if (!handler.CanReadToken(request.IdToken))
                 return BadRequest(new { message = "Неверный формат токена Apple." });
 
-            var jwt = handler.ReadJwtToken(request.IdToken);
-            var email = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email || c.Type == "email")?.Value;
-            var appleId = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "sub")?.Value;
+            using var httpClient = new HttpClient();
+            var jwksJson = await httpClient.GetStringAsync("https://appleid.apple.com/auth/keys", cancellationToken);
+            var keys = new Microsoft.IdentityModel.Tokens.JsonWebKeySet(jwksJson).GetSigningKeys();
+
+            var appleClientId = configuration["Authentication:Apple:ClientId"];
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = "https://appleid.apple.com",
+                ValidateAudience = !string.IsNullOrEmpty(appleClientId),
+                ValidAudience = appleClientId,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKeys = keys,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(5)
+            };
+
+            if (string.IsNullOrEmpty(appleClientId))
+            {
+                validationParameters.ValidateAudience = false;
+            }
+
+            var principal = handler.ValidateToken(request.IdToken, validationParameters, out var validatedToken);
+            var jwt = (JwtSecurityToken)validatedToken;
+
+            var email = principal.FindFirst(ClaimTypes.Email)?.Value 
+                        ?? principal.FindFirst("email")?.Value 
+                        ?? jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+
+            var appleId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                          ?? principal.FindFirst("sub")?.Value 
+                          ?? jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(appleId))
                 return BadRequest(new { message = "Не удалось извлечь email или ID из токена Apple." });
@@ -161,7 +192,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = "Ошибка обработки токена Apple: " + ex.Message });
+            return BadRequest(new { message = "Ошибка проверки подписи токена Apple: " + ex.Message });
         }
     }
 
@@ -223,6 +254,7 @@ public class AuthController : ControllerBase
 
 public class FacebookLoginRequest
 {
+    [JsonPropertyName("access_token")]
     public required string AccessToken { get; set; }
 }
 
@@ -258,6 +290,7 @@ public class FacebookPictureData
 
 public class GoogleLoginRequest
 {
+    [JsonPropertyName("access_token")]
     public required string AccessToken { get; set; }
 }
 
@@ -281,7 +314,12 @@ public class GoogleProfileDto
 
 public class AppleLoginRequest
 {
+    [JsonPropertyName("id_token")]
     public required string IdToken { get; set; }
+
+    [JsonPropertyName("first_name")]
     public string? FirstName { get; set; }
+
+    [JsonPropertyName("last_name")]
     public string? LastName { get; set; }
 }
