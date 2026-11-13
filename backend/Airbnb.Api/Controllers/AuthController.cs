@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Google.Apis.Auth;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Json;
 
 namespace Airbnb.API.Controllers;
 
@@ -36,60 +37,6 @@ public class AuthController : ControllerBase
 
         SetRefreshCookie(tokens.RefreshToken);
         return Ok(tokens);
-    }
-
-    [Route("api/auth")]
-    public class AuthController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-
-        public AuthController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        [HttpPost("google")]
-        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
-        {
-            if (string.IsNullOrEmpty(dto.Access_Token))
-            {
-                return BadRequest(new { message = "Access token is required" });
-            }
-
-            try
-            {
-                var settings = new GoogleJsonWebSignature.ValidationSettings
-                {
-                    Audience = new[] { _configuration["Authentication:Google:ClientId"] }
-                };
-
-                using var httpClient = new HttpClient();
-                var userInfoResponse = await httpClient.GetAsync($"https://www.googleapis.com/oauth2/v3/userinfo?access_token={dto.Access_Token}");
-
-                if (!userInfoResponse.IsSuccessStatusCode)
-                {
-                    return Unauthorized(new { message = "Invalid Google token" });
-                }
-
-                var userInfo = await userInfoResponse.Content.ReadFromJsonAsync<GoogleUserInfo>();
-
-                if (userInfo == null || string.IsNullOrEmpty(userInfo.Email))
-                {
-                    return Unauthorized(new { message = "Failed to retrieve user info from Google" });
-                }
-
-                return Ok(new
-                {
-                    token = "generated_app_jwt_token",
-                    email = userInfo.Email,
-                    name = userInfo.Name
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Internal server error during Google authentication", error = ex.Message });
-            }
-        }
     }
 
     [HttpPost("facebook")]
@@ -133,6 +80,89 @@ public class AuthController : ControllerBase
             SetRefreshCookie(tokens.RefreshToken);
 
         return Ok(tokens);
+    }
+
+    [HttpPost("google")]
+    public async Task<IActionResult> GoogleLogin(
+        [FromBody] GoogleLoginRequest request,
+        IAuthService authService,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request?.AccessToken))
+            return BadRequest(new { message = "AccessToken обязателен." });
+
+        using var httpClient = new HttpClient();
+
+        var googleResponse = await httpClient.GetAsync(
+            $"https://www.googleapis.com/oauth2/v3/userinfo?access_token={request.AccessToken}",
+            cancellationToken);
+
+        if (!googleResponse.IsSuccessStatusCode)
+            return BadRequest(new { message = "Не удалось проверить токен Google." });
+
+        var googleUser = await googleResponse.Content.ReadFromJsonAsync<GoogleProfileDto>(cancellationToken: cancellationToken);
+
+        if (googleUser == null || string.IsNullOrEmpty(googleUser.Email))
+            return BadRequest(new { message = "Не удалось получить данные профиля из Google." });
+
+        var (tokens, error) = await authService.LoginOrRegisterWithGoogleAsync(
+            googleId: googleUser.Sub ?? googleUser.Email,
+            email: googleUser.Email,
+            firstName: googleUser.GivenName,
+            lastName: googleUser.FamilyName,
+            avatarUrl: googleUser.Picture,
+            cancellationToken: cancellationToken);
+
+        if (error != null)
+            return BadRequest(new { message = error });
+
+        if (tokens != null)
+            SetRefreshCookie(tokens.RefreshToken);
+
+        return Ok(tokens);
+    }
+
+    [HttpPost("apple")]
+    public async Task<IActionResult> AppleLogin(
+        [FromBody] AppleLoginRequest request,
+        IAuthService authService,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request?.IdToken))
+            return BadRequest(new { message = "IdToken обязателен." });
+
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(request.IdToken))
+                return BadRequest(new { message = "Неверный формат токена Apple." });
+
+            var jwt = handler.ReadJwtToken(request.IdToken);
+            var email = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email || c.Type == "email")?.Value;
+            var appleId = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "sub")?.Value;
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(appleId))
+                return BadRequest(new { message = "Не удалось извлечь email или ID из токена Apple." });
+
+            var (tokens, error) = await authService.LoginOrRegisterWithAppleAsync(
+                appleId: appleId,
+                email: email,
+                firstName: request.FirstName,
+                lastName: request.LastName,
+                cancellationToken: cancellationToken);
+
+            if (error != null)
+                return BadRequest(new { message = error });
+
+            if (tokens != null)
+                SetRefreshCookie(tokens.RefreshToken);
+
+            return Ok(tokens);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "Ошибка обработки токена Apple: " + ex.Message });
+        }
     }
 
     [Authorize]
@@ -224,4 +254,34 @@ public class FacebookPictureData
 {
     [JsonPropertyName("url")]
     public string? Url { get; set; }
+}
+
+public class GoogleLoginRequest
+{
+    public required string AccessToken { get; set; }
+}
+
+public class GoogleProfileDto
+{
+    [JsonPropertyName("sub")]
+    public string? Sub { get; set; }
+
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
+
+    [JsonPropertyName("given_name")]
+    public string? GivenName { get; set; }
+
+    [JsonPropertyName("family_name")]
+    public string? FamilyName { get; set; }
+
+    [JsonPropertyName("picture")]
+    public string? Picture { get; set; }
+}
+
+public class AppleLoginRequest
+{
+    public required string IdToken { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
 }
