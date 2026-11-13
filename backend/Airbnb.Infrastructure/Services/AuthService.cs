@@ -13,7 +13,9 @@ public interface IAuthService
     Task<TokenResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken);
     Task<TokenResponse?> RefreshAsync(string rawRefreshToken, CancellationToken cancellationToken);
     Task LogoutAsync(string rawRefreshToken, CancellationToken cancellationToken);
-    Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithFacebookAsync(string facebookId, string email,string? firstName, string? lastName,string? avatarUrl, CancellationToken cancellationToken);
+    Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithAppleAsync(string appleId, string email, string? firstName, string? lastName, CancellationToken cancellationToken);
+    Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithGoogleAsync(string googleId, string email, string? firstName, string? lastName, string? avatarUrl, CancellationToken cancellationToken);
+    Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithFacebookAsync(string facebookId, string email, string? firstName, string? lastName, string? avatarUrl, CancellationToken cancellationToken);
 }
 
 public sealed class AuthService(
@@ -72,23 +74,18 @@ public sealed class AuthService(
             return (null, "Идентификатор Facebook не получен.");
 
         if (string.IsNullOrWhiteSpace(email))
-            return (null, "Facebook не предоставил адрес электронной почты. Пожалуйста, предоставьте доступ к своему адресу электронной почты и попробуйте снова.");
+            return (null, "Facebook не предоставил адрес электронной почты.");
 
         email = email.Trim().ToLowerInvariant();
 
-        var user = await users.FindByFacebookIdAsync(
-            facebookId,
-            cancellationToken);
+        var user = await users.FindByFacebookIdAsync(facebookId, cancellationToken);
 
         if (user is null)
         {
-            var existingUser = await users.FindByEmailAsync(
-                email,
-                cancellationToken);
-
+            var existingUser = await users.FindByEmailAsync(email, cancellationToken);
             if (existingUser is not null)
             {
-                return (null, "Учетная запись с таким адресом электронной почты уже существует. Пожалуйста, сначала войдите в систему стандартным способом.");
+                return (null, "Учетная запись с таким адресом электронной почты уже существует. Пожалуйста, войдите стандартным способом.");
             }
 
             user = new User
@@ -108,7 +105,65 @@ public sealed class AuthService(
 
         var tokens = await IssueTokensAsync(user, cancellationToken);
         return (tokens, null);
-}
+    }
+
+    public async Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithGoogleAsync(string googleId, string email, string? firstName, string? lastName, string? avatarUrl, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(googleId) && string.IsNullOrWhiteSpace(email))
+            return (null, "Не удалось получить данные от Google.");
+
+        email = email.Trim().ToLowerInvariant();
+
+        var user = await users.FindByEmailAsync(email, cancellationToken);
+
+        if (user is null)
+        {
+            user = new User
+            {
+                Email = email,
+                FirstName = firstName?.Trim() ?? "Google",
+                LastName = lastName?.Trim() ?? "User",
+                AvatarUrl = avatarUrl ?? string.Empty,
+                Role = "Guest",
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
+            await users.AddAsync(user, cancellationToken);
+            await users.SaveChangesAsync(cancellationToken);
+        }
+
+        var tokens = await IssueTokensAsync(user, cancellationToken);
+        return (tokens, null);
+    }
+
+    public async Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithAppleAsync(string appleId, string email, string? firstName, string? lastName, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return (null, "Apple не предоставил адрес электронной почты.");
+
+        email = email.Trim().ToLowerInvariant();
+
+        var user = await users.FindByEmailAsync(email, cancellationToken);
+
+        if (user is null)
+        {
+            user = new User
+            {
+                Email = email,
+                FirstName = firstName?.Trim() ?? "Apple",
+                LastName = lastName?.Trim() ?? "User",
+                AvatarUrl = string.Empty,
+                Role = "Guest",
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
+            await users.AddAsync(user, cancellationToken);
+            await users.SaveChangesAsync(cancellationToken);
+        }
+
+        var tokens = await IssueTokensAsync(user, cancellationToken);
+        return (tokens, null);
+    }
 
     public async Task<TokenResponse?> RefreshAsync(string rawRefreshToken, CancellationToken cancellationToken)
     {
