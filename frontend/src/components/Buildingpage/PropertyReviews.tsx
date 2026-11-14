@@ -68,7 +68,7 @@ export function PropertyReviews({ listingId, initialReviews, onReviewAdded }: Pr
           return (
             <article key={review.id} className="property__review">
               <div className="property__review-avatar">
-                {avatarUrl ? <img src={avatarUrl} alt="" /> : authorName.charAt(0).toUpperCase()}
+                {avatarUrl ? <img src={avatarUrl} alt="" /> : (review.authorInitial || authorName.charAt(0).toUpperCase())}
               </div>
               <div>
                 <h3>{authorName}</h3>

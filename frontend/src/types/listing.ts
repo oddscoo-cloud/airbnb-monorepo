@@ -11,6 +11,7 @@ export interface ListingReview {
   comment: string
   createdAt: string
   authorName?: string | null
+  authorInitial?: string | null
   avatarUrl?: string | null
 }
 

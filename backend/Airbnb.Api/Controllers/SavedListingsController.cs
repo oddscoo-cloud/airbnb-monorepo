@@ -142,11 +142,12 @@ public class SavedListingsController : ControllerBase
             reviews.Select(r =>
             {
                 if (r.Author is null)
-                    return new ReviewResponseDTO(r.Id, r.Rating, r.Comment, r.CreatedAt, "Анонімний користувач", null);
+                    return new ReviewResponseDTO(r.Id, r.Rating, r.Comment, r.CreatedAt, "Анонімний користувач", null, null);
                 var fullName = $"{r.Author.FirstName} {r.Author.LastName}".Trim();
                 var name = string.IsNullOrWhiteSpace(fullName) ? r.Author.Email.Split('@')[0] : fullName;
                 var avatar = string.IsNullOrWhiteSpace(r.Author.AvatarUrl) ? null : r.Author.AvatarUrl;
-                return new ReviewResponseDTO(r.Id, r.Rating, r.Comment, r.CreatedAt, name, avatar);
+                return new ReviewResponseDTO(r.Id, r.Rating, r.Comment, r.CreatedAt, name, avatar,
+                    ReviewResponseDTO.GetAuthorInitial(r.Author));
             }).ToList(),
             reviews.Count == 0 ? null : reviews.Average(r => r.Rating),
             reviews.Count

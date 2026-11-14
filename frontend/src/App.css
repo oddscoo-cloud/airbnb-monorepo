@@ -37,6 +37,7 @@
 
 .site-header--dark .site-header__logo,
 .site-header--dark .site-header__nav a,
+.site-header--dark .site-header__nav button,
 .site-header--dark .site-header__host,
 .site-header--dark .site-header__menu,
 .site-header--dark .site-header__account-menu button {
@@ -45,11 +46,25 @@
 
 .site-header__nav {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 28px;
 }
 
 .site-header__nav a,
+.site-header__nav button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .site-header__host {
   color: var(--text-primary);                 /* #211e1a */
   font-family: var(--font-serif);
@@ -63,8 +78,14 @@
 }
 
 .site-header__nav a:hover,
+.site-header__nav button:hover,
 .site-header__host:hover {
   text-decoration: underline;
+}
+
+.site-header__nav button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .site-header__actions {

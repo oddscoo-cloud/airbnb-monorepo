@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api/http'
+import { AVATAR_EVENT, AVATAR_STORAGE_KEY } from '../api/users'
 import { getAccountInitial } from '../utils/account'
 
 type Account = {
@@ -69,7 +70,8 @@ export function useAccountSession() {
       sessionStorage.removeItem('account_email')
       sessionStorage.removeItem('access_token')
       sessionStorage.removeItem('account_role')
-      sessionStorage.removeItem('account_avatar')
+      sessionStorage.removeItem(AVATAR_STORAGE_KEY)
+      window.dispatchEvent(new Event(AVATAR_EVENT))
       document.cookie = 'refresh_token=; Max-Age=0; path=/; SameSite=Lax'
       setAccountInitial('')
       setAccountRole('')

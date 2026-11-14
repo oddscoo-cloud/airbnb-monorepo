@@ -242,7 +242,7 @@ public class ListingsController : ControllerBase
     private static ReviewResponseDTO MapReview(Review review)
     {
         if (review.Author is null)
-            return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, "Анонімний користувач", null);
+            return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, "Анонімний користувач", null, null);
 
         var fullName = $"{review.Author.FirstName} {review.Author.LastName}".Trim();
         var authorName = string.IsNullOrWhiteSpace(fullName)
@@ -250,7 +250,8 @@ public class ListingsController : ControllerBase
             : fullName;
         var avatarUrl = string.IsNullOrWhiteSpace(review.Author.AvatarUrl) ? null : review.Author.AvatarUrl;
 
-        return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, authorName, avatarUrl);
+        return new ReviewResponseDTO(review.Id, review.Rating, review.Comment, review.CreatedAt, authorName, avatarUrl,
+            ReviewResponseDTO.GetAuthorInitial(review.Author));
     }
 
     private async Task<List<Amenity>> GetAmenities(List<int> ids, CancellationToken cancellationToken)

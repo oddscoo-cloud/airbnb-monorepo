@@ -42,11 +42,19 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #df7058;
+  background: var(--color-warm-5);
   color: #ffffff;
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 700;
   line-height: 1;
+  overflow: hidden;
+}
+
+.user-menu__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .user-menu__avatar--empty {

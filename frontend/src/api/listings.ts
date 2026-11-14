@@ -14,7 +14,7 @@ export interface ListingResponse {
   category: string | null
   images?: { imageUrl: string; isCover: boolean }[]
   amenities?: { id: number; name: string; icon: string }[]
-  reviews?: { id: number; rating: number; comment: string; createdAt: string; authorName: string | null; avatarUrl: string | null }[]
+  reviews?: { id: number; rating: number; comment: string; createdAt: string; authorName: string | null; authorInitial?: string | null; avatarUrl: string | null }[]
   isPublished: boolean
   rating: number | null
   reviewCount: number

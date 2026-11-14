@@ -20,6 +20,8 @@ public class ListingProfile : Profile
             .ForCtorParam(nameof(ReviewResponseDTO.AvatarUrl), option => option.MapFrom(review =>
                 review.Author == null || string.IsNullOrWhiteSpace(review.Author.AvatarUrl)
                     ? null
-                    : review.Author.AvatarUrl));
+                    : review.Author.AvatarUrl))
+            .ForCtorParam(nameof(ReviewResponseDTO.AuthorInitial), option => option.MapFrom(review =>
+                ReviewResponseDTO.GetAuthorInitial(review.Author)));
     }
 }
