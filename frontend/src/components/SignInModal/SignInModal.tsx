@@ -56,47 +56,6 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
     } finally {
       setIsSubmitting(false)
     }
-    }
-
-  // Обработчик входа через Apple ID
-  const handleAppleLogin = async () => {
-    const AppleID = (window as any).AppleID
-    if (!AppleID) {
-      setError('Apple SDK не загружен. Проверьте подключение.')
-      return
-    }
-
-    try {
-      AppleID.auth.init({
-        clientId: import.meta.env.VITE_APPLE_CLIENT_ID || 'com.yourcompany.airbnb.web',
-        scope: 'name email',
-        redirectURI: window.location.origin,
-        state: 'origin:web',
-        usePopup: true,
-      })
-
-      const response = await AppleID.auth.signIn()
-      const { id_token } = response.authorization
-      const user = response.user
-
-      const data = await apiRequest<{ token: string; email: string; role?: string }>('/api/auth/apple', {
-        method: 'POST',
-        body: JSON.stringify({
-          id_token,
-          firstName: user?.name?.firstName,
-          lastName: user?.name?.lastName,
-        }),
-      })
-
-      if (data.token) {
-        sessionStorage.setItem('access_token', data.token)
-        onAuthenticated(data.email, data.role || 'User')
-      }
-      onClose()
-    } catch (err) {
-      console.error('Apple Sign In failed:', err)
-      setError('Не удалось выполнить вход через Apple')
-    }
   }
 
   // Отдельная функция для обработки входа через Facebook
@@ -221,7 +180,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
             <span>Sign In with Facebook</span>
           </button>
 
-          <button type="button" className="sign-in-modal__social-button" onClick={handleAppleLogin}>
+          <button type="button" className="sign-in-modal__social-button">
             <svg viewBox="0 0 21 24" width="21" height="24" aria-hidden>
               <path
                 fill="#000000"
