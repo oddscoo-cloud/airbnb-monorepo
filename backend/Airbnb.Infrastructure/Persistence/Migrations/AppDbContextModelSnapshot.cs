@@ -448,10 +448,6 @@ namespace Airbnb.Api.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
-                    b.Property<string>("FacebookId")
-                        .HasColumnType("text")
-                        .HasColumnName("facebook_id");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("text")
                         .HasColumnName("first_name");

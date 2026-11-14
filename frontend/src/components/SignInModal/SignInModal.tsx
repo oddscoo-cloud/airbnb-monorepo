@@ -14,28 +14,28 @@ interface SignInModalProps {
 
 export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: SignInModalProps) {
   const { t } = useLanguage()
-  
+  // Обмен OAuth-токена через backend; ниже расположена форма парольного входа.
   const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        await apiRequest<unknown>('/api/auth/google', {
-          method: 'POST',
-          body: JSON.stringify({ access_token: tokenResponse.access_token }),
-        })
-        onClose()
-      } catch (err) {
-        console.error(err)
-      }
-    },
-    onError: () => console.error('Google login failed'),
+  onSuccess: async (tokenResponse) => {
+    try {
+      await apiRequest<unknown>('/api/auth/google', {
+        method: 'POST',
+        body: JSON.stringify({ access_token: tokenResponse.access_token }),
+      })
+      onClose()
+    } catch (err) {
+      console.error(err)
+    }
+  },
+  onError: () => console.error('Google login failed'),
   })
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Отмена стандартной отправки формы для отображения ошибки в модальном окне.
     event.preventDefault()
     setError('')
     setIsSubmitting(true)
@@ -48,6 +48,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
         fallbackError: () => t('Не вдалося виконати вхід'),
       })
 
+      // Сохранение токена на время вкладки и обновление состояния пользователя в App.
       sessionStorage.setItem('access_token', data.access_token)
       onAuthenticated(email, data.role)
       onClose()
@@ -58,31 +59,7 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
     }
   }
 
-  // Отдельная функция для обработки входа через Facebook
-  const handleFacebookLogin = () => {
-    const fb = (window as any).FB;
-    if (!fb) {
-      alert('Facebook SDK еще загружается. Повторите попытку.');
-      return;
-    }
-
-    fb.login(async (response: any) => {
-      if (response.authResponse?.accessToken) {
-        try {
-          await apiRequest<unknown>('/api/auth/facebook', {
-            method: 'POST',
-            body: JSON.stringify({ accessToken: response.authResponse.accessToken }),
-          })
-          onClose()
-        } catch (err) {
-          console.error('Facebook login failed', err)
-        }
-      } else {
-        console.log('Пользователь отменил авторизацию Facebook.')
-      }
-    }, { scope: 'public_profile,email' });
-  }
-
+  // Закрытие по клику на фон; изоляция кликов внутри окна.
   return createPortal(
     <div className="sign-in-modal__overlay" role="presentation" onClick={onClose}>
       <div
@@ -166,11 +143,11 @@ export function SignInModal({ onClose, onAuthenticated, onSwitchToRegister }: Si
             <span>Sign In with Google</span>
           </button>
 
-          <button 
-            type="button" 
-            className="sign-in-modal__social-button"
-            onClick={handleFacebookLogin}
-          >
+          <button type="button" className="sign-in-modal__social-button"
+                      onClick={() => {
+                          window.location.assign('/api/facebook-auth/login')
+                      }}
+                  >
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
               <path
                 fill="#1877F2"
