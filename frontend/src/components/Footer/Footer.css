@@ -3,7 +3,9 @@
 
 
 .destinations {
-  padding: 40px 40px 24px;
+  width: min(1135px, calc(100% - 80px));
+  margin-inline: auto;
+  padding: 40px 0 24px;
   background: var(--bg-page);
   border-top: 1px solid var(--border-divider);
 }
@@ -49,7 +51,7 @@
 
 .destinations__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 20px 32px;
 }
 
@@ -89,7 +91,9 @@
 /* Футер сайта */
 
 .site-footer {
-  padding: 40px;
+  width: min(1135px, calc(100% - 80px));
+  margin-inline: auto;
+  padding: 40px 0;
   background: var(--bg-page);
   border-top: 1px solid var(--border-divider);
 }
@@ -185,6 +189,7 @@
 
 @media (max-width: 900px) {
   .destinations {
+    width: calc(100% - 32px);
     padding: 24px 16px;
   }
 
@@ -193,6 +198,7 @@
   }
 
   .site-footer {
+    width: calc(100% - 32px);
     padding: 24px 16px;
   }
 
@@ -204,6 +210,12 @@
   .site-footer__bottom {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .destinations__grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

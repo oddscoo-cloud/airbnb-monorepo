@@ -3,7 +3,7 @@
 
 .category-listings {
   width: 100%;
-  padding: 24px 40px 40px;
+  padding: 24px 79px 40px;
   font-family: 'Inknut Antiqua', Georgia, serif;
 }
 
@@ -11,7 +11,7 @@
 .category-nav {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 13px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--border-default);
 }
@@ -23,7 +23,8 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 32px;
+  justify-content: space-between;
+  gap: 24px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -271,9 +272,10 @@
 
 .listings__grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 24px 16px;
-  padding-top: 24px;
+  grid-template-columns: repeat(6, minmax(0, 272px));
+  justify-content: space-between;
+  gap: 40px 24px;
+  padding-top: 32px;
 }
 
 .listing-card {
@@ -424,6 +426,16 @@
 @media (max-width: 1100px) {
   .listings__grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1760px) and (min-width: 1101px) {
+  .category-listings {
+    padding-inline: 40px;
+  }
+
+  .listings__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 
