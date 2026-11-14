@@ -11,8 +11,8 @@
 
 .location-map__back {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 22px;
+  left: 30px;
   z-index: 10;
   display: grid;
   place-items: center;
@@ -28,17 +28,18 @@
 .location-map__layout {
   position: relative;
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 426px 1fr;
   min-height: 100vh;
 }
 
 .location-map__sidebar {
-  padding: 72px 24px 24px;
+  padding: 88px 30px 30px;
 }
 
 .location-map__sidebar h1 {
   margin: 0 0 24px;
-  font-size: 22px;
+  font-size: 36px;
+  line-height: 1.1;
   font-weight: 800;
   color: #211e1a;
 }
@@ -56,21 +57,22 @@
 
 .location-map__sidebar h2 {
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #211e1a;
 }
 
 .location-map__sidebar p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #6f6558;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--text-primary);
 }
 
 .location-map__map {
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 62px);
+  margin-top: 62px;
 }
 
 .location-map__pin-wrapper {
@@ -122,5 +124,6 @@
 
   .location-map__map {
     height: 400px;
+    margin-top: 0;
   }
 }
