@@ -66,7 +66,7 @@
   align-items: center;
   
   height: 56px;
-  width: 432px;
+  width: min(432px, 100%);
 }
 
 .register-modal__field input {
@@ -136,15 +136,16 @@
 .register-modal__submit {
   margin: 49px 0px 0px 0px;
   height: 56px;
-  width: 432px;
+  width: min(432px, 100%);
   border: 0;
-  border-radius: 64px;
-  background: var(--accent-dark);
-  color: #fff;
-  font-family: 'Nunito Sans', Arial, sans-serif;
-  font-weight: 800;
+  border-radius: var(--radius-pill);
+  background: var(--btn-submit-bg);
+  color: var(--color-warm-3);
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .register-modal__submit:hover {
@@ -171,7 +172,7 @@
   align-items: center;
   gap: 12px;
   height: 56px;
-  width: 432px;
+  width: min(432px, 100%);
   padding: 0 17px;
   border: 1px solid var(--color-warm-3);
   border-radius: 64px;

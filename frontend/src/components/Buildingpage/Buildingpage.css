@@ -13,7 +13,7 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 16px;
-  padding: 20px 40px;
+  padding: 20px 70px;
   border-bottom: 1px solid var(--text-primary);
 }
 
@@ -86,10 +86,10 @@
   grid-template-columns: minmax(0, 1136px) 374px;
   align-items: start;
   justify-content: space-between;
-  gap: 40px;
-  max-width: 1550px;
+  gap: 80px;
+  max-width: 1664px;
   margin: 0 auto;
-  padding: 47px 40px 60px;
+  padding: 47px 0 60px;
 }
 
 .property__title {
@@ -1048,6 +1048,14 @@
   font-weight: 700;
   color: var(--text-primary);
   text-decoration: underline;
+}
+
+@media (max-width: 1700px) and (min-width: 1101px) {
+  .property__layout {
+    grid-template-columns: minmax(0, 1fr) 374px;
+    gap: 40px;
+    padding-inline: 40px;
+  }
 }
 
 @media (max-width: 1100px) {

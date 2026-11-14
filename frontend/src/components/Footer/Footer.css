@@ -1,13 +1,13 @@
+﻿/* Шрифты: Inknut Antiqua для заголовков и вкладок, Inder для городов и ссылок. */
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@500;600&family=Inder&display=swap');
 
 
 .destinations {
-  padding: 40px 24px 24px;
-}
-
-.destinations__inner,
-.site-footer__inner {
-  width: min(980px, 100%);
+  width: min(1135px, calc(100% - 80px));
   margin-inline: auto;
+  padding: 40px 0 24px;
+  background: var(--bg-page);
+  border-top: 1px solid var(--border-divider);
 }
 
 .destinations__title {
@@ -20,12 +20,11 @@
 
 .destinations__tabs {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 24px;
   padding-bottom: 16px;
   margin-bottom: 24px;
-  border-bottom: 1px solid var(--border-default);
-  overflow-x: auto;
+  border-bottom: 1px solid var(--border-divider);
 }
 
 .destinations__tab {
@@ -52,12 +51,11 @@
 
 .destinations__grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 20px 24px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px 32px;
 }
 
 .destinations__item {
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -68,9 +66,6 @@
   font-family: 'Inder', Arial, sans-serif;
   font-size: 14px;
   color: var(--accent-dark);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .destinations__type {
@@ -78,9 +73,6 @@
   font-family: 'Inder', Arial, sans-serif;
   font-size: 13px;
   color: rgba(44, 40, 35, 0.6);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .destinations__more {
@@ -99,13 +91,11 @@
 /* Футер сайта */
 
 .site-footer {
-  padding: 0 24px;
-  background: var(--bg-surface);
-}
-
-.site-footer__inner {
-  padding: 32px 0 40px;
-  border-top: 1px solid var(--border-default);
+  width: min(1135px, calc(100% - 80px));
+  margin-inline: auto;
+  padding: 40px 0;
+  background: var(--bg-page);
+  border-top: 1px solid var(--border-divider);
 }
 
 .site-footer__columns {
@@ -117,10 +107,10 @@
 
 .site-footer__column h3 {
   margin: 0 0 16px;
-  font-family: 'Inknut Antiqua', Georgia, serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--text-primary);
+  font-family: var(--font-inder);
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--accent-dark);
 }
 
 .site-footer__column ul {
@@ -150,7 +140,7 @@
   flex-wrap: wrap;
   gap: 16px;
   padding-top: 24px;
-  border-top: 1px solid var(--border-default);
+  border-top: 1px solid var(--border-divider);
 }
 
 .site-footer__legal {
@@ -191,10 +181,6 @@
   text-decoration: underline;
 }
 
-.site-footer__locale-item[aria-pressed='true'] {
-  color: var(--text-primary);
-}
-
 .site-footer__social {
   display: grid;
   place-items: center;
@@ -203,11 +189,8 @@
 
 @media (max-width: 900px) {
   .destinations {
+    width: calc(100% - 32px);
     padding: 24px 16px;
-  }
-
-  .destinations__tabs {
-    gap: 20px;
   }
 
   .destinations__grid {
@@ -215,11 +198,8 @@
   }
 
   .site-footer {
-    padding: 0 16px;
-  }
-
-  .site-footer__inner {
-    padding: 24px 0;
+    width: calc(100% - 32px);
+    padding: 24px 16px;
   }
 
   .site-footer__columns {
@@ -230,6 +210,12 @@
   .site-footer__bottom {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .destinations__grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

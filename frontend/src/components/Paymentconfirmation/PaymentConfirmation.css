@@ -41,7 +41,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 21px 40px 27px;
+  min-height: 121px;
+  padding: 21px 21px 27px;
 }
 
 .payment__logo {
@@ -62,7 +63,7 @@
   grid-template-columns: minmax(0, 566px) 468px;
   justify-content: space-between;
   gap: 64px;
-  max-width: 1160px;
+  max-width: 1210px;
   margin: 0 auto;
   padding: 47px 40px 80px;
   border-top: 1px solid var(--text-primary);
@@ -417,6 +418,7 @@
   align-self: start;
   position: sticky;
   top: 40px;
+  margin-top: 100px;
   padding: 20px 22px;
   border: 1px solid var(--text-primary);
   border-radius: 16px;
@@ -540,6 +542,13 @@
   color: var(--accent-dark);
 }
 
+@media (max-width: 1210px) and (min-width: 901px) {
+  .payment__layout {
+    grid-template-columns: minmax(0, 566px) minmax(360px, 468px);
+    gap: 40px;
+  }
+}
+
 @media (max-width: 900px) {
   .payment__layout {
     grid-template-columns: 1fr;
@@ -549,6 +558,7 @@
 
   .payment__summary {
     position: static;
+    margin-top: 0;
   }
 
   .payment__header {

@@ -1,27 +1,32 @@
-﻿/* Размеры, контраст и hover/focus-состояния кнопки перехода к карте. */
+/* Размеры, контраст и hover/focus-состояния кнопки перехода к карте.
+   Точно по макету: Rectangle 15 (bg #6F6558, radius 26px, Inknut Antiqua 16px). */
 .show-map-button {
   display: inline-flex;
-  
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-width: 190px;
-  padding: 16px 22px;
+  min-width: 182px;
+  min-height: 60px;
+  padding: 14px 24px;
   border: 0;
   border-radius: var(--radius-button);
   background: var(--btn-map-bg);
-  color: var(--text-on-dark);
-  font-weight: 700;
-  font-size: 15px;
+  color: #fff;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 16px;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-button);
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
 .show-map-button:hover {
   background: var(--btn-map-hover);
+  transform: translateY(-1px);
 }
 
 .show-map-button:active {
   background: var(--color-warm-7);
+  transform: translateY(0);
 }

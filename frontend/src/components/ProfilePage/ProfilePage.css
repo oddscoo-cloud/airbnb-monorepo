@@ -16,7 +16,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 36px 40px 28px;
+  width: min(1164px, calc(100% - 80px));
+  margin-inline: auto;
+  padding: 36px 0 28px;
 }
 
 .profile__logo {
@@ -112,11 +114,11 @@
   display: grid;
   grid-template-columns: 200px minmax(0, 666px);
   justify-content: center;
-  gap: 122px;
+  gap: 130px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 996px;
   margin: 0 auto;
-  padding: 60px 40px 60px;
+  padding: 60px 0;
 }
 
 .profile__avatar-col {
@@ -469,6 +471,7 @@
 
 @media (max-width: 640px) {
   .profile__header {
+    width: 100%;
     padding: 20px 16px;
   }
 
