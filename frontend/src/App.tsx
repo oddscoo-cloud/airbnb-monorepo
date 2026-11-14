@@ -69,44 +69,6 @@ function App() {
     }
   }, [pendingHost, accountInitial])
 
-    // Обработка успешного входа или ошибки Facebook OAuth.
-    useEffect(() => {
-        const params = new URLSearchParams(
-            window.location.hash.substring(1)
-        )
-
-        const accessToken = params.get('facebook_access_token')
-        const email = params.get('email')
-        const role = params.get('role')
-
-        const facebookError = params.get('facebook_error')
-
-        if (accessToken && email) {
-            // Сохраняем JWT в текущей сессии браузера.
-            sessionStorage.setItem('access_token', accessToken)
-
-            // Обновляем состояние авторизованного пользователя.
-            handleAuthenticated(email, role ?? 'Guest')
-
-            // Удаляем токен из адресной строки.
-            window.history.replaceState(
-                {},
-                document.title,
-                window.location.pathname + window.location.search
-            )
-        }
-
-        if (facebookError) {
-            console.error('Facebook authentication error:', facebookError)
-
-            window.history.replaceState(
-                {},
-                document.title,
-                window.location.pathname + window.location.search
-            )
-        }
-    }, [handleAuthenticated])
-
   function handleToggleSave(listingId: number) {
     if (!accountInitial || !sessionStorage.getItem('access_token')) {
       setIsSignInModalOpen(true)

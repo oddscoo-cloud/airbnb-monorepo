@@ -13,7 +13,6 @@ public interface IAuthService
     Task<TokenResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken);
     Task<TokenResponse?> RefreshAsync(string rawRefreshToken, CancellationToken cancellationToken);
     Task LogoutAsync(string rawRefreshToken, CancellationToken cancellationToken);
-    Task<(TokenResponse? Tokens, string? Error)> LoginOrRegisterWithFacebookAsync(string facebookId, string email,string? firstName, string? lastName,string? avatarUrl, CancellationToken cancellationToken);
 }
 
 public sealed class AuthService(
@@ -64,64 +63,7 @@ public sealed class AuthService(
             return null;
 
         return await IssueTokensAsync(user, cancellationToken);
-
-        public async Task<(TokenResponse? Tokens, string? Error)>
-    LoginOrRegisterWithFacebookAsync(
-        string facebookId,
-        string email,
-        string? firstName,
-        string? lastName,
-        string? avatarUrl,
-        CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(facebookId))
-            return (null, "Facebook ID not received.");
-
-        if (string.IsNullOrWhiteSpace(email))
-            return (null, "Facebook did not provide an email address. Please grant access to your email and try again.");
-
-        email = email.Trim().ToLowerInvariant();
-
-        var user = await users.FindByFacebookIdAsync(
-            facebookId,
-            cancellationToken);
-
-        if (user is null)
-        {
-            var existingUser = await users.FindByEmailAsync(
-                email,
-                cancellationToken);
-
-            if (existingUser is not null)
-            {
-                return (
-                    null,
-                    "An account with this email already exists. Please sign in using the standard method first."
-                );
-            }
-
-            user = new User
-            {
-                Email = email,
-                FacebookId = facebookId,
-                FirstName = firstName?.Trim() ?? string.Empty,
-                LastName = lastName?.Trim() ?? string.Empty,
-                AvatarUrl = avatarUrl ?? string.Empty,
-                Role = "Guest",
-                CreatedAt = DateTimeOffset.UtcNow
-            };
-
-            await users.AddAsync(user, cancellationToken);
-            await users.SaveChangesAsync(cancellationToken);
-        }
-
-             var tokens = await IssueTokensAsync(
-                  user,
-                  cancellationToken);
-
-            return (tokens, null);
     }
-}
 
     public async Task<TokenResponse?> RefreshAsync(string rawRefreshToken, CancellationToken cancellationToken)
     {

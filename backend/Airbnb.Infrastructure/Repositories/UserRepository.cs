@@ -6,7 +6,6 @@ public interface IUserRepository
     Task<User?> FindByIdAsync(int id, CancellationToken cancellationToken);
     Task AddAsync(User user, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
-    Task<User?> FindByFacebookIdAsync( string facebookId, CancellationToken cancellationToken);
 }
 
 public sealed class UserRepository(AppDbContext db) : IUserRepository
@@ -23,6 +22,4 @@ public sealed class UserRepository(AppDbContext db) : IUserRepository
     public Task SaveChangesAsync(CancellationToken cancellationToken) =>
         db.SaveChangesAsync(cancellationToken);
 
-    public Task<User?> FindByFacebookIdAsync( string facebookId, CancellationToken cancellationToken) =>
-        db.Users.SingleOrDefaultAsync( user => user.FacebookId == facebookId, cancellationToken);
 }
