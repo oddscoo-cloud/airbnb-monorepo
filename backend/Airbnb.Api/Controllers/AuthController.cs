@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Google.Apis.Auth;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 
@@ -36,60 +35,6 @@ public class AuthController : ControllerBase
 
         SetRefreshCookie(tokens.RefreshToken);
         return Ok(tokens);
-    }
-
-    [Route("api/auth")]
-    public class AuthController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-
-        public AuthController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        [HttpPost("google")]
-        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
-        {
-            if (string.IsNullOrEmpty(dto.Access_Token))
-            {
-                return BadRequest(new { message = "Access token is required" });
-            }
-
-            try
-            {
-                var settings = new GoogleJsonWebSignature.ValidationSettings
-                {
-                    Audience = new[] { _configuration["Authentication:Google:ClientId"] }
-                };
-
-                using var httpClient = new HttpClient();
-                var userInfoResponse = await httpClient.GetAsync($"https://www.googleapis.com/oauth2/v3/userinfo?access_token={dto.Access_Token}");
-
-                if (!userInfoResponse.IsSuccessStatusCode)
-                {
-                    return Unauthorized(new { message = "Invalid Google token" });
-                }
-
-                var userInfo = await userInfoResponse.Content.ReadFromJsonAsync<GoogleUserInfo>();
-
-                if (userInfo == null || string.IsNullOrEmpty(userInfo.Email))
-                {
-                    return Unauthorized(new { message = "Failed to retrieve user info from Google" });
-                }
-
-                return Ok(new
-                {
-                    token = "generated_app_jwt_token",
-                    email = userInfo.Email,
-                    name = userInfo.Name
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Internal server error during Google authentication", error = ex.Message });
-            }
-        }
     }
 
     [HttpPost("facebook")]
